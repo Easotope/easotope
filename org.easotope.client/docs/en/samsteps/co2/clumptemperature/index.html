@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	  <title>Δ47 Temperature</title>
+	</meta>
+  </head>
+
+  <body>
+  	<h2>Purpose</h2>
+
+  	<p>The Δ47 value of the sample can be used to calculate a temperature (which is thought to
+  	be related to the temperature at which the sample was formed) using various equations. This
+  	step calculates temperatures for six common equations.</p>
+
+  	<h2>Algorithm</h2>
+
+  	<p>Six different equations are supported for calculating temperature (see table below for details).
+  	Each of these equations has been determined assuming that various constants (see the constants
+  	tab in the configuration screen) are set to their default values. If any of these constants are
+  	not their default value, then the equations are not valid, the temperature cannot be calculated,
+  	and the word "UNDEFINED" is written in place of the temperature.</p>
+  	
+  	<p>Additionally, each equation is designed for use with a specific acid temperature (AT) and acid
+  	fractionation factor (AFF). If one or more of the replicates in the given sample were prepared with
+  	a different AT or AFF, the Δ47 of that replicate needs to be adjusted. The algorithm used for doing
+  	this is:</p>
+ 
+ 	<ul>
+ 	  <li>scaling_factor = AT<sub>replicate</sub> / AT<sub>equation</sub></li>
+ 	  <li>AFF_equation_scaled = AFF<sub>equation</sub> * scaling_factor</li>
+ 	  <li>difference = AFF_equation_scaled - AFF<sub>replicate</sub></li>
+ 	  <li>Δ47<sub>new</sub> = Δ47<sub>old</sub> + difference</li>
+ 	</ul>
+ 
+ 	<p>For each temperature equation, the above algorithm is executed for each replicate and
+ 	a new column of Δ47 values is created. The mean, standard deviation, and standard
+ 	error of this column are then calculated.</p>
+
+ 	<p>Finally, a temperature is calculated by setting this new Δ47 equal to the appropriate
+ 	equation and solving for T (temperature). To indicate the range of error, three
+ 	temperatures are calculated for each equation: mean Δ47 - standard error, mean Δ47,
+ 	and mean Δ47 + standard error. The results are then converted from &deg;K to &deg;C.</p>
+  
+	<table width="100%" border="1">
+	  <tr>
+	    <td align="center">Authors</td>
+	    <td align="center">AT</td>
+	    <td align="center">AFF</td>
+	    <td align="center">Equation</td>
+	  </tr>
+	  <tr>
+	  	<td>Dennis and Schrag 2010<br>(recalibrated in Dennis et al 2011)</td>
+	  	<td align="center">90 &deg;C</td>
+	  	<td align="center">0.069</td>
+	  	<td align="center"><img src="equations/dennis_and_schrag_2010.gif" /></td>	  	
+	  </tr>
+	  <tr>
+	  	<td>Gosh et al 2006<br>(recalibrated in Dennis et al 2011)</td>
+	  	<td align="center">25 &deg;C</td>
+	  	<td align="center">0.000</td>
+	  	<td align="center"><img src="equations/gosh_et_al_2006.gif" /></td>	  	
+	  </tr>
+	  <tr>
+	  	<td>Henkes et al 2013</td>
+	  	<td align="center">90 &deg;C</td>
+	  	<td align="center">0.081</td>
+	  	<td align="center"><img src="equations/henkes_et_al_2013.gif" /></td>	  	
+	  </tr>
+	  <tr>
+	  	<td>Kluge et al 2015</td>
+	  	<td align="center">90 &deg;C</td>
+	  	<td align="center">0.069</td>
+	  	<td align="center"><img src="equations/kluge_et_al_2015.gif" /></td>	  	
+	  </tr>
+	  <tr>
+	  	<td>Passey and Henkes 2012</td>
+	  	<td align="center">90 &deg;C</td>
+	  	<td align="center">0.081</td>
+	  	<td align="center"><img src="equations/passey_and_henkes_2012.gif" /></td>	  	
+	  </tr>
+	  <tr>
+	  	<td>Zaruur et al 2013</td>
+	  	<td align="center">25 &deg;C</td>
+	  	<td align="center">0.000</td>
+	  	<td align="center"><img src="equations/zaruur_et_al_2013.gif" /></td>	  	
+	  </tr>
+  </body>
+</html>

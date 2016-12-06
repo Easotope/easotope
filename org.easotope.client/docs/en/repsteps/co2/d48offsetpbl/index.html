@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	  <title>Δ48 Offset</title>
+	</meta>
+  </head>
+
+  <body>
+  	<h2>Purpose</h2>
+
+  	<p>Because the Δ48 signal should generally be low in natural samples, observing
+  	large deviations in this value can indicate contamination in a sample replicate.
+  	This step calculates a Δ48 offset value as a means of easily identifying such
+  	contamination.
+ 
+  	<h2>Parameters</h2>
+  	
+  	<p>A collection of standard replicates is needed to do this step. The user
+  	may choose to select all standard replicates from the correction interval
+  	or only those in a user specified window around the sample replicate. If a window
+  	is chosen, the number of standard replicates that will be used before and after
+  	the sample replicate must be entered. Standard types that are considered valid
+  	for this correction must also be indicated.</p>
+  	
+  	<h2>Algorithm</h2>
+ 
+  	<p>All non-disabled standard replictes within the indicated range are collected.
+  	Their Δ48 values are averaged together and this average is subtracted from the
+  	sample Δ48 value to create the Δ48 offset.
+  	</p>
+  </body>
+</html>

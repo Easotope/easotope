@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.easotope.framework.plugin" name="Plugin" schema="schema/org.easotope.framework.plugin.exsd"/>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.easotope.framework.server.Server">
+         </run>
+      </application>
+   </extension>
+
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.easotope.framework.application"
+            name="Easoserver">
+         <property
+               name="appName"
+               value="Easoserver">
+         </property>
+      </product>
+   </extension>
+</plugin>

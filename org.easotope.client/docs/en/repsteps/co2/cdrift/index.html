@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	  <title>δ<sup>13</sup>C Drift Correction</title>
+	</meta>
+  </head>
+
+  <body>
+  	<h2>Purpose</h2>
+
+	<p>Mass spectrometer measurements often drift slightly over time. This 
+	drift can be corrected by intermittently measuring known standard values and
+	then removing the observed drift in the standard values from the measured
+	values. This step performs this correction.</p>
+
+  	<h2>Parameters</h2>
+
+  	<p>A collection of standard replicates is needed to do this step. The user
+  	may choose to select all standard replicates from the correction interval
+  	or only those in a user specified window around the sample replicate. If a window
+  	is chosen, the number of standard replicates that will be used before and after
+  	the sample replicate must be entered. Standard types that are considered valid
+  	for this correction must also be indicated.</p>
+
+  	<p>In addition, the user can also specify that stretching should be used for
+  	this correction. Stretching allows the amount of correction to vary proportionally
+  	with the expected value and often gives better results.</p>
+
+  	<h2>Algorithm</h2>
+
+	<p>When doing drift correction without stretching, this step collects all the
+	valid standard measurements in the specified range and subtracts their measured
+	value from their expected value. These differences are then averaged together
+	and this average is added to the sample value being corrected.</p>
+
+	<p>If stretching is turned on then a linear regression is made from measured
+	and expected values of the valid standards in the specified range. It's now assumed
+	that the expected value of our sample should fall on this line. By solving
+	the linear equation for the measured sample value, we obtain its expected value.</p>
+
+	<p>Note that stretching requires that more than one standard type be available
+	in the specified window in order to generate a linear regression. If this is not
+	the case, this step will instead use the non-stretching algorithm until more
+	standards are added.</p>
+  </body>
+</html>

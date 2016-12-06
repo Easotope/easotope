@@ -1,0 +1,485 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	  <title>Clump CO<sub>2</sub> Calc</title>
+	</meta>
+  </head>
+
+  <body>
+    <h2>Purpose</h2>
+
+  	<p>Mass spectrometers measure raw voltages for each of the configured m/z values.
+  	These voltages need to be converted into values that are more useful to the user.
+  	This step does these calculations for clumped CO<sub>2</sub> values.</p>
+
+	<h2>Parameters</h2>
+
+	<p>Reference gas values are normally measured both before and after a sample
+	measurement. These values are then measured together to get an estimated
+	reference gas value that approximates the time that the sample was measured. If
+	unaveraged values are enabled, then a single reference gas value either before
+	or after the sample measurement will be considered valid and used without
+	averaging if necessary.</p>
+
+	<h2>Algorithm</h2>
+  
+    <p>
+	  The following algorithm documentation was adapted from a
+	  <a href="http://www.daeron.fr/wiki/doku.php?id=data_processing" class="media mediafile mf_1012" title="http://www.daeron.fr/wiki/doku.php?id=data_processing">Wiki</a>
+	  maintained by
+	  <a href="http://www.daeron.fr/" class="media mediafile mf_1012" title="http://www.daeron.fr/">Mathieu Daëron</a>.
+	  This step performs the following computations for each cycle in the input. It then
+	  averages the results at the acquisition level and again at the replicate level.
+    </p>
+
+    <h3 class="sectionedit3" id="compute_the_isotopologue_composition_of_your_reference_gas">(1) Compute the isotopologue composition of your reference gas</h3>
+    <div class="level3">
+      <p>
+        …using the following parameters:
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">δ<sup>13</sup>C<sub>Ref</sub>: the nominal carbon isotope composition of your reference gas vs VPDB</div>
+        </li>
+        <li class="level1">
+          <div class="li">δ<sup>18</sup>O<sub>Ref</sub>: the nominal oxygen isotope composition  of your reference gas vs VSMOW</div>
+        </li>
+        <li class="level1">
+          <div class="li">λ: the terrestrial mass-dependent fractionation parameter between <sup>17</sup>O and <sup>18</sup>O</div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>13-VPDB</sub>: the abundance ratio of <sup>13</sup>C/<sup>12</sup>C for VPDB</div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>17-VSMOW</sub>: the abundance ratio of <sup>17</sup>O/<sup>16</sup>O for VSMOW</div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>18-VSMOW</sub>: the abundance ratio of <sup>18</sup>O/<sup>16</sup>O for VSMOW</div>
+        </li>
+      </ul>
+
+      <p>
+        <strong>(1.a) Compute abundance ratios of <sup>13</sup>C/<sup>12</sup>C, <sup>17</sup>O/<sup>16</sup>O and <sup>18</sup>O/<sup>16</sup>O</strong>
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">R<sub>13-Ref</sub> = R<sub>13-VPDB</sub> × (1 + δ<sup>13</sup>C<sub>Ref</sub>/1000)</div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>18-Ref</sub> = R<sub>18-VSMOW</sub> × (1 + δ<sup>18</sup>O<sub>Ref</sub>/1000)</div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>17-Ref</sub> = R<sub>17-VSMOW</sub> × (R<sub>18-Ref</sub> / R<sub>18-VSMOW</sub>)<sup>λ</sup></div>
+        </li>
+      </ul>
+
+      <p>
+        <strong>(1.b) Compute abundances of <sup>12</sup>C, <sup>13</sup>C, <sup>16</sup>O, <sup>17</sup>O and <sup>18</sup>O</strong>
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">C<sub>12-Ref</sub> = 1 / (1 + R<sub>13-Ref</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li">C<sub>13-Ref</sub> = R<sub>13-Ref</sub> / (1 + R<sub>13-Ref</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li">C<sub>16-Ref</sub> = 1 / (1 + R<sub>17-Ref</sub> + R<sub>18-Ref</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li"> C<sub>17-Ref</sub> = R<sub>17-Ref</sub> / (1 + R<sub>17-Ref</sub> + R<sub>18-Ref</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li"> C<sub>18-Ref</sub> = R<sub>18-Ref</sub> / (1 + R<sub>17-Ref</sub> + R<sub>18-Ref</sub>)</div>
+        </li>
+      </ul>
+
+      <p>
+        <strong>(1.c) Compute abundances of isotopologues with masses 44 to 49</strong>
+      </p>
+      <p>
+        …by making the assumption that your reference gas is stochastic (this is
+        usually not true, but we correct for that later in the process).
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li"> Mass 44:</div>
+          <ul>
+            <li class="level2">
+              <div class="li">C<sub>12-16-16-Ref</sub> = C<sub>12-Ref</sub> × C<sub>16-Ref</sub> × C<sub>16-Ref</sub></div>
+            </li>
+          </ul>
+        </li>
+        <li class="level1"><div class="li"> Mass 45:</div>
+          <ul>
+            <li class="level2">
+              <div class="li">C<sub>13-16-16-Ref</sub> = C<sub>13-Ref</sub> × C<sub>16-Ref</sub> × C<sub>16-Ref</sub></div>
+            </li>
+            <li class="level2">
+              <div class="li">C<sub>12-17-16-Ref</sub> = C<sub>12-Ref</sub> × C<sub>17-Ref</sub> × C<sub>16-Ref</sub> × 2</div>
+            </li>
+          </ul>
+        </li>
+        <li class="level1"><div class="li"> Mass 46:</div>
+          <ul>
+            <li class="level2">
+              <div class="li">C<sub>12-18-16-Ref</sub> = C<sub>12-Ref</sub> × C<sub>18-Ref</sub> × C<sub>16-Ref</sub> × 2</div>
+            </li>
+            <li class="level2">
+              <div class="li">C<sub>13-17-16-Ref</sub> = C<sub>13-Ref</sub> × C<sub>17-Ref</sub> × C<sub>16-Ref</sub> × 2</div>
+            </li>
+            <li class="level2">
+              <div class="li">C<sub>12-17-17-Ref</sub> = C<sub>12-Ref</sub> × C<sub>17-Ref</sub> × C<sub>17-Ref</sub></div>
+            </li>
+          </ul>
+        </li>
+        <li class="level1"><div class="li"> Mass 47:</div>
+          <ul>
+            <li class="level2">
+              <div class="li">C<sub>13-18-16-Ref</sub> = C<sub>13-Ref</sub> × C<sub>18-Ref</sub> × C<sub>16-Ref</sub> × 2</div>
+            </li>
+            <li class="level2">
+              <div class="li">C<sub>13-17-17-Ref</sub> = C<sub>13-Ref</sub> × C<sub>17-Ref</sub> × C<sub>17-Ref</sub></div>
+            </li>
+            <li class="level2">
+              <div class="li">C<sub>12-18-17-Ref</sub> = C<sub>12-Ref</sub> × C<sub>18-Ref</sub> × C<sub>17-Ref</sub> × 2</div>
+            </li>
+          </ul>
+        </li>
+        <li class="level1"><div class="li"> Mass 48:</div>
+          <ul>
+            <li class="level2">
+              <div class="li">C<sub>13-18-17-Ref</sub> = C<sub>13-Ref</sub> × C<sub>18-Ref</sub> × C<sub>17-Ref</sub> × 2</div>
+            </li>
+            <li class="level2">
+              <div class="li">C<sub>12-18-18-Ref</sub> = C<sub>12-Ref</sub> × C<sub>18-Ref</sub> × C<sub>18-Ref</sub></div>
+            </li>
+          </ul>
+        </li>
+        <li class="level1"><div class="li"> Mass 49:</div>
+          <ul>
+            <li class="level2">
+              <div class="li">C<sub>13-18-18-Ref</sub> = C<sub>13-Ref</sub> × C<sub>18-Ref</sub> × C<sub>18-Ref</sub></div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <p>
+        <strong>(1.d) Compute binned abundances of isotopologues grouped by mass</strong>
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">C<sub>44-Ref</sub> = C<sub>12-16-16-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">C<sub>45-Ref</sub> = C<sub>13-16-16-Ref</sub> + C<sub>12-17-16-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">C<sub>46-Ref</sub> = C<sub>12-18-16-Ref</sub> + C<sub>13-17-16-Ref</sub> + C<sub>12-17-17-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">C<sub>47-Ref</sub> = C<sub>13-18-16-Ref</sub> + C<sub>13-17-17-Ref</sub> + C<sub>12-18-17-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">C<sub>48-Ref</sub> = C<sub>13-18-17-Ref</sub> + C<sub>12-18-18-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">C<sub>49-Ref</sub> = C<sub>13-18-18-Ref</sub></div>
+        </li>
+      </ul>
+    </div>
+
+    <h3 class="sectionedit4" id="compute_the_composition_of_your_sample_gas">(2) Compute the composition of your sample gas</h3>
+    <div class="level3">
+      <p>
+        <strong>(2.a) Measure the abundance ratios of your sample gas for masses 45 to 49 (R<sub>45-Sample</sub>, etc.)</strong>
+      </p>
+      <p>
+        …based on peak height measurements from your dual-inlet spectrometer:
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">V<sub>44-Ref</sub> … V<sub>49-Ref</sub> for your reference gas</div>
+        </li>
+        <li class="level1">
+          <div class="li">V<sub>44-Sample</sub> … V<sub>49-Sample</sub> for your sample gas</div>
+        </li>
+      </ul>
+      <p>
+      	Note: the V<sub>44-Ref</sub> … V<sub>49-Ref</sub> values that are used are
+      	actually an average of the previous cycle's value and this cycle's value. Unless
+      	the previous cycle is disabled or an off-peak cycle. In that case, only this
+      	cycle's values are used.
+      <p>
+        Ideally, these voltages reflect abundance ratios, so that:
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">R<sub>45-Ref</sub> = C<sub>45-Ref</sub> / C<sub>44-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>46-Ref</sub> = C<sub>46-Ref</sub> / C<sub>44-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>47-Ref</sub> = C<sub>47-Ref</sub> / C<sub>44-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>48-Ref</sub> = C<sub>48-Ref</sub> / C<sub>44-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>49-Ref</sub> = C<sub>49-Ref</sub> / C<sub>44-Ref</sub></div>
+        </li>
+      </ul>
+      <ul>
+        <li class="level1">
+          <div class="li">R<sub>45-Sample</sub> = R<sub>45-Ref</sub> × V<sub>45-Sample</sub> / V<sub>44-Sample</sub> × V<sub>44-Ref</sub> / V<sub>45-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>46-Sample</sub> = R<sub>46-Ref</sub> × V<sub>46-Sample</sub> / V<sub>44-Sample</sub> × V<sub>44-Ref</sub> / V<sub>46-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>47-Sample</sub> = R<sub>47-Ref</sub> × V<sub>47-Sample</sub> / V<sub>44-Sample</sub> × V<sub>44-Ref</sub> / V<sub>47-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>48-Sample</sub> = R<sub>48-Ref</sub> × V<sub>48-Sample</sub> / V<sub>44-Sample</sub> × V<sub>44-Ref</sub> / V<sub>48-Ref</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>49-Sample</sub> = R<sub>49-Ref</sub> × V<sub>49-Sample</sub> / V<sub>44-Sample</sub> × V<sub>44-Ref</sub> / V<sub>49-Ref</sub></div>
+        </li>
+      </ul>
+
+      <p>
+        And, using the conventional δ notation (relative to your reference gas):
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">δ<sub>45</sub> = 1000 × (1 - R<sub>45-Sample</sub>/R<sub>45-Ref</sub>) = 1000 × (1 - V<sub>45-Sample</sub> / V<sub>44-Sample</sub> × V<sub>44-Ref</sub> / V<sub>45-Ref</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li">δ<sub>46</sub> = 1000 × (1 - R<sub>46-Sample</sub>/R<sub>46-Ref</sub>) = 1000 × (1 - V<sub>46-Sample</sub> / V<sub>44-Sample</sub> × V<sub>44-Ref</sub> / V<sub>46-Ref</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li">δ<sub>47</sub> = 1000 × (1 - R<sub>47-Sample</sub>/R<sub>47-Ref</sub>) = 1000 × (1 - V<sub>47-Sample</sub> / V<sub>44-Sample</sub> × V<sub>44-Ref</sub> / V<sub>47-Ref</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li">δ<sub>48</sub> = 1000 × (1 - R<sub>48-Sample</sub>/R<sub>48-Ref</sub>) = 1000 × (1 - V<sub>48-Sample</sub> / V<sub>44-Sample</sub> × V<sub>44-Ref</sub> / V<sub>48-Ref</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li">δ<sub>49</sub> = 1000 × (1 - R<sub>49-Sample</sub>/R<sub>49-Ref</sub>) = 1000 × (1 - V<sub>49-Sample</sub> / V<sub>44-Sample</sub> × V<sub>44-Ref</sub> / V<sub>49-Ref</sub>)</div>
+        </li>
+      </ul>
+
+      <p>
+        <strong>(2.b) Compute the bulk composition of your sample gas</strong>
+      </p>
+      <p>
+        One way to do that is to define:
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">K = R<sub>17-VSMOW</sub> × (R<sub>18-VSMOW</sub>)<sup>–λ</sup></div>
+        </li>
+      </ul>
+
+      <p>
+        You can then compute R<sub>18-Sample</sub> by numerically solving the following equation: 
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li"> –3K<sup>2</sup> × (R<sub>18-Sample</sub>)<sup>2λ</sup> + 2K × R<sub>45-Sample</sub> × (R<sub>18-Sample</sub>)<sup>λ</sup> + 2R<sub>18-Sample</sub> - R<sub>46-Sample</sub> = 0</div>
+        </li>
+      </ul>
+
+      <p>
+        (<a href="http://dx.doi.org/10.1002/rcm.1012" class="media mediafile mf_1012" title="http://dx.doi.org/10.1002/rcm.1012">Assonov &amp; Brenninkmeijer, 2003</a>)
+      </p>
+
+      <p>
+        R<sub>17-Sample</sub> and R<sub>13-Sample</sub> may then be directly calculated:
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">R<sub>17-Sample</sub> = K × (R<sub>18-Sample</sub>)<sup>λ</sup></div>
+        </li>
+        <li class="level1">
+          <div class="li">R<sub>13-Sample</sub> = R<sub>45-Sample</sub> - 2R<sub>17-Sample</sub></div>
+        </li>
+      </ul>
+    </div>
+
+    <h3 class="sectionedit5" id="compute_raw_δ_values_of_your_sample_gas">(3) Compute "raw" Δ values of your sample gas</h3>
+    <div class="level3">
+      <p>
+        <strong>(3.a) “Scramble” your sample gas</strong>
+      </p>
+
+      <p>
+        This means computing the abundance of each isotopologue of a gas with 
+        the same bulk composition as your sample, but in a stochastic state. 
+        This is done by following the steps (1.b) to (1.d) above:
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">C<sub>12-Sample</sub> = 1 / (1 + R<sub>13-Sample</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li">C<sub>13-Sample</sub> = R<sub>13-Sample</sub> / (1 + R<sub>13-Sample</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li"> C<sub>16-Sample</sub> = 1 / (1 + R<sub>17-Sample</sub> + R<sub>18-Sample</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li"> C<sub>17-Sample</sub> = R<sub>17-Sample</sub> / (1 + R<sub>17-Sample</sub> + R<sub>18-Sample</sub>)</div>
+        </li>
+        <li class="level1">
+          <div class="li"> C<sub>18-Sample</sub> = R<sub>18-Sample</sub> / (1 + R<sub>17-Sample</sub> + R<sub>18-Sample</sub>)</div>
+        </li>
+      </ul>
+
+      <p>
+        Then (note the asterisk, here used to denote the stochastic state):
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">Mass 44:</div>
+          <ul>
+            <li class="level2">
+              <div class="li">C*<sub>12-16-16-Sample</sub> = C<sub>12-Sample</sub> × C<sub>16-Sample</sub> × C<sub>16-Sample</sub></div>
+            </li>
+          </ul>
+        </li>
+        <li class="level1">
+          <div class="li">Mass 45:</div>
+          <ul>
+            <li class="level2">
+              <div class="li">C*<sub>13-16-16-Sample</sub> = C<sub>13-Sample</sub> × C<sub>16-Sample</sub> × C<sub>16-Sample</sub></div>
+            </li>
+            <li class="level2">
+              <div class="li"> C*<sub>12-17-16-Sample</sub> = C<sub>12-Sample</sub> × C<sub>17-Sample</sub> × C<sub>16-Sample</sub> × 2</div>
+            </li>
+          </ul>
+        </li>
+        <li class="level1">
+          <div class="li">Mass 46:</div>
+          <ul>
+            <li class="level2">
+              <div class="li"> C*<sub>12-18-16-Sample</sub> = C<sub>12-Sample</sub> × C<sub>18-Sample</sub> × C<sub>16-Sample</sub> × 2</div>
+            </li>
+            <li class="level2">
+              <div class="li">C*<sub>13-17-16-Sample</sub> = C<sub>13-Sample</sub> × C<sub>17-Sample</sub> × C<sub>16-Sample</sub> × 2</div>
+            </li>
+            <li class="level2">
+              <div class="li"> C*<sub>12-17-17-Sample</sub> = C<sub>12-Sample</sub> × C<sub>17-Sample</sub> × C<sub>17-Sample</sub></div>
+            </li>
+          </ul>
+        </li>
+        <li class="level1">
+          <div class="li">Mass 47:</div>
+          <ul>
+            <li class="level2">
+              <div class="li">C*<sub>13-18-16-Sample</sub> = C<sub>13-Sample</sub> × C<sub>18-Sample</sub> × C<sub>16-Sample</sub> × 2</div>
+            </li>
+            <li class="level2">
+              <div class="li">C*<sub>13-17-17-Sample</sub> = C<sub>13-Sample</sub> × C<sub>17-Sample</sub> × C<sub>17-Sample</sub></div>
+            </li>
+            <li class="level2">
+              <div class="li"> C*<sub>12-18-17-Sample</sub> = C<sub>12-Sample</sub> × C<sub>18-Sample</sub> × C<sub>17-Sample</sub> × 2</div>
+            </li>
+          </ul>
+        </li>
+        <li class="level1">
+          <div class="li">Mass 48:</div>
+          <ul>
+            <li class="level2">
+              <div class="li">C*<sub>13-18-17-Sample</sub> = C<sub>13-Sample</sub> × C<sub>18-Sample</sub> × C<sub>17-Sample</sub> × 2</div>
+            </li>
+            <li class="level2">
+              <div class="li">C*<sub>12-18-18-Sample</sub> = C<sub>12-Sample</sub> × C<sub>18-Sample</sub> × C<sub>18-Sample</sub></div>
+            </li>
+          </ul>
+        </li>
+        <li class="level1">
+          <div class="li">Mass 49:</div>
+          <ul>
+            <li class="level2">
+              <div class="li">C*<sub>13-18-18-Sample</sub> = C<sub>13-Sample</sub> × C<sub>18-Sample</sub> × C<sub>18-Sample</sub></div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <p>
+        Then:
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">C*<sub>44-Sample</sub> = C*<sub>12-16-16-Sample</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">C*<sub>45-Sample</sub> = C*<sub>13-16-16-Sample</sub> + C*<sub>12-17-16-Sample</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">C*<sub>46-Sample</sub> = C*<sub>12-18-16-Sample</sub> + C*<sub>13-17-16-Sample</sub> + C*<sub>12-17-17-Sample</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">C*<sub>47-Sample</sub> = C*<sub>13-18-16-Sample</sub> + C*<sub>13-17-17-Sample</sub> + C*<sub>12-18-17-Sample</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">C*<sub>48-Sample</sub> = C*<sub>13-18-17-Sample</sub> + C*<sub>12-18-18-Sample</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">C*<sub>49-Sample</sub> = C*<sub>13-18-18-Sample</sub></div>
+        </li>
+      </ul>
+
+      <p>
+        Ending up with the following “stochastic abundance ratios”:
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">R*<sub>45-Sample</sub> = C*<sub>45-Sample</sub> / C*<sub>44-Sample</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R*<sub>46-Sample</sub> = C*<sub>46-Sample</sub> / C*<sub>44-Sample</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R*<sub>47-Sample</sub> = C*<sub>47-Sample</sub> / C*<sub>44-Sample</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R*<sub>48-Sample</sub> = C*<sub>48-Sample</sub> / C*<sub>44-Sample</sub></div>
+        </li>
+        <li class="level1">
+          <div class="li">R*<sub>49-Sample</sub> = C*<sub>49-Sample</sub> / C*<sub>44-Sample</sub></div>
+        </li>
+      </ul>
+
+      <p>
+        <strong>(3.b) Compute raw Δ values</strong>
+      </p>
+      <p>
+        These Δ values are called “raw” because they have not yet been corrected
+        for a number of analytical artifacts. Most importantly, we have assumed
+        that your reference gas is in a stochastic state, which is unlikely. 
+        This is why raw Δ<sub>47</sub> values are typically underestimated by roughly
+        the actual Δ<sub>47</sub> value of your reference gas.
+      </p>
+      <ul>
+        <li class="level1">
+          <div class="li">rawΔ<sub>47</sub> = 1000 × [ (R<sub>47-Sample</sub>/R*<sub>47-Sample</sub> - 1) - (R<sub>46-Sample</sub>/R*<sub>46-Sample</sub> - 1) - (R<sub>45-Sample</sub>/R*<sub>45-Sample</sub> - 1) ]</div>
+        </li>
+        <li class="level1">
+          <div class="li">rawΔ<sub>48</sub> = 1000 × [ (R<sub>48-Sample</sub>/R*<sub>48-Sample</sub> - 1) - 2 × (R<sub>46-Sample</sub>/R*<sub>46-Sample</sub> - 1) ]</div>
+        </li>
+        <li class="level1">
+          <div class="li">rawΔ<sub>49</sub> = 1000 × [ (R<sub>49-Sample</sub>/R*<sub>49-Sample</sub> - 1) - 2 × (R<sub>46-Sample</sub>/R*<sub>46-Sample</sub> - 1) - (R<sub>45-Sample</sub>/R*<sub>45-Sample</sub> - 1) ]</div>
+        </li>
+      </ul>
+
+      <p>
+        (<a href="http://dx.doi.org/10.1016/j.gca.2005.08.021" class="media mediafile mf_021" title="http://dx.doi.org/10.1016/j.gca.2005.08.021">Affek &amp; Eiler, 2006</a>)
+      </p>
+    </div>
+  </body>
+</html>

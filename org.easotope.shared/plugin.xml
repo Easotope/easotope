@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.easotope.framework.plugin">
+      <client
+            class="org.easotope.shared.plugin.EventPlugin">
+      </client>
+   </extension>
+</plugin>

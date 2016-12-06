@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	  <title>δ<sup>18</sup>O VPDB to VSMOW</title>
+	</meta>
+  </head>
+
+  <body>
+  	<h2>Purpose</h2>
+
+  	<p>Easotope uses the VPDB scale when calculating δ<sup>18</sup>O. Because some
+  	labs might also want results reported in the VSMOW scale, this step converts
+  	δ<sup>18</sup>O from the former scale to the latter.</p>
+
+  	<h2>Algorithm</h2>
+ 
+ 	<p>The conversion is done with the following equation:</p>
+
+	<p>δ18O_in_vsmow = (1.0 + δ18O_VPDB_VSMOW / 1000.0) * δ18O_in_vpdb + δ18O_VPDB_VSMOW</p>
+	
+	<p>The constant δ18O_VPDB_VSMOW is a conversion factor whose value is defined
+	in the constants database. See the configuration screen for more information.</p>
+  </body>
+</html>

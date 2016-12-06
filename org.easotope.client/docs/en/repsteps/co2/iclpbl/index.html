@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	  <title>CO<sub>2</sub> PBL</title>
+	</meta>
+  </head>
+
+  <body>
+  	<h2>Purpose</h2>
+  	
+	<p>Mass spectrometer measurements are made relative to a background value that is
+	always present in the machine. This background value needs to be subtracted from the
+	measured value for each m/z in order to get the actual value. However, some mass spectrometers
+	do not calculate a background value that is precise enough for
+    analyses such as clumped isotopes. This step allows background values to be
+    automatically calculated based on off-peak measurements embedded in the input data.
+
+  	<h2>Algorithm</h2>
+  
+  	<p>This step computes a pressure baseline correction based on methods modified at Imperial College London. The principle is the following:</p>
+  	<ol>
+		<li>The mass spectrometer is set to measure off-peak cycles before and after the on-peak cycles,  similar to the method applied in the Chicago lab. (<a href="http://doi.org/10.1002/rcm.6436" title="http://doi.org/10.1002/rcm.6436">He et al, 2012</a>)</li>
+		<li>If present, the ISODAT background (in mV) measured without gas in the source are added back to the relevant masses.</li>
+		<li>A linear correlation between source pressure (on peak mass 44) and baseline for each off-peak measurement is established on an acquisition by acquisition basis.</li>
+		<li>The correct baseline for each cycle is calculated using the relationship derived from point 3 above, and the amplitude of the mass 44 peak for that cycle. Points 3 and 4 are similar to the procedure used in the ETH lab (<a href="http://doi.org/10.1002/rcm.6490" title="http://doi.org/10.1002/rcm.6490">Bernasconi et al, 2013</a>), but in this case using data acquired during the analysis rather than a series of scans acquired before the start of a run.</li>
+	</ol>
+	<p>The following rule for this step is also applied:</p>
+	<ul>
+		<li>If no baseline data is present in the acquisition, Easotope will use the nearest baseline relationship in the database to correct the data.</li>
+		<li>If too few off-peak cycles are acquired, i.e. for instance only before or after the on-peak cycles, a liner relationship between source pressure and background cannot be established. In this case, an average of the existing baseline measurements will be subtracted from the data, without correcting for source pressure.</li>
+	</ul>
+	<p>These two points have been implemented to give flexibility for lab managers to speed up data acquisitions in case of limited pressure depletion during a run, and when the baseline is relatively stable over long periods of time. This is typically the case in dual inlet mode, when sample gas is not limited.</p>
+  </body>
+</html>

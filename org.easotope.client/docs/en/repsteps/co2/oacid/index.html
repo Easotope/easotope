@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	  <title>δ<sup>18</sup>O Acid Fractionation</title>
+	</meta>
+  </head>
+
+  <body>
+  	<h2>Purpose</h2>
+
+  	<p>When acid is used to release CO<sub>2</sub> from minerals such as calcite
+  	or aragonite, the resulting CO<sub>2</sub> has a δ<sup>18</sup>O that is enriched
+  	relative to the original mineral. The amount of enrichment depends on the temperature
+  	of the acid used. This step corrects the δ<sup>18</sup>O value to account for the
+  	enrichment.</p>
+  	
+  	<h2>Algorithm</h2>
+ 
+  	<p>This correction step uses the acid temperature given by the user
+  	during data entry to find the δ<sup>18</sup>O acid fractionation factor (AFF) for
+  	the sample type. It then uses this AFF to calculate a corrected δ<sup>18</sup>O
+  	which represents the expected δ<sup>18</sup>O of the original mineral using the
+  	following formula:</p>
+
+	<p>acid_corrected_value = ((1000.0 + original_value) / AFF) - 1000.0</p>
+
+	<p>Note that if no acid correction is necessary (for example, when measuring
+	atmospheric gas) the AFF can be set to 1.0 for that sample type and no
+	correction will be made.</p>
+
+	<p>This correction step also copies the acid temperature and acid fractionation
+	factor from the replicate database into the table.</p>
+  </body>
+</html>

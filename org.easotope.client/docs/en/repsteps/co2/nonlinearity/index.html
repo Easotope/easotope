@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	  <title>Δ47 Nonlinearity Correction</title>
+	</meta>
+  </head>
+
+  <body>
+	<h2>Purpose</h2>
+
+  	<p>Before pressure baseline (PBL) corrections were developed, a slope was
+  	observed in the Δ47 vs δ47 graph whereas a straight, horizontal line would
+  	normally be expected. This step uses standard measurements and a range of
+  	Δ47 and δ47 values to figure out the slope of this error and correct for it.</p>
+
+  	<h2>Parameters</h2>
+ 
+  	<p>A collection of standard replicates is needed to do this step. The
+  	user may choose to select all standard replicates from the correction interval
+  	or only those in a user specified window around the sample replicate. If a window
+  	is chosen, the number of standard replicates that will be used before and after
+  	the sample replicate must be entered.</p>
+
+	<p>The standard types that are to be used for this correction must also
+	be indicated. This is done by assigning the valid standards to "groups" where
+	a group is simply a number. The number 0 indicates that the standard is not
+	in a group and should not be used in this correction. Multiple standards might be
+	in the same group. For example, two standards might be expected to fall on the
+	same line in a Δ47 vs δ47 graph and could, therefore, be put in the same group.</p>
+
+  	<h2>Algorithm</h2>
+ 
+ 	<p>The measured Δ47 and δ47 values are taken from all the valid standard
+ 	replicates in the specified range. Each group of standards becomes one line in
+ 	a multi-line regression. The regression calculates a single slope to best match
+ 	all these lines. The sample's Δ47 vs δ47 point is then projected up or down
+ 	the slope of this regression to find a Δ47 intercept which is assumed to represent
+ 	the true Δ47 after this error is removed.</p>
+
+  </body>
+</html>

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -46,6 +46,7 @@ public class Permissions extends TableObjectWithIntegerId {
 	public static final String CANDELETEALL_FIELD_NAME = "CANDELETEALL";
 	public static final String CANDELETEOWN_FIELD_NAME = "CANDELETEOWN";
 	public static final String CANEDITCONSTANTS_FIELD_NAME = "CANEDITCONSTANTS";
+	public static final String CANBATCHIMPORT_FIELD_NAME = "CANBATCHIMPORT";
 
 	@DatabaseField(columnName=USERID_FIELD_NAME, uniqueIndex=true)
 	public int userId;
@@ -65,6 +66,8 @@ public class Permissions extends TableObjectWithIntegerId {
 	private boolean canDeleteOwn;
 	@DatabaseField(columnName=CANEDITCONSTANTS_FIELD_NAME)
 	private boolean canEditConstants;
+	@DatabaseField(columnName=CANBATCHIMPORT_FIELD_NAME)
+	private boolean canBatchImport;
 
 	public Permissions() { }
 
@@ -80,6 +83,7 @@ public class Permissions extends TableObjectWithIntegerId {
 		canDeleteAll = permissions.canDeleteAll;
 		canDeleteOwn = permissions.canDeleteOwn;
 		canEditConstants = permissions.canEditConstants;
+		canBatchImport = permissions.canBatchImport;
 	}
 
 	public int getUserId() {
@@ -152,5 +156,13 @@ public class Permissions extends TableObjectWithIntegerId {
 
 	public void setCanEditConstants(boolean canEditConstants) {
 		this.canEditConstants = canEditConstants;
+	}
+
+	public boolean isCanBatchImport() {
+		return canBatchImport;
+	}
+
+	public void setCanBatchImport(boolean canBatchImport) {
+		this.canBatchImport = canBatchImport;
 	}
 }

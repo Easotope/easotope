@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -39,22 +39,26 @@ import org.easotope.framework.dbcore.DatabaseConstants;
 public class ReplicatePad extends DatedPad {
 	public enum ReplicateType { SAMPLE_RUN, STANDARD_RUN, SCAN }; 
 
+	private int replicateId;
 	private ReplicateType replicateType;
 	private int sourceId = DatabaseConstants.EMPTY_DB_ID;
 
-	public ReplicatePad(ScratchPad<ReplicatePad> parent, long date, ReplicateType replicateType) {
+	public ReplicatePad(ScratchPad<ReplicatePad> parent, long date, int replicateId, ReplicateType replicateType) {
 		super(parent, date);
+		this.replicateId = replicateId;
 		this.replicateType = replicateType;
 	}
 
-	public ReplicatePad(SamplePad parent, long date, ReplicateType replicateType) {
+	public ReplicatePad(SamplePad parent, long date, int replicateId, ReplicateType replicateType) {
 		super(parent, date);
+		this.replicateId = replicateId;
 		this.replicateType = replicateType;
 	}
 
 	public ReplicatePad(Pad parent, ReplicatePad oldPad) {
 		super(parent, oldPad);
 
+		this.replicateId = oldPad.replicateId;
 		this.replicateType = oldPad.replicateType;
 		this.sourceId = oldPad.sourceId;
 
@@ -66,6 +70,7 @@ public class ReplicatePad extends DatedPad {
 	ReplicatePad(Pad parent, ObjectInput input, Vector<String> allProperties, HashMap<String,Integer> propertyToIndex) throws IOException {
 		super(parent, input, allProperties, propertyToIndex);
 
+		replicateId = input.readInt();
 		replicateType = ReplicateType.values()[input.readByte()];
 		sourceId = input.readInt();
 		int numOfChildren = input.readInt();
@@ -79,6 +84,7 @@ public class ReplicatePad extends DatedPad {
 	public void writeExternal(ObjectOutput output, Vector<String> allProperties, HashMap<String,Integer> propertyToIndex) throws IOException {
 		super.writeExternal(output, allProperties, propertyToIndex);
 
+		output.writeInt(replicateId);
 		output.writeByte(replicateType.ordinal());
 		output.writeInt(sourceId);
 
@@ -100,6 +106,10 @@ public class ReplicatePad extends DatedPad {
 		@SuppressWarnings("unchecked")
 		ArrayList<AcquisitionPad> acquisitions = (ArrayList<AcquisitionPad>) (ArrayList<?>) children;
 		return acquisitions;
+	}
+
+	public int getReplicateId() {
+		return replicateId;
 	}
 
 	public ReplicateType getReplicateType() {

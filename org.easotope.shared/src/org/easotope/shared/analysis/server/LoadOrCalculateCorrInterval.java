@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -357,7 +357,7 @@ public class LoadOrCalculateCorrInterval {
 			List<ScanV2> results = scanDao.query(preparedQuery);
 
 			for (ScanV2 scan : results) {
-				ReplicatePad replicatePad = new ReplicatePad(coreIntervalScratchPad.getScratchPad(), scan.getDate(), ReplicateType.SCAN);
+				ReplicatePad replicatePad = new ReplicatePad(coreIntervalScratchPad.getScratchPad(), scan.getDate(), scan.getId(), ReplicateType.SCAN);
 				replicatePad.setVolatileData(AnalysisConstants.VOLATILE_DATA_SCAN, scan);
 				replicatePad.setValue(Pad.DISABLED, scan.isDisabled());
 

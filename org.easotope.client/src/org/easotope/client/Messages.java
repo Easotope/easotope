@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -257,6 +257,7 @@ public class Messages extends NLS {
 	public static String loginInfo_canEditStandards;
 	public static String loginInfo_canEditConstants;
 	public static String loginInfo_canEditAllInput;
+	public static String loginInfo_canBatchImport;
 	public static String loginInfo_canDeleteAll;
 	public static String loginInfo_canDeleteOwn;
 	public static String loginInfo_canEditCorrections;
@@ -286,6 +287,7 @@ public class Messages extends NLS {
 	public static String userComposite_canEditStandardsLabel;
 	public static String userComposite_canEditConstantsLabel;
 	public static String userComposite_canEditAllInputLabel;
+	public static String userComposite_canBatchImportLabel;
 	public static String userComposite_canDeleteAllLabel;
 	public static String userComposite_canDeleteOwnLabel;
 	public static String userComposite_canEditCorrIntervalsLabel;
@@ -408,6 +410,7 @@ public class Messages extends NLS {
 	public static String editor_sampleTab;
 	public static String editor_replicateTab;
 	public static String editor_projectTab;
+	public static String editor_bulkImportTab;
 	public static String editor_scanTab;
 	
     public static String acquisitionsWidget_message1;
@@ -436,6 +439,7 @@ public class Messages extends NLS {
 	public static String replicateComposite_standardEmpty;
 	public static String replicateComposite_massSpecLabel;
 	public static String replicateComposite_massSpecEmpty;
+	public static String replicateComposite_noAcqusitionsEnabled;
 	public static String replicateComposite_acidTempLabel;
 	public static String replicateComposite_acidTempEmpty;
 	public static String replicateComposite_replicateDisabled;
@@ -598,15 +602,26 @@ public class Messages extends NLS {
 	public static String samStepComposite_errorResults;
 
 	public static String tabOffsetsComposite_waitingOnInput;
+	public static String tabOffsetsComposite_relative;
 	public static String tabOffsetsComposite_absolute;
+	public static String tabOffsetsComposite_qqplot;
 	public static String tabOffsetsComposite_description;
 	public static String tabOffsetsComposite_verticalRelativeLabel;
 	public static String tabOffsetsComposite_verticalAbsoluteLabel;
+	public static String tabOffsetsComposite_horizontalQQLabel;
 	public static String tabOffsetsComposite_horizontalLabel;
 	public static String tabOffsetsComposite_disabled;
 	public static String tabOffsetsComposite_measured;
 	public static String tabOffsetsComposite_expected;
 	public static String tabOffsetsComposite_difference;
+	public static String tabOffsetsComposite_openReplicate;
+	public static String tabOffsetsComposite_enableReplicate;
+	public static String tabOffsetsComposite_disableReplicate;
+	public static String tabOffsetsComposite_average;
+	public static String tabOffsetsComposite_stddev;
+	public static String tabOffsetsComposite_stderr;
+	public static String tabOffsetsComposite_limitTo;
+	public static String tabOffsetsComposite_run;
 
 	public static String repTabIoComposite_inputsLabel;
 	public static String repTabIoComposite_outputsLabel;
@@ -737,6 +752,9 @@ public class Messages extends NLS {
 	public static String co2SuperDriftGraphicComposite_slope;
 	public static String co2SuperDriftGraphicComposite_intercept;
 	public static String co2SuperDriftGraphicComposite_offset;
+	public static String co2SuperDriftGraphicComposite_openReplicate;
+	public static String co2SuperDriftGraphicComposite_enableReplicate;
+	public static String co2SuperDriftGraphicComposite_disableReplicate;
 
 	public static String co2ODriftGraphicComposite_horizontalLabel;
 	public static String co2ODriftGraphicComposite_verticalLabel;
@@ -795,6 +813,9 @@ public class Messages extends NLS {
 	public static String co2Etf_graph1HorizontalLabel;
 	public static String co2Etf_graph2VerticalLabel;
 	public static String co2Etf_graph2HorizontalLabel;
+	public static String co2Etf_openReplicate;
+	public static String co2Etf_enableReplicate;
+	public static String co2Etf_disableReplicate;
 
 	public static String co2EtfPbl_slope;
 	public static String co2EtfPbl_intercept;
@@ -809,6 +830,9 @@ public class Messages extends NLS {
 	public static String co2EtfPbl_graph1HorizontalLabel;
 	public static String co2EtfPbl_graph2VerticalLabel;
 	public static String co2EtfPbl_graph2HorizontalLabel;
+	public static String co2EtfPbl_openReplicate;
+	public static String co2EtfPbl_enableReplicate;
+	public static String co2EtfPbl_disableReplicate;
 
 	public static String co2D48OffsetParameterComposite_windowType;
 	public static String co2D48OffsetParameterComposite_corrInterval;
@@ -853,6 +877,45 @@ public class Messages extends NLS {
 	public static String exportTableComposite_instructions;
 
 	public static String calculatedSampleTableComposite_calculatedSampleHasBeenUpdated;
+
+	public static String batchImportComposite_massSpecLabel;
+	public static String batchImportComposite_createCorrIntLabel;
+	public static String batchImportComposite_noMassSpecError;
+	public static String batchImportComposite_acidTempLabel;
+	public static String batchImportComposite_groupingLabel;
+	public static String batchImportComposite_groupingNone;
+	public static String batchImportComposite_groupingManual;
+	public static String batchImportComposite_groupingCommon;
+	public static String batchImportComposite_groupingContinuous;
+	public static String batchImportComposite_message1;
+	public static String batchImportComposite_message2;
+	public static String batchImportComposite_message3;
+	public static String batchImportComposite_dataMismatchReplicateText;
+	public static String batchImportComposite_assumedTimeZoneForFile;
+
+	public static String threadedFileReader_fileAddErrorTitle;
+	public static String threadedFileReader_processingFileName;
+	public static String threadedFileReader_waitingForFileName;
+	public static String threadedFileReader_assumedTimeZoneTitle;
+	public static String threadedFileReader_assumedTimeZone;
+
+	public static String groupingNone_name;
+	public static String groupingCommonAssignments_name;
+	public static String groupingContiguousCommonAssignments_name;
+	public static String groupingManual_name;
+
+	public static String showSourceCode_url;
+	public static String showSourceCode_noBrowserTitle;
+	public static String showSourceCode_noBrowserMessage;
+
+	public static String batchImportTable_statusHeader;
+	public static String batchImportTable_ignoreHeader;
+	public static String batchImportTable_timeHeader;
+	public static String batchImportTable_filenameHeader;
+	public static String batchImportTable_idHeader;
+	public static String batchImportTable_assignmentHeader;
+	public static String batchImportTable_acidTempHeader;
+	public static String batchImportTable_groupHeader;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

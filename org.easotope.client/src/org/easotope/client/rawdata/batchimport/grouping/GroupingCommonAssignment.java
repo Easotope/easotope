@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -25,19 +25,27 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.client.analysis.handler;
+package org.easotope.client.rawdata.batchimport.grouping;
 
-import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.ui.model.application.MApplication;
-import org.eclipse.e4.ui.model.application.ui.advanced.MPerspective;
-import org.eclipse.e4.ui.workbench.modeling.EModelService;
-import org.eclipse.e4.ui.workbench.modeling.EPartService;
+import java.util.TreeSet;
 
-public class ShowExport {
-	@Execute
-	public void execute(MApplication app, EPartService partService) {
-	    EModelService modelService = (EModelService) app.getContext().get(EModelService.class.getName());
-	    MPerspective element = (MPerspective) modelService.find("org.easotope.export.perspective", app);
-	    partService.switchPerspective(element);
+import org.easotope.client.Messages;
+import org.easotope.client.rawdata.batchimport.ImportedFile;
+
+public class GroupingCommonAssignment implements GroupingAlgorithm {
+
+	@Override
+	public String toString() {
+		return Messages.groupingCommonAssignments_name;
+	}
+
+	@Override
+	public void applyGroupingAlgorithm(TreeSet<ImportedFile> importedFiles) {
+		
+	}
+
+	@Override
+	public boolean isCurrentGrouping(TreeSet<ImportedFile> importedFiles) {
+		return false;
 	}
 }

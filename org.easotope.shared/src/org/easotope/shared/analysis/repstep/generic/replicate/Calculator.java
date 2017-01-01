@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -27,19 +27,31 @@
 
 package org.easotope.shared.analysis.repstep.generic.replicate;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.easotope.shared.analysis.execute.RepStepCalculator;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
 import org.easotope.shared.analysis.repstep.generic.replicate.dependencies.Dependencies;
 import org.easotope.shared.analysis.tables.RepStep;
+import org.easotope.shared.core.scratchpad.AcquisitionPad;
+import org.easotope.shared.core.scratchpad.Pad;
 import org.easotope.shared.core.scratchpad.PadDate;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
+import org.easotope.shared.rawdata.InputParameter;
 
 public class Calculator extends RepStepCalculator {
+    private static Pattern weightPattern = Pattern.compile("([\\d\\.]*) \\| (\\d*)");
+
 	public static final String OUTPUT_LABEL_MASS_SPEC = "Mass Spectrometer";
-	public static final String OUTPUT_LABEL_SOURCE_NAME = "Source Material Name";
+	public static final String OUTPUT_LABEL_SOURCE_NAME = "Easotope Name of Source Material";
 	public static final String OUTPUT_LABEL_SAMPLE_TYPE = "Sample Type";
 	public static final String OUTPUT_LABEL_CORR_INTERVAL = "Corr Interval Timestamp";
 	public static final String OUTPUT_LABEL_ACID_TEMP = "Acid Temperature";
+	public static final String OUTPUT_LABEL_ACQUISITIONS = "Num Acqusitions";
+	public static final String OUTPUT_LABEL_ENABLED_ACQUISITIONS = "Num Enabled Acqusitions";
 
 	public Calculator(RepStep repStep) {
 		super(repStep);
@@ -53,14 +65,82 @@ public class Calculator extends RepStepCalculator {
 	@Override
 	public void calculate(ReplicatePad[] replicatePads, int padNumber, DependencyManager dependencyManager) {
 		Dependencies dependencies = (Dependencies) dependencyManager;
+		ReplicatePad replicatePad = replicatePads[padNumber];
+		ArrayList<AcquisitionPad> acquisitions = replicatePad.getChildren();
 
-    		replicatePads[padNumber].setValue(labelToColumnName(OUTPUT_LABEL_MASS_SPEC), dependencies.getMassSpec());
-    		replicatePads[padNumber].setValue(labelToColumnName(OUTPUT_LABEL_SOURCE_NAME), dependencies.getSource());
-    		replicatePads[padNumber].setValue(labelToColumnName(OUTPUT_LABEL_SAMPLE_TYPE), dependencies.getSampleType());
+		replicatePad.setValue(labelToColumnName(OUTPUT_LABEL_MASS_SPEC), dependencies.getMassSpec());
+		replicatePad.setValue(labelToColumnName(OUTPUT_LABEL_SOURCE_NAME), dependencies.getSource());
+		replicatePad.setValue(labelToColumnName(OUTPUT_LABEL_SAMPLE_TYPE), dependencies.getSampleType());
 
-    		Long corrIntervalTimeStamp = dependencies.getCorrIntervalTimeStamp();
-    		replicatePads[padNumber].setValue(labelToColumnName(OUTPUT_LABEL_CORR_INTERVAL), (corrIntervalTimeStamp == null) ? null : new PadDate(corrIntervalTimeStamp));
+    	Long corrIntervalTimeStamp = dependencies.getCorrIntervalTimeStamp();
+    	replicatePad.setValue(labelToColumnName(OUTPUT_LABEL_CORR_INTERVAL), (corrIntervalTimeStamp == null) ? null : new PadDate(corrIntervalTimeStamp));
 
-    		replicatePads[padNumber].setValue(labelToColumnName(OUTPUT_LABEL_ACID_TEMP), dependencies.getAcidTemperature());
+    	replicatePad.setValue(labelToColumnName(OUTPUT_LABEL_ACID_TEMP), dependencies.getAcidTemperature());
+
+    	int enabledAcqusitions = 0;
+
+    	for (AcquisitionPad acquisitionPad : acquisitions) {
+    		if (!((Boolean) acquisitionPad.getValue(Pad.DISABLED))) {
+    			enabledAcqusitions++;
+    		}
+    	}
+
+    	replicatePad.setValue(labelToColumnName(OUTPUT_LABEL_ACQUISITIONS), acquisitions.size());
+    	replicatePad.setValue(labelToColumnName(OUTPUT_LABEL_ENABLED_ACQUISITIONS), enabledAcqusitions);
+
+    	InputParameter[] inputParameters = {
+    		InputParameter.Identifier_1,
+    		InputParameter.Identifier_2,
+    		InputParameter.Run,
+    		InputParameter.Sample_Name
+    	};
+
+    	for (InputParameter inputParameter : inputParameters) {
+    		HashSet<String> found = new HashSet<String>();
+
+        	for (AcquisitionPad acquisitionPad : acquisitions) {
+        		found.add((String) acquisitionPad.getValue(inputParameter.toString()));
+        	}
+
+        	if (found.size() == 1) {
+        		String common = found.toArray(new String[1])[0];
+
+        		if (common != null) {
+        			replicatePad.setValue(inputParameter.toString(), common);
+        		}
+        	}
+    	}
+
+		HashSet<String> weights = new HashSet<String>();
+
+    	for (AcquisitionPad acquisitionPad : acquisitions) {
+    		Object obj = acquisitionPad.getValue(InputParameter.Sample_Weight.toString());
+
+    		if (obj instanceof String) {
+    			weights.add((String) obj);
+    		} else {
+    			weights.add(null);
+    		}
+    	}
+
+    	if (weights.size() == 1) {
+    		String common = weights.toArray(new String[1])[0];
+
+    		 if (common != null) {
+        		 Matcher matcher = weightPattern.matcher(common);
+
+        		 if (matcher.matches()) {
+        			 double weight = Double.parseDouble(matcher.group(1));
+        			 int divisor = Integer.parseInt(matcher.group(2));
+
+        			 if (divisor == acquisitions.size()) {
+        				 replicatePad.setValue(InputParameter.Sample_Weight.toString(), weight);
+        			 } else {
+        				 String temp = weight + " | " + acquisitions.size() + "/" + divisor;
+        				 replicatePad.setValue(InputParameter.Sample_Weight.toString(), temp);
+        			 }
+        		 }
+    		}
+    	}
 	}
 }

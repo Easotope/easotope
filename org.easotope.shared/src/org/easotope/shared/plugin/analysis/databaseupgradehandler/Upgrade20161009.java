@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -69,12 +69,7 @@ public class Upgrade20161009 extends DatabaseUpgrade {
 	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource) {
 		try {
 			Dao<Permissions,Integer> permissionsDao = DaoManager.createDao(connectionSource, Permissions.class);
-			Permissions adminPermissions = permissionsDao.queryForId(1);
-
-			if (adminPermissions != null) {
-				adminPermissions.setCanEditConstants(true);
-				permissionsDao.update(adminPermissions);
-			}
+			permissionsDao.executeRaw("UPDATE " + Permissions.TABLE_NAME + " SET " + Permissions.CANEDITCONSTANTS_FIELD_NAME + "=1 WHERE " + Permissions.USERID_FIELD_NAME + "=1");
 
 		} catch (Exception e) {
 			Log.getInstance().log(Level.INFO, Upgrade20160105.class, "Error while fixing \"can edit constants\" permission for admin.", e);

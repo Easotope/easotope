@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -78,7 +78,9 @@ public class Controller extends StepController {
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_SOURCE_NAME, null, null, null),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_SAMPLE_TYPE, null, null, null),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_CORR_INTERVAL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_ACID_TEMP, null, null, null)
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_ACID_TEMP, null, null, null),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_ACQUISITIONS, null, null, null),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_ENABLED_ACQUISITIONS, null, null, null)
 		};
 	}
 }

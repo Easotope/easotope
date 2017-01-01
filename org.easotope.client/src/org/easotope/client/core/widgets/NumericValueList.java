@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -207,7 +207,9 @@ public class NumericValueList extends ScrolledComposite {
 				return hasChanged;
 			}
 
-			if (!originalValues.get(integer).equals(currentValues.get(integer))) {
+			NumericValue originalNumericValue = originalValues.get(integer);
+
+			if (originalNumericValue == null || !originalNumericValue.equals(currentValues.get(integer))) {
 				hasChanged = true;
 				return hasChanged;
 			}

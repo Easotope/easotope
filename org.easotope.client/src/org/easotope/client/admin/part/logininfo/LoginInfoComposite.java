@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -78,6 +78,7 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 	private Button canEditStandards;
 	private Button canEditConstants;
 	private Button canEditAllInput;
+	private Button canBatchImport;
 	private Button canDeleteAll;
 	private Button canDeleteOwn;
 	private VCombo timeZone;
@@ -337,7 +338,13 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 
 		canEditAllInput = new Button(this, SWT.CHECK);
 		canEditAllInput.setEnabled(false);
-		
+
+		label = new Label(this, SWT.NONE);
+		label.setText(Messages.loginInfo_canBatchImport);
+
+		canBatchImport = new Button(this, SWT.CHECK);
+		canBatchImport.setEnabled(false);
+
 		label = new Label(this, SWT.NONE);
 		label.setText(Messages.loginInfo_canDeleteAll);
 
@@ -404,6 +411,7 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 		canEditStandards.setSelection(currentPermissions.isCanEditStandards());
 		canEditConstants.setSelection(currentPermissions.isCanEditConstants());
 		canEditAllInput.setSelection(currentPermissions.isCanEditAllReplicates());
+		canBatchImport.setSelection(currentPermissions.isCanBatchImport());
 		canDeleteAll.setSelection(currentPermissions.isCanDeleteAll());
 		canDeleteOwn.setSelection(currentPermissions.isCanDeleteOwn());
 

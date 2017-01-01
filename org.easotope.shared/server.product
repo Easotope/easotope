@@ -7,7 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Dorg.easotope.version=20161129 -Dorg.easotope.oldestcompatversion=201611209 -Dorg.easotope.databasename=easotope -Dorg.easotope.prefnodename=org.easotope
+      <vmArgs>-Dorg.easotope.version=20170101 -Dorg.easotope.oldestcompatversion=20170101 -Dorg.easotope.databasename=easotope -Dorg.easotope.prefnodename=org.easotope
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>

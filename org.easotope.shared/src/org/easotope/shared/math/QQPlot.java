@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -37,7 +37,12 @@ public class QQPlot {
 	boolean needsRecalculation = false;
 
 	public void addValue(double value) {
-		points.add(new Point(value, 0.0d));
+		points.add(new Point(value, 0.0d, null));
+		needsRecalculation = true;
+	}
+
+	public void addValue(double value, Object object) {
+		points.add(new Point(value, 0.0d, object));
 		needsRecalculation = true;
 	}
 
@@ -71,10 +76,12 @@ public class QQPlot {
 	public class Point implements Comparable<Point> {
 		double sampleQuantile;
 		double theoreticalQuantile;
+		Object object;
 
-		Point(double sampleQuantile, double theoreticalQuantile) {
+		Point(double sampleQuantile, double theoreticalQuantile, Object object) {
 			this.sampleQuantile = sampleQuantile;
 			this.theoreticalQuantile = theoreticalQuantile;
+			this.object = object;
 		}
 
 		public double getSampleQuantile() {
@@ -87,6 +94,10 @@ public class QQPlot {
 
 		public double getTheoreticalQuantile() {
 			return theoreticalQuantile;
+		}
+
+		public Object getObject() {
+			return object;
 		}
 
 		@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -38,9 +38,11 @@ import org.easotope.client.core.PointStyle;
 import org.easotope.client.core.adaptors.LoggingAdaptor;
 import org.easotope.client.core.part.EasotopePart;
 import org.easotope.client.core.widgets.graph.Graph;
+import org.easotope.client.core.widgets.graph.MenuItemListener;
 import org.easotope.client.core.widgets.graph.drawables.Axes;
 import org.easotope.client.core.widgets.graph.drawables.LineWithoutEnds;
 import org.easotope.client.core.widgets.graph.drawables.Point;
+import org.easotope.client.rawdata.navigator.PartManager;
 import org.easotope.shared.analysis.repstep.co2.etfpbl.Calculator;
 import org.easotope.shared.analysis.repstep.co2.etfpbl.Calculator.AverageLine;
 import org.easotope.shared.analysis.repstep.co2.etfpbl.Calculator.GraphPoint;
@@ -49,6 +51,7 @@ import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
 import org.easotope.shared.core.scratchpad.ScratchPad;
 import org.easotope.shared.math.LinearRegression;
+import org.easotope.shared.rawdata.cache.input.InputCache;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
@@ -237,6 +240,8 @@ public class GraphicComposite extends RepStepGraphicComposite {
 		graph1.removeAllDrawableObjects();
 
 		for (GraphPoint graphPoint : standardGraphPoints) {
+			int replicateId = graphPoint.getReplicateId();
+			boolean disabled = graphPoint.getDisabled();
 			String timeZone = LoginInfoCache.getInstance().getPreferences().getTimeZoneId();
 			boolean showTimeZone = LoginInfoCache.getInstance().getPreferences().getShowTimeZone();
 			String timestamp = DateFormat.format(graphPoint.getDate(), timeZone, showTimeZone, false);
@@ -258,6 +263,34 @@ public class GraphicComposite extends RepStepGraphicComposite {
 			Point point = new Point(graphPoint.getX(), graphPoint.getY(), pointDesign);
 			point.setTooltip(tooltip);
 			point.setInfluencesAutoscale(influencesAutoscale);
+			if (replicateId != -1) {
+				point.addMenuItem(new MenuItemListener() {
+					@Override
+					public void handleEvent(Event event) {
+						PartManager.showRawDataPerspective(getEasotopePart());
+						PartManager.openStandardReplicate(getEasotopePart(), replicateId);
+					}
+
+					@Override
+					public String getName() {
+						return Messages.co2EtfPbl_openReplicate;
+					}
+				});
+				if (LoginInfoCache.getInstance().getPermissions().isCanEditAllReplicates()) {
+					point.addMenuItem(new MenuItemListener() {
+						@Override
+						public void handleEvent(Event event) {
+							InputCache.getInstance().replicateDisabledStatusUpdate(replicateId, !disabled);
+						}
+	
+						@Override
+						public String getName() {
+							return disabled ? Messages.co2EtfPbl_enableReplicate : Messages.co2EtfPbl_disableReplicate;
+						}
+					});
+				}
+			}
+
 			graph1.addDrawableObjectFirst(point);
 		}
 
@@ -281,6 +314,9 @@ public class GraphicComposite extends RepStepGraphicComposite {
 		GraphPoint samplePoint = null;
 
 		for (GraphPoint etfPoint : etfGraphPoints) {
+			int replicateId = etfPoint.getReplicateId();
+			String name = etfPoint.getName();
+			boolean disabled = etfPoint.getDisabled();
 			PointDesign pointDesign = null;
 			String[] tooltip = null;
 			boolean influencesAutoscale = true;
@@ -319,6 +355,32 @@ public class GraphicComposite extends RepStepGraphicComposite {
 			Point point = new Point(etfPoint.getX(), etfPoint.getY(), pointDesign);
 			point.setTooltip(tooltip);
 			point.setInfluencesAutoscale(influencesAutoscale);
+			if (replicateId != -1 && name != null) {
+				point.addMenuItem(new MenuItemListener() {
+					@Override
+					public void handleEvent(Event event) {
+						PartManager.showRawDataPerspective(getEasotopePart());
+						PartManager.openStandardReplicate(getEasotopePart(), replicateId);
+					}
+
+					@Override
+					public String getName() {
+						return Messages.co2EtfPbl_openReplicate;
+					}
+				});
+				point.addMenuItem(new MenuItemListener() {
+					@Override
+					public void handleEvent(Event event) {
+						InputCache.getInstance().replicateDisabledStatusUpdate(replicateId, !disabled);
+					}
+	
+					@Override
+					public String getName() {
+						return disabled ? Messages.co2EtfPbl_enableReplicate : Messages.co2EtfPbl_disableReplicate;
+					}
+				});
+			}
+
 			graph2.addDrawableObjectFirst(point);
 		}
 

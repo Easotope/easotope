@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -45,7 +45,7 @@ public class DidStateMachine implements StateMachine {
 	private Pattern samplePattern = Pattern.compile("Sample (\\d+)");
 	private Pattern backgroundPattern = Pattern.compile(".*?(\\-?\\d+\\.\\d+) mV.*");
 
-	private enum State { NONE, WAITING_FOR_STANDARD, WAITING_FOR_SAMPLE, WAITING_FOR_CYCLE, WAITING_FOR_MASS, WAITING_FOR_SECOND_MASS };
+	private enum State { NONE, WAITING_FOR_STANDARD, WAITING_FOR_SAMPLE, WAITING_FOR_CYCLE, WAITING_FOR_MASS, WAITING_FOR_SECOND_MASS, WAITING_FOR_LINE_INFO };
 	private State state = State.NONE;
 
 	private MapBuilder mapBuilder = new MapBuilder();
@@ -54,6 +54,16 @@ public class DidStateMachine implements StateMachine {
 	private int totalExpected;
 	private int currentNumber;
 	private String background;
+	private boolean gotWeight;
+	private boolean gotId1;
+	private boolean gotId2;
+	private boolean gotRun;
+	private int seqInfoCounter;
+	private String lastSeqInfoString;
+
+	private Integer sequenceInfoPattern[] = {
+			0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, null, null, null, null
+	};
 
 	private Integer datePattern[] = {
 			0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, null, null, null, null
@@ -74,7 +84,7 @@ public class DidStateMachine implements StateMachine {
 	DidStateMachine(boolean historicMode) {
 		//this.historicMode = historicMode;
 	}
-	
+
 	public void foundString(String string, RollingBuffer buffer) {
 		Matcher standardPatternMatcher = standardPattern.matcher(string);
 		Matcher samplePatternMatcher = samplePattern.matcher(string);
@@ -172,6 +182,55 @@ public class DidStateMachine implements StateMachine {
 
 		} else if (string.startsWith("Background:") && !string.endsWith("..")) {
 			background = string;
+
+		} else if (string.trim().startsWith("Sequence Info") && buffer.startsWith(sequenceInfoPattern)) {
+			byte[] intArray = new byte[INTEGER_SIZE];
+
+			intArray[0] = Util.toByte(buffer.get(11));
+			intArray[1] = Util.toByte(buffer.get(10));
+			intArray[2] = Util.toByte(buffer.get(9));
+			intArray[3] = Util.toByte(buffer.get(8));
+
+			seqInfoCounter = Util.toInteger(intArray) * 2;
+			state = State.WAITING_FOR_LINE_INFO;
+
+		} else if (state == State.WAITING_FOR_LINE_INFO) {
+			if (string.trim().startsWith("CData")) {
+				// ignore
+
+			} else if (string.trim().startsWith("Weight") && lastSeqInfoString != null) {
+				double weight = Double.NaN;
+
+				try {
+					weight = Double.parseDouble(lastSeqInfoString.trim());
+				} catch (NumberFormatException e) {
+					// ignore
+				}
+
+				if (!Double.isNaN(weight)) {
+					gotWeight = true;
+					mapBuilder.put(InputParameter.Sample_Weight, weight);
+				}
+
+			} else if (string.trim().equals("Identifier 1") && lastSeqInfoString != null) {
+				gotId1 = true;
+				mapBuilder.put(InputParameter.Identifier_1, lastSeqInfoString.trim());
+
+			} else if (string.trim().equals("Identifier 2") && lastSeqInfoString != null) {
+				gotId2 = true;
+				mapBuilder.put(InputParameter.Identifier_2, lastSeqInfoString.trim());
+
+			} else if (string.trim().equals("Preparation") && lastSeqInfoString != null) {
+				gotRun = true;
+				mapBuilder.put(InputParameter.Run, lastSeqInfoString.trim());
+
+			} else {
+				lastSeqInfoString = string;
+			}
+
+			if ((gotWeight && gotId1 && gotId2 && gotRun) || --seqInfoCounter == 0 || string.trim().startsWith("CDualInletBlockData")) {
+				state = State.NONE;
+			}
 		}
 	}
 

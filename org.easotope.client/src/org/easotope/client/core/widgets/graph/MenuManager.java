@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -56,7 +56,7 @@ public class MenuManager {
 		graphMenuItems.add(new SortableMenuItem(listener));
 	}
 
-	protected void raiseMenu(int x, int y, ArrayList<DrawableObject> drawables) {
+	protected void raiseMenu(int x, int y, int displayX, int displayY, ArrayList<DrawableObject> drawables) {
 		Menu menu = new Menu(shell, SWT.POP_UP);
 
 		for (SortableMenuItem sortableMenuItem : defaultMenuItems) {
@@ -91,7 +91,7 @@ public class MenuManager {
 			}
 		}
 
-		menu.setLocation(x, y);
+		menu.setLocation(displayX, displayY);
 		menu.setVisible(true);
 
 		while (!menu.isDisposed() && menu.isVisible()) {

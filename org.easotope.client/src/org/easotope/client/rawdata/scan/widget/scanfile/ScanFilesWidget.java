@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -347,7 +347,8 @@ public class ScanFilesWidget extends EasotopeComposite {
 					}
 
 					Integer referenceChannel = byMassWidget.getReferenceChannel();
-					int origReferenceChannel = originalScan.getReferenceChannel()[tabCount];
+					Integer[] originalReferenceChannels = originalScan.getReferenceChannel();
+					Integer origReferenceChannel = (originalReferenceChannels != null) ? originalReferenceChannels[tabCount] : null;
 
 					if (referenceChannel != origReferenceChannel) {
 						return true;

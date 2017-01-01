@@ -27,7 +27,8 @@ Export-Package: com.j256.ormlite.dao,
  org.easotope.framework.dbcore.events,
  org.easotope.framework.dbcore.extensionpoint.definition,
  org.easotope.framework.dbcore.tables,
- org.easotope.framework.dbcore.util
+ org.easotope.framework.dbcore.util,
+ org.h2
 Bundle-Activator: org.easotope.framework.dbcore.Activator
 Bundle-ActivationPolicy: lazy
 Eclipse-BuddyPolicy: registered

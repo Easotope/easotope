@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -213,7 +213,7 @@ public class LoadOrCalculateSample {
 				}
 
 				if (corrIntervalList == null || corrIntervalList.size() == 0) {
-					ReplicatePad pad = new ReplicatePad(calcSampleCache.getScratchPad().getChild(0), replicate.getDate(), ReplicateType.SAMPLE_RUN);
+					ReplicatePad pad = new ReplicatePad(calcSampleCache.getScratchPad().getChild(0), replicate.getDate(), replicate.getId(), ReplicateType.SAMPLE_RUN);
 					pad.setValue(Pad.ANALYSIS, Messages.loadOrCalculateSample_unknown);
 					pad.setValue(Pad.ANALYSIS_STATUS, Status.ERROR);
 	
@@ -237,7 +237,7 @@ public class LoadOrCalculateSample {
 				}
 
 				if (potentialRepAnalyses.size() == 0) {
-					ReplicatePad pad = new ReplicatePad(calcSampleCache.getScratchPad().getChild(0), replicate.getDate(), ReplicateType.SAMPLE_RUN);
+					ReplicatePad pad = new ReplicatePad(calcSampleCache.getScratchPad().getChild(0), replicate.getDate(), replicate.getId(), ReplicateType.SAMPLE_RUN);
 					pad.setValue(Pad.ANALYSIS, Messages.loadOrCalculateSample_unknown);
 					pad.setValue(Pad.ANALYSIS_STATUS, Status.ERROR);
 
@@ -282,7 +282,7 @@ public class LoadOrCalculateSample {
 						calcSampleCache.getFormatLookup().add(calcReplicateCache.getFormatLookup());
 
 					} else {
-						ReplicatePad pad = new ReplicatePad(calcSampleCache.getScratchPad().getChild(0), replicate.getDate(), ReplicateType.SAMPLE_RUN);
+						ReplicatePad pad = new ReplicatePad(calcSampleCache.getScratchPad().getChild(0), replicate.getDate(), replicate.getId(), ReplicateType.SAMPLE_RUN);
 						pad.setValue(Pad.ANALYSIS, Messages.loadOrCalculateSample_unknown);
 						pad.setValue(Pad.ANALYSIS_STATUS, Status.ERROR);
 					}
@@ -520,7 +520,7 @@ public class LoadOrCalculateSample {
 
 		// this means something went wrong somewhere
 		if (calcReplicateCache.getScratchPad().getChildren().size() == 0) {
-			ReplicatePad pad = new ReplicatePad(calcReplicateCache.getScratchPad(), replicate.getDate(), ReplicateType.SAMPLE_RUN);
+			ReplicatePad pad = new ReplicatePad(calcReplicateCache.getScratchPad(), replicate.getDate(), replicate.getId(), ReplicateType.SAMPLE_RUN);
 			pad.setValue(Pad.ANALYSIS, repAnalysisName);
 			pad.setValue(Pad.ANALYSIS_STATUS, Status.ERROR);
 

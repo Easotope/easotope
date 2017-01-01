@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -39,6 +39,12 @@ public enum InputParameter {
 
 	Disabled(Boolean.class, InputParameterType.Flag, null),
 	Off_Peak(Boolean.class, InputParameterType.Flag, null),
+
+	Identifier_1(String.class, InputParameterType.Meta, null),			// Thermo specific
+	Identifier_2(String.class, InputParameterType.Meta, null),			// Thermo specific
+	Run(String.class, InputParameterType.Meta, null),					// Thermo specific
+	Sample_Name(String.class, InputParameterType.Meta, null),			// Nu specific
+	Sample_Weight(Double.class, InputParameterType.Meta, null),
 
 	V43_5_Background(Double.class, InputParameterType.Background, 435),
 	V44_Background(Double.class, InputParameterType.Background, 440),
@@ -193,7 +199,7 @@ public enum InputParameter {
 	V48_Scan_X2Coeff(Double.class, InputParameterType.X2Coeff, 480),
 	V48_5_Scan_X2Coeff(Double.class, InputParameterType.X2Coeff, 485),
 	V49_Scan_X2Coeff(Double.class, InputParameterType.X2Coeff, 490),
-	V49_5_Scan_X2Coeff(Double.class, InputParameterType.X2Coeff, 495);
+	V49_5_Scan_X2Coeff(Double.class, InputParameterType.X2Coeff, 495),;
 
 	private final Class<?> clazz;
 	private final InputParameterType inputParameterType;

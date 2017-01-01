@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -114,7 +114,7 @@ public class DatabaseWizard extends Wizard {
 		folderTestPage.cancelPendingEvents();
 		genericTestPage.cancelPendingEvents();
 		initializePage.cancelPendingEvents();
-		
+
 		if (processor != null) {
 			processor.requestStop();
 			processor = null;

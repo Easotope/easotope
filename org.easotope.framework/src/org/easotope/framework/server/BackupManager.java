@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -135,11 +135,11 @@ public class BackupManager {
 
 		@Override
         public void run() {
-        		processor.pause();
-        		dbBackup.execute();
-        		processor.resume();
+        	processor.pause();
+        	dbBackup.execute();
+        	processor.resume();
 
-        		scheduleNext();
+        	scheduleNext();
         }
 
 		public void requestStop() {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -164,6 +164,10 @@ public class Messages {
 	public static String loadOrCalculateSample_problemWithGetCalcSampleCacheIdsFromReplicateId;
 	public static String loadOrCalculateSample_problemWithGetCalcSampleCacheIdsFromSampleId;
 
+	public static String samStepGenericSample_name;
+	public static String samStepGenericSample_shortDocumentation;
+	public static String samStepGenericSample_documentationPath;
+
 	public static String samStepCO2Average_name;
 	public static String samStepCO2Average_shortDocumentation;
 	public static String samStepCO2Average_documentationPath;
@@ -234,6 +238,13 @@ public class Messages {
 
 	public static String scanUpdate_duplicateScan;
 	public static String scanUpdate_doesNotExist;
+
+	public static String disabledStatusUpdate_noSuchReplicate;
+	public static String disabledStatusUpdate_noSampleForReplicate;
+	public static String disabledStatusUpdate_replicateStatusUnchanged;
+	public static String disabledStatusUpdate_noEnabledAcquisitions;
+	public static String disabledStatusUpdate_disabled;
+	public static String disabledStatusUpdate_enabled;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

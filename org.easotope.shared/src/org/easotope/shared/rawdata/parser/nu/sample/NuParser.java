@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -48,6 +48,9 @@ public class NuParser extends Parser {
 
 	private Long oldDate = null;
 	private Long newDate = null;
+	private String sourceWeightString = null;
+	private Double sampleWeight = null;
+	private String sampleName = null;
 	private ArrayList<MapBuilder> mapBuilders = new ArrayList<MapBuilder>();
 	private TimeZone usedTimeZone = null;
 	ArrayList<Double[]> zeros = new ArrayList<Double[]>();
@@ -80,6 +83,8 @@ public class NuParser extends Parser {
 
 		while (line != null) {
 			if (state == State.DEFAULT) {
+				final String SAMPLE_NAME = "\"Sample_Name\",";
+				final String SAMPLE_WEIGHT = "\"Sample_Weight\",";
 				final String STARTING_ANALYSIS_AT = "\"Started analysis at";
 				final String UTC = "\"UTC FileTimeLow\"";
 				final String NUM_BLOCKS = "\"Num Blocks\",";
@@ -91,6 +96,40 @@ public class NuParser extends Parser {
 
 				} else if (line.startsWith(UTC)) {
 					newDate = DateParser.fileTimeLowHighToJavaTime(line);
+
+				} else if (line.startsWith(SAMPLE_NAME)) {
+					String newSourceName = line.substring(SAMPLE_NAME.length()).trim();
+
+					if (newSourceName.startsWith("\"") && newSourceName.endsWith("\"")) {
+						newSourceName = newSourceName.substring(1, newSourceName.length()-1).trim();
+					}
+
+					if (sampleName != null && !sampleName.equals(newSourceName)) {
+						Log.getInstance().log(Level.INFO, NuParser.class, "Conflicting source names. old=" + sampleName + " new=" + newSourceName);
+						mapBuilders = null;
+						return;
+					}
+
+					sampleName = newSourceName;
+
+				} else if (line.startsWith(SAMPLE_WEIGHT)) {
+					String newSourceWeightString = line.substring(SAMPLE_WEIGHT.length()).trim();
+
+					if (sourceWeightString != null && !sourceWeightString.equals(newSourceWeightString)) {
+						Log.getInstance().log(Level.INFO, NuParser.class, "Conflicting source weights. line=" + line + " old=" + sourceWeightString + " new=" + newSourceWeightString);
+						mapBuilders = null;
+						return;
+					}
+
+					if (sourceWeightString == null) {
+						sourceWeightString = newSourceWeightString;
+
+						try {
+							sampleWeight = Double.parseDouble(sourceWeightString);
+						} catch (NumberFormatException e) {
+							Log.getInstance().log(Level.INFO, NuParser.class, "Could not parse source weight from line: " + line, e);
+						}
+					}
 
 				} else if (line.startsWith(NUM_BLOCKS)) {
 					String numBlocksString = line.substring(NUM_BLOCKS.length());
@@ -320,6 +359,14 @@ public class NuParser extends Parser {
 			} else if (oldDate != null) {
 				map.put(InputParameter.Java_Date, oldDate + (currentBlockNum * 1000));
 				usedTimeZone = DateParser.getTimeZone(assumedTimeZone); 
+			}
+
+			if (sampleWeight != null) {
+				map.put(InputParameter.Sample_Weight, sampleWeight + " | " + mapBuilders.size());
+			}
+
+			if (sampleName != null) {
+				map.put(InputParameter.Sample_Name, sampleName);
 			}
 
 			result.add(map);

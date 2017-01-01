@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -43,6 +43,7 @@ import org.easotope.shared.analysis.execute.dependency.DependencyManager;
 import org.easotope.shared.analysis.repstep.co2.etf.dependencies.Dependencies;
 import org.easotope.shared.analysis.tables.RepStep;
 import org.easotope.shared.core.exception.EasotopeStepException;
+import org.easotope.shared.core.scratchpad.Pad;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
 import org.easotope.shared.math.LinearRegression;
 import org.easotope.shared.math.Statistics;
@@ -145,6 +146,7 @@ public class Calculator extends RepStepCalculator {
 			int sourceId = replicatePad.getSourceId();
 			Standard standard = standardIdToStandard.get(sourceId);
 
+			int replicateId = replicatePad.getReplicateId();
 			long date = replicatePad.getDate();
 			int colorId = standard.getColorId();
 			int shapeId = standard.getShapeId();
@@ -160,9 +162,9 @@ public class Calculator extends RepStepCalculator {
 				tempAverageLine.addNumber(standardPostΔ47);
 			}
 
-			standardGraphPoints.add(new GraphPoint(sourceId, date, standard.getName(), standardδ47, standardPreΔ47, colorId, shapeId, false));
+			standardGraphPoints.add(new GraphPoint(replicateId, sourceId, date, standard.getName(), standardδ47, standardPreΔ47, colorId, shapeId, false));
 
-			GraphPoint graphPoint = new GraphPoint(sourceId, date, standard.getName(), 0.0d, standardPostΔ47, colorId, shapeId, false);
+			GraphPoint graphPoint = new GraphPoint(replicateId, sourceId, date, standard.getName(), 0.0d, standardPostΔ47, colorId, shapeId, false);
 			standardGraphPoints.add(graphPoint);
 			standardPostNonlinearityGraphPoints.add(graphPoint);
 
@@ -174,14 +176,15 @@ public class Calculator extends RepStepCalculator {
 			Double standardPreΔ47 = getDouble(replicatePad, INPUT_LABEL_STANDARD_PRE_NONLINEARITY_Δ47);
 			Double standardPostΔ47 = getDouble(replicatePad, INPUT_LABEL_STANDARD_POST_NONLINEARITY_Δ47);
 
+			int replicateId = replicatePad.getReplicateId();
 			int sourceId = replicatePad.getSourceId();
 			Standard standard = standardIdToStandard.get(sourceId);
 			long date = replicatePad.getDate();
 			int colorId = standard.getColorId();
 			int shapeId = standard.getShapeId();
 
-			standardGraphPoints.add(new GraphPoint(sourceId, date, standard.getName(), standardδ47, standardPreΔ47, colorId, shapeId, true));
-			standardGraphPoints.add(new GraphPoint(sourceId, date, standard.getName(), 0.0d, standardPostΔ47, colorId, shapeId, true));
+			standardGraphPoints.add(new GraphPoint(replicateId, sourceId, date, standard.getName(), standardδ47, standardPreΔ47, colorId, shapeId, true));
+			standardGraphPoints.add(new GraphPoint(replicateId, sourceId, date, standard.getName(), 0.0d, standardPostΔ47, colorId, shapeId, true));
 			connectingLines.add(new ConnectingLine(standardδ47, standardPreΔ47, 0.0d, standardPostΔ47, colorId, true));
 		}
 
@@ -224,7 +227,7 @@ public class Calculator extends RepStepCalculator {
 				double y = standardIdToKnownΔ47NoAcidCorr.get(standardId);
 				regression.addCoordinate(x, y);
 
-				etfGraphPoints.add(new GraphPoint(-1, -1, standard.getName(), x, y, standard.getColorId(), standard.getShapeId(), false));
+				etfGraphPoints.add(new GraphPoint(-1, -1, -1, standard.getName(), x, y, standard.getColorId(), standard.getShapeId(), false));
 			}
 		} else {
 			for (GraphPoint graphPoint : standardPostNonlinearityGraphPoints) {
@@ -239,6 +242,7 @@ public class Calculator extends RepStepCalculator {
 				double x = graphPoint.getY();
 				double y = standardIdToKnownΔ47NoAcidCorr.get(standardId);
 
+				int replicateId = graphPoint.getReplicateId();
 				long date = graphPoint.getDate();
 				boolean disabled = graphPoint.getDisabled();
 
@@ -246,7 +250,7 @@ public class Calculator extends RepStepCalculator {
 					regression.addCoordinate(x, y);
 				}
 
-				etfGraphPoints.add(new GraphPoint(-1, date, standard.getName(), x, y, standard.getColorId(), standard.getShapeId(), disabled));					
+				etfGraphPoints.add(new GraphPoint(replicateId, standardId, date, standard.getName(), x, y, standard.getColorId(), standard.getShapeId(), disabled));					
 			}
 		}
 
@@ -265,14 +269,18 @@ public class Calculator extends RepStepCalculator {
 
 		if (value != null && !regression.isInvalid()) {
 			double y = regression.getSlope() * value + regression.getIntercept();
-			etfGraphPoints.add(new GraphPoint(-1, 0, null, value, y, -1, -1, false));
+			int replicateId = replicatePads[padNumber].getReplicateId();
+			long replicateDate = replicatePads[padNumber].getDate();
+			boolean isDisabled = (Boolean) replicatePads[padNumber].getValue(Pad.DISABLED);
+			etfGraphPoints.add(new GraphPoint(replicateId, -1, replicateDate, null, value, y, -1, -1, isDisabled));
 			value = y;
 		}
 
-	    	replicatePads[padNumber].setValue(labelToColumnName(OUTPUT_LABEL_Δ47), value);
+	    replicatePads[padNumber].setValue(labelToColumnName(OUTPUT_LABEL_Δ47), value);
 	}
 
 	public class GraphPoint {
+		private int replicateId;
 		private int standardId;
 		private long date;
 		private String name;
@@ -282,7 +290,8 @@ public class Calculator extends RepStepCalculator {
 		private int shapeId;
 		private boolean disabled;
 
-		public GraphPoint(int standardId, long date, String name, double x, double y, int colorId, int shapeId, boolean disabled) {
+		public GraphPoint(int replicateId, int standardId, long date, String name, double x, double y, int colorId, int shapeId, boolean disabled) {
+			this.replicateId = replicateId;
 			this.standardId = standardId;
 			this.date = date;
 			this.name = name;
@@ -291,6 +300,10 @@ public class Calculator extends RepStepCalculator {
 			this.colorId = colorId;
 			this.shapeId = shapeId;
 			this.disabled = disabled;
+		}
+
+		public int getReplicateId() {
+			return replicateId;
 		}
 
 		public int getStandardId() {

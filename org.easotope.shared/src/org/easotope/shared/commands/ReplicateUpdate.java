@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -201,6 +201,7 @@ public class ReplicateUpdate extends Command {
 			acquisition.setRawFile(null);
 		}
 
+		//TODO this code doesn't seem to be needed - the last two parameters of ReplicateUpdated are never accessed
 		Integer projectId = null;
 		SampleType sampleType = null;
 		

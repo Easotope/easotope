@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -32,11 +32,12 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.easotope.framework.commands.Command;
-import org.easotope.framework.dbcore.AuthenticationKeys;
 import org.easotope.framework.dbcore.tables.User;
 import org.easotope.framework.dbcore.util.RawFileManager;
 import org.easotope.shared.analysis.events.RepAnalysisChoiceUpdated;
 import org.easotope.shared.analysis.tables.RepAnalysisChoice;
+import org.easotope.shared.core.AuthenticationKeys;
+import org.easotope.shared.core.tables.Permissions;
 import org.easotope.shared.rawdata.tables.Sample;
 
 import com.j256.ormlite.dao.Dao;
@@ -54,11 +55,12 @@ public class RepAnalysisChoiceUpdate extends Command {
 	@Override
 	public boolean authenticate(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception {
 		User user = (User) authenticationObjects.get(AuthenticationKeys.USER);
+		Permissions permissions = (Permissions) authenticationObjects.get(AuthenticationKeys.PERMISSIONS);
 		Dao<Sample,Integer> sampleDao = DaoManager.createDao(connectionSource, Sample.class);
 		Sample sample = sampleDao.queryForId(sampleId);
 		sampleUserId = sample.getUserId();
 
-		return user.getIsAdmin() || sampleUserId == user.getId();
+		return user.getIsAdmin() || permissions.isCanEditAllReplicates() || sampleUserId == user.getId();
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -64,10 +64,31 @@ public class Accumulator {
 			return frozenValues;
 		}
 
-		Statistics statistics = new Statistics();
-		addChildPadsToStatistics(owningPad.children, statistics);
+		double mean = 0;
+		double standardDeviationSample = 0;
+		double standardErrorSample = 0;
 
-		return new double[] { statistics.getMean(), statistics.getStandardDeviationSample(), statistics.getStandardErrorSample() };
+		if (owningPad.children.size() == 1) {
+			Object object = owningPad.children.get(0).getValue(property);
+			
+			if (object instanceof Accumulator) {
+				double[] values = ((Accumulator) object).getMeanStdDevSampleAndStdError();
+
+				mean = values[0];
+				standardDeviationSample = values[1];
+				standardErrorSample = values[2];
+			}
+
+		} else {
+			Statistics statistics = new Statistics();
+			addChildPadsToStatistics(owningPad.children, statistics);
+
+			mean = statistics.getMean();
+			standardDeviationSample = statistics.getStandardDeviationSample();
+			standardErrorSample = statistics.getStandardErrorSample();
+		}
+
+		return new double[] { mean, standardDeviationSample, standardErrorSample };
 	}
 
 	private void addChildPadsToStatistics(ArrayList<Pad> children, Statistics statistics) {

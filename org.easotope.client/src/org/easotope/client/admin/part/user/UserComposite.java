@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -78,6 +78,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 	private VButton canEditStandards;
 	private VButton canEditConstants;
 	private VButton canEditAllInput;
+	private VButton canBatchImport;
 	private VButton canDeleteAll;
 	private VButton canDeleteOwn;
 
@@ -278,6 +279,16 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 			}
 		});
 
+		Label canBatchImportLabel = new Label(this, SWT.NONE);
+		canBatchImportLabel.setText(Messages.userComposite_canBatchImportLabel);
+
+		canBatchImport = new VButton(this, SWT.CHECK);
+		canBatchImport.addSelectionListener(new LoggingSelectionAdaptor() {
+			public void loggingWidgetSelected(SelectionEvent e) {
+				widgetStatusChanged();
+			}
+		});
+
 		Label canDeleteAllLabel = new Label(this, SWT.NONE);
 		canDeleteAllLabel.setText(Messages.userComposite_canDeleteAllLabel);
 
@@ -334,6 +345,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 		canEditStandards.setSelection(currentPermissions.isCanEditStandards());
 		canEditConstants.setSelection(currentPermissions.isCanEditConstants());
 		canEditAllInput.setSelection(currentPermissions.isCanEditAllReplicates());
+		canBatchImport.setSelection(currentPermissions.isCanBatchImport());
 		canDeleteAll.setSelection(currentPermissions.isCanDeleteAll());
 		canDeleteOwn.setSelection(currentPermissions.isCanDeleteOwn());
 	}
@@ -352,6 +364,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 		canEditStandards.setSelection(false);
 		canEditConstants.setSelection(false);
 		canEditAllInput.setSelection(false);
+		canBatchImport.setSelection(false);
 		canDeleteAll.setSelection(false);
 		canDeleteOwn.setSelection(false);
 	}
@@ -422,7 +435,13 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 		if (!hasAdminPermissions) {
 			canEditAllInput.revert();
 		}
-		
+
+		canBatchImport.setEnabled(hasAdminPermissions && (currentUser == null || currentUser.getId() != 1));
+
+		if (!hasAdminPermissions) {
+			canBatchImport.revert();
+		}
+
 		canDeleteAll.setEnabled(hasAdminPermissions && (currentUser == null || currentUser.getId() != 1));
 		
 		if (!hasAdminPermissions) {
@@ -449,6 +468,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 		canEditStandards.setEnabled(false);
 		canEditConstants.setEnabled(false);
 		canEditAllInput.setEnabled(false);
+		canBatchImport.setEnabled(false);
 		canDeleteAll.setEnabled(false);
 		canDeleteOwn.setEnabled(false);
 	}
@@ -462,6 +482,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 			canEditStandards.setSelectionButLeaveRevertValue(true);
 			canEditConstants.setSelectionButLeaveRevertValue(true);
 			canEditAllInput.setSelectionButLeaveRevertValue(true);
+			canBatchImport.setSelectionButLeaveRevertValue(true);
 			canDeleteAll.setSelectionButLeaveRevertValue(true);
 			canDeleteOwn.setSelectionButLeaveRevertValue(true);
 		}
@@ -479,6 +500,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 		isDirty = isDirty || canEditStandards.hasChanged();
 		isDirty = isDirty || canEditConstants.hasChanged();
 		isDirty = isDirty || canEditAllInput.hasChanged();
+		isDirty = isDirty || canBatchImport.hasChanged();
 		isDirty = isDirty || canDeleteAll.hasChanged();
 		isDirty = isDirty || canDeleteOwn.hasChanged();
 
@@ -600,6 +622,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 		newPermissions.setCanEditStandards(canEditStandards.getSelection());
 		newPermissions.setCanEditConstants(canEditConstants.getSelection());
 		newPermissions.setCanEditAllReplicates(canEditAllInput.getSelection());
+		newPermissions.setCanBatchImport(canBatchImport.getSelection());
 		newPermissions.setCanDeleteAll(canDeleteAll.getSelection());
 		newPermissions.setCanDeleteOwn(canDeleteOwn.getSelection());
 

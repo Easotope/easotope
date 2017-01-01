@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -86,6 +86,7 @@ public class InitializeWithPermsPrefs extends Initialize {
 		permissions.setCanEditConstants(true);
 		permissions.setCanEditAllReplicates(true);
 		permissions.setCanEditCorrIntervals(true);
+		permissions.setCanBatchImport(true);
 		permissions.setCanDeleteAll(true);
 		permissions.setCanDeleteOwn(true);
 		permissionsDao.create(permissions);

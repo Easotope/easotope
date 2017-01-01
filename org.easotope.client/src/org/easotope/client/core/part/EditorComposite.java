@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -269,7 +269,7 @@ public abstract class EditorComposite extends ChainedComposite implements CacheL
 	/**
 	 * Called from below
 	 */
-	protected final void widgetStatusChanged() {
+	public final void widgetStatusChanged() {
 		setGuiFlags();
 	}
 

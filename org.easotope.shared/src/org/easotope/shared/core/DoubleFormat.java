@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -27,20 +27,9 @@
 
 package org.easotope.shared.core;
 
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 public class DoubleFormat {
-	public static String format(double number, String format) {
-		DecimalFormat decimalFormat = new DecimalFormat(format);
-		decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-		return decimalFormat.format(number);
-	}
-
-	public static String formatWithExp(double number) {
-		return String.valueOf(number);
-	}
-
 	public static String formatWithoutExp(double number) {
 		DecimalFormat decimalFormat = new DecimalFormat("0.#");
 		decimalFormat.setMaximumFractionDigits(14);

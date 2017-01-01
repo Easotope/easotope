@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -162,6 +162,7 @@ public class ReplicateComposite extends EditorComposite
 	private SortedCombo acidTemp;
 	private Canvas acidTempError;
 	private VButton disabled;
+	private Canvas disabledError;
 	private VText description;
 
 	private AcquisitionsWidget acquisitionsWidget;
@@ -311,7 +312,19 @@ public class ReplicateComposite extends EditorComposite
 			}
 		});
 
-		disabled = new VButton(firstLineComposite, SWT.CHECK);
+		Composite disabledComposite = new Composite(firstLineComposite, SWT.NONE);
+		gridData = new GridData();
+		gridData.verticalAlignment = SWT.CENTER;
+		gridData.horizontalIndent = GuiConstants.HORIZONTAL_LABEL_INDENT;
+		disabledComposite.setLayoutData(gridData);
+		gridLayout = new GridLayout();
+		gridLayout.numColumns = 2;
+		gridLayout.marginHeight = 0;
+		gridLayout.marginWidth = 0;
+		gridLayout.horizontalSpacing = 0;
+		disabledComposite.setLayout(gridLayout);
+
+		disabled = new VButton(disabledComposite, SWT.CHECK);
 		gridData = new GridData();
 		gridData.verticalAlignment = SWT.CENTER;
 		gridData.horizontalIndent = GuiConstants.HORIZONTAL_LABEL_INDENT;
@@ -320,6 +333,19 @@ public class ReplicateComposite extends EditorComposite
 		disabled.addListener(SWT.Selection, new LoggingAdaptor() {
 			public void loggingHandleEvent(Event event) {
 				widgetStatusChanged();
+			}
+		});
+
+		disabledError = new Canvas(disabledComposite, SWT.NONE);
+		gridData = new GridData();
+		gridData.widthHint = errorImage.getImageData().width;
+		gridData.heightHint = errorImage.getImageData().height;
+		disabledError.setLayoutData(gridData);
+		disabledError.setVisible(false);
+		disabledError.addPaintListener(new LoggingPaintAdaptor() {
+			public void loggingPaintControl(PaintEvent e) {
+				e.gc.setAntialias(SWT.ON);
+				e.gc.drawImage(errorImage, 0, 0);
 			}
 		});
 
@@ -995,8 +1021,6 @@ public class ReplicateComposite extends EditorComposite
 
 	@Override
 	protected boolean hasError() {
-		boolean shouldBeError = false;
-
 		if (getCurrentReplicate() != null) {
 			newReplicate.setId(getCurrentReplicate().getId());
 		}
@@ -1004,6 +1028,8 @@ public class ReplicateComposite extends EditorComposite
 		newReplicate.setUserId(user.getSelectedInteger());
 		newReplicate.setDisabled(disabled.getSelection());
 		newReplicate.setDescription(description.getText());
+
+		boolean shouldBeError = false;
 
 		if (massSpec.getSelectionIndex() == -1) {
 			massSpecError.setToolTipText(Messages.replicateComposite_massSpecEmpty);
@@ -1014,6 +1040,28 @@ public class ReplicateComposite extends EditorComposite
 
 		if (massSpecError.getVisible() != shouldBeError) {
 			massSpecError.setVisible(shouldBeError);
+			layoutNeeded();
+		}
+
+		if (disabled.getSelection()) {
+			shouldBeError = false;
+		} else {
+			shouldBeError = true;
+
+			for (Acquisition acquisition : acquisitionsWidget.getAcquisitions()) {
+				if (!acquisition.getAcquisitionInput().isDisabled()) {
+					shouldBeError = false;
+					break;
+				}
+			}
+		}
+
+		if (shouldBeError) {
+			disabledError.setToolTipText(Messages.replicateComposite_noAcqusitionsEnabled);
+		}
+	
+		if (disabledError.getVisible() != shouldBeError) {
+			disabledError.setVisible(shouldBeError);
 			layoutNeeded();
 		}
 
@@ -1067,7 +1115,7 @@ public class ReplicateComposite extends EditorComposite
 		}
 
 		ArrayList<Acquisition> acquisitions = acquisitionsWidget.getAcquisitions();
-		boolean hasError = massSpecError.isVisible() || (projectError != null && projectError.isVisible()) || sourceError.isVisible() || currentSampleType == null || (acidTempComposite.isVisible() && acidTempError.isVisible()) || acquisitions.size() == 0;
+		boolean hasError = massSpecError.isVisible() || disabledError.isVisible() || (projectError != null && projectError.isVisible()) || sourceError.isVisible() || currentSampleType == null || (acidTempComposite.isVisible() && acidTempError.isVisible()) || acquisitions.size() == 0;
 
 		if (hasError) {
 			resultsComposite.newReplicate(null, null);

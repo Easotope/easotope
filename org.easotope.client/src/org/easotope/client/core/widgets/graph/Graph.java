@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -245,9 +245,9 @@ public class Graph extends Composite {
 			public void loggingMouseDown(MouseEvent e) {
 				if ((e.stateMask & SWT.MOD4) != 0 || e.button == 3) {
 					// right click
-					int x = canvas.toDisplay(e.x, e.y).x;
-					int y = canvas.toDisplay(e.x, e.y).y;
-					menuManager.raiseMenu(x, y, drawableObjects);
+					int displayX = canvas.toDisplay(e.x, e.y).x;
+					int displayY = canvas.toDisplay(e.x, e.y).y;
+					menuManager.raiseMenu(e.x, e.y, displayX, displayY, drawableObjects);
 
 				} else if (e.button == 2) {
 					// middle click

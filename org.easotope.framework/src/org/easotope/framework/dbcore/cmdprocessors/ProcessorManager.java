@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -51,7 +51,7 @@ public class ProcessorManager {
 		Processor result = override.get(Thread.currentThread());
 		return (result != null) ? result : processor;
 	}
-	
+
 	public void stopProcessor() {
 		if (processor != null) {
 			processor.requestStop();

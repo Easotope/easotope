@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -46,7 +46,7 @@ public class ComputeAcquisitionParsed {
 	public ComputeAcquisitionParsed(RawFile rawFile, byte[] fileBytes, boolean historicMode, String assumedTimeZone) {
 		AutoParser parser = new AutoParser(fileBytes, rawFile.getOriginalName(), historicMode, assumedTimeZone);
 		this.assumedTimeZone = parser.getAssumedTimeZone();
-		
+
 		String error = parser.getError();
 
 		if (error != null) {
@@ -62,16 +62,20 @@ public class ComputeAcquisitionParsed {
 				error = MessageFormat.format(Messages.computeAcquisitionParsed_fileHasNoDateText, new Object[] { new File(rawFile.getOriginalName()).getName() });
 				throw new RuntimeException(error);
 			}
-	
+
 			int numCycles = -1;
 			HashMap<InputParameter,Double[]> measurements = new HashMap<InputParameter,Double[]>();
 			HashMap<InputParameter,Double> backgrounds = new HashMap<InputParameter,Double>();
+			HashMap<InputParameter,Object> misc = new HashMap<InputParameter,Object>();
 			Integer[] channelToMzX10 = null;
 
 			for (InputParameter parameter : map.keySet()) {
 				Object obj = map.get(parameter);
-	
-				if (parameter == InputParameter.ChannelToMZX10) {
+
+				if (parameter == InputParameter.Java_Date) {
+					// ignore
+
+				} else if (parameter == InputParameter.ChannelToMZX10) {
 					Vector<?> vector = (Vector<?>) obj;
 					channelToMzX10 = new Integer[vector.size()];
 	
@@ -92,19 +96,22 @@ public class ComputeAcquisitionParsed {
 							throw new RuntimeException(error);
 						}
 					}
-	
+
 					Double[] array = new Double[numCycles];
-	
+
 					for (int i=0; i<numCycles; i++) {
 						if (vector.get(i) instanceof Double) {
 							array[i] = (Double) vector.get(i);
 						}
 					}
-	
+
 					measurements.put(parameter, array);
-	
+
 				} else if (parameter.getIsBackground()) {
 					backgrounds.put(parameter, (Double) obj);
+
+				} else {
+					misc.put(parameter, obj);
 				}
 			}
 
@@ -119,7 +126,8 @@ public class ComputeAcquisitionParsed {
 			acquisition.setMeasurements(measurements);
 			acquisition.setBackgrounds(backgrounds);
 			acquisition.setChannelToMzX10(channelToMzX10);
-			
+			acquisition.setMisc(misc);
+
 			maps.add(acquisition);
 		}
 	}

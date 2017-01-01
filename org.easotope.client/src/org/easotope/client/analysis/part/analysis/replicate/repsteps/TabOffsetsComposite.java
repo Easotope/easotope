@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -41,9 +41,10 @@ import org.easotope.client.core.PointStyle;
 import org.easotope.client.core.adaptors.LoggingAdaptor;
 import org.easotope.client.core.part.EasotopeComposite;
 import org.easotope.client.core.part.EasotopePart;
-import org.easotope.client.core.widgets.graph.Graph;
+import org.easotope.client.core.widgets.graph.MenuItemListener;
 import org.easotope.client.core.widgets.graph.drawables.LineWithoutEnds;
 import org.easotope.client.core.widgets.graph.drawables.Point;
+import org.easotope.client.rawdata.navigator.PartManager;
 import org.easotope.framework.commands.Command;
 import org.easotope.shared.admin.IsotopicScale;
 import org.easotope.shared.admin.SciConstantNames;
@@ -62,12 +63,18 @@ import org.easotope.shared.analysis.execute.AnalysisCompiled;
 import org.easotope.shared.analysis.execute.ComparableStandardOutputs;
 import org.easotope.shared.analysis.execute.ComparableStandardOutputs.ComparableStandardOutput;
 import org.easotope.shared.core.DateFormat;
+import org.easotope.shared.core.DoubleTools;
 import org.easotope.shared.core.NumericValue;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.core.scratchpad.Accumulator;
 import org.easotope.shared.core.scratchpad.Pad;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
 import org.easotope.shared.core.scratchpad.ScratchPad;
+import org.easotope.shared.core.tables.Preferences;
+import org.easotope.shared.math.QQPlot;
+import org.easotope.shared.math.Statistics;
+import org.easotope.shared.rawdata.InputParameter;
+import org.easotope.shared.rawdata.cache.input.InputCache;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Color;
@@ -76,30 +83,44 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 
 public class TabOffsetsComposite extends EasotopeComposite implements SciConstantCacheSciConstantGetListener, StandardCacheStandardListGetListener, StandardCacheStandardGetListener {
+	private int RELATIVE_GRAPH = 0;
+	private int ABSOLUTE_GRAPH = 1;
+	private int QQPLOT_GRAPH = 2;
+
 	private StackLayout stackLayout;
 
 	private Combo column;
-	private Button absolute;
-	private Graph graph;
+	private Combo graphType;
+	private TimeRangeGraph graph;
+	private Label mean;
+	private Label stddev;
+	private Label stderr;
+	private Combo standard;
+	private Combo run;
 
 	private Composite waitingOnInput;
 	private Composite calculationsReady;
+	private Composite bottomComposite;
 
 	private ScratchPad<ReplicatePad> corrIntervalScratchPad;
 	private ArrayList<ComparableStandardOutput> comparableStandardOutputs = new ArrayList<ComparableStandardOutput>();
+	private HashMap<Integer,Integer> indexToSourceId = new HashMap<Integer,Integer>();
+	private HashMap<Integer,String> indexToRun = new HashMap<Integer,String>();
 
 	private Double δ18O_VPDB_VSMOW;
 	private StandardList standardList;
 	private HashMap<Integer,Standard> standards = new HashMap<Integer,Standard>();
+	private enum PointType { NORMAL, FADED, UNSELECTED };
 	private HashMap<Integer,PointDesign> pointDesigns = new HashMap<Integer,PointDesign>();
 	private HashMap<Integer,PointDesign> fadedPointDesigns = new HashMap<Integer,PointDesign>();
+	private HashMap<Integer,PointDesign> unselectedPointDesigns = new HashMap<Integer,PointDesign>();
 
 	TabOffsetsComposite(EasotopePart easotopePart, Composite parent, int style) {
 		super(easotopePart, parent, style);
@@ -152,20 +173,23 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
         gridData.verticalAlignment = SWT.CENTER;
         column.setLayoutData(gridData);
         column.addListener(SWT.Selection, new LoggingAdaptor() {
-        		public void loggingHandleEvent(Event event) {
-        			refreshGraph(true);
-        		}
+        	public void loggingHandleEvent(Event event) {
+        		refreshGraph(true);
+        	}
         });
 
-        absolute = new Button(controls, SWT.TOGGLE);
+        graphType = new Combo(controls, SWT.READ_ONLY);
         gridData = new GridData();
         gridData.verticalAlignment = SWT.CENTER;
-        absolute.setLayoutData(gridData);
-        absolute.setText(Messages.tabOffsetsComposite_absolute);
-        absolute.addListener(SWT.Selection, new LoggingAdaptor() {
-	        	public void loggingHandleEvent(Event event) {
-	        		refreshGraph(true);
-	        	}
+        graphType.setLayoutData(gridData);
+        graphType.add(Messages.tabOffsetsComposite_relative);
+        graphType.add(Messages.tabOffsetsComposite_absolute);
+        graphType.add(Messages.tabOffsetsComposite_qqplot);
+        graphType.select(0);
+        graphType.addListener(SWT.Selection, new LoggingAdaptor() {
+	       	public void loggingHandleEvent(Event event) {
+	       		refreshGraph(true);
+	       	}
         });
 
         label = new Label(header, SWT.WRAP);
@@ -176,18 +200,122 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
         label.setLayoutData(formData);
         label.setText(Messages.tabOffsetsComposite_description);
 
-        graph = new Graph(calculationsReady, SWT.NONE);
+        bottomComposite = new Composite(calculationsReady, SWT.NONE);
+        formData = new FormData();
+        formData.left = new FormAttachment(0);
+        formData.right = new FormAttachment(100);
+        formData.bottom = new FormAttachment(100);
+        bottomComposite.setLayoutData(formData);
+        gridLayout = new GridLayout();
+        gridLayout.numColumns = 11;
+        gridLayout.marginHeight = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.horizontalSpacing = 0;
+        bottomComposite.setLayout(gridLayout);
+
+        label = new Label(bottomComposite, SWT.NONE);
+        label.setText(Messages.tabOffsetsComposite_average);
+        gridData = new GridData();
+        gridData.verticalAlignment = SWT.CENTER;
+        label.setLayoutData(gridData);
+
+        mean = new Label(bottomComposite, SWT.NONE);
+        gridData = new GridData();
+        gridData.verticalAlignment = SWT.CENTER;
+        mean.setLayoutData(gridData);
+
+        label = new Label(bottomComposite, SWT.NONE);
+        label.setText(Messages.tabOffsetsComposite_stddev);
+        gridData = new GridData();
+        gridData.verticalAlignment = SWT.CENTER;
+        gridData.horizontalIndent = GuiConstants.HORIZONTAL_LABEL_INDENT;
+        label.setLayoutData(gridData);
+
+        stddev = new Label(bottomComposite, SWT.NONE);
+        gridData = new GridData();
+        gridData.verticalAlignment = SWT.CENTER;
+        stddev.setLayoutData(gridData);
+
+        label = new Label(bottomComposite, SWT.NONE);
+        label.setText(Messages.tabOffsetsComposite_stderr);
+        gridData = new GridData();
+        gridData.verticalAlignment = SWT.CENTER;
+        gridData.horizontalIndent = GuiConstants.HORIZONTAL_LABEL_INDENT;
+        label.setLayoutData(gridData);
+
+        stderr = new Label(bottomComposite, SWT.NONE);
+        gridData = new GridData();
+        gridData.verticalAlignment = SWT.CENTER;
+        stderr.setLayoutData(gridData);
+
+        Label center = new Label(bottomComposite, SWT.NONE);
+        gridData = new GridData();
+        gridData.horizontalAlignment = SWT.FILL;
+        gridData.grabExcessHorizontalSpace = true;
+        center.setLayoutData(gridData);
+
+        label = new Label(bottomComposite, SWT.NONE);
+        gridData = new GridData();
+        gridData.verticalAlignment = SWT.CENTER;
+        label.setLayoutData(gridData);
+        label.setText(Messages.tabOffsetsComposite_limitTo);
+
+        standard = new Combo(bottomComposite, SWT.READ_ONLY);
+        gridData = new GridData();
+        gridData.verticalAlignment = SWT.CENTER;
+        gridData.widthHint = GuiConstants.SHORT_COMBO_INPUT_WIDTH;
+        standard.setLayoutData(gridData);
+        standard.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				refreshGraph((graphType.getSelectionIndex() == QQPLOT_GRAPH) ? true : false);
+			}
+        });
+
+        label = new Label(bottomComposite, SWT.NONE);
+        label.setText(Messages.tabOffsetsComposite_run);
+        gridData = new GridData();
+        gridData.verticalAlignment = SWT.CENTER;
+        gridData.horizontalIndent = GuiConstants.HORIZONTAL_LABEL_INDENT;
+        label.setLayoutData(gridData);
+
+        run = new Combo(bottomComposite, SWT.READ_ONLY);
+        gridData = new GridData();
+        gridData.verticalAlignment = SWT.CENTER;
+        gridData.widthHint = GuiConstants.SHORT_COMBO_INPUT_WIDTH;
+        run.setLayoutData(gridData);
+        run.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				graph.setTimeRange(null, null);
+				refreshGraph((graphType.getSelectionIndex() == QQPLOT_GRAPH) ? true : false);
+			}
+        });
+
+        graph = new TimeRangeGraph(calculationsReady, SWT.NONE);
         formData = new FormData();
         formData.top = new FormAttachment(header);
         formData.left = new FormAttachment(0);
         formData.right = new FormAttachment(100);
-        formData.bottom = new FormAttachment(100);
+        formData.bottom = new FormAttachment(bottomComposite, -GuiConstants.INTER_WIDGET_GAP);
         graph.setLayoutData(formData);
         graph.setVerticalAxisShowLabel(true);
         graph.setVerticalAxisShowValues(true);
-        graph.setHorizontalAxisLabel(Messages.tabOffsetsComposite_horizontalLabel);
         graph.setHorizontalAxisShowLabel(true);
         graph.setHorizontalAxisShowValues(false);
+        graph.setXRangeEnabled(true);
+        graph.addListener(new TimeRangeSelectorListener() {
+			@Override
+			public void timeRangeSelectionStarted() {
+				run.select(0);
+				refreshGraph(false);
+			}
+
+			@Override
+			public void timeRangeSelectionComplete() {
+				refreshGraph(false);
+			}
+        });
 
 		stackLayout.topControl = waitingOnInput;
 		layout();
@@ -209,9 +337,7 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 
 	private void refreshGraph(boolean autoScale) {
 		graph.setRedraw(false);
-
 		graph.removeAllDrawableObjects();
-		graph.addDrawableObjectFirst(new LineWithoutEnds(0, 0, ColorCache.getColor(getDisplay(), ColorCache.BLACK), null));
 
 		HashSet<Integer> alreadyGraphedStandardExpectation = new HashSet<Integer>();
 
@@ -227,12 +353,19 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 			isotopicScale = comparableStandardOutputs.get(selectionIndex).getIsotopicScale();
 		}
 
+		Statistics statistics = new Statistics();
+		QQPlot qqplot = new QQPlot();
+
 		if (columnName != null && corrIntervalScratchPad != null) {
+			double startTime = Double.isNaN(graph.getStartTime()) ? Double.NaN : graph.getStartTime() * 1000;
+			double endTime = Double.isNaN(graph.getEndTime()) ? Double.NaN : graph.getEndTime() * 1000;
+
 			for (ReplicatePad replicatePad : corrIntervalScratchPad.getChildren()) {
 				double date = (double) (replicatePad.getDate() / 1000);
 
 				Object value = replicatePad.getValue(columnName);
 				Double doubleValue = null;
+				Double statsValue = null;
 
 				if (value instanceof Accumulator) {
 					doubleValue = ((Accumulator) value).getMeanStdDevSampleAndStdError()[0];
@@ -248,10 +381,21 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 					continue;
 				}
 
-				Object disabled = replicatePad.getValue(Pad.DISABLED);
-				boolean booleanDisabled = disabled != null && ((Boolean) disabled) == true;
+				PointType pointType = PointType.NORMAL;
 
-				PointDesign pointDesign = getPointDesign(replicatePad.getSourceId(), booleanDisabled);
+				Object disabled = replicatePad.getValue(Pad.DISABLED);
+				boolean booleanDisabled = (disabled != null && ((Boolean) disabled) == true);
+				pointType = booleanDisabled ? PointType.FADED : pointType;
+
+				Integer selectedSourceId = indexToSourceId.get(standard.getSelectionIndex());
+				pointType = (selectedSourceId != null && selectedSourceId != replicatePad.getSourceId()) ? PointType.UNSELECTED : pointType;  
+
+				String selectedRun = indexToRun.get(run.getSelectionIndex());
+				pointType = (selectedRun != null && !selectedRun.equals(replicatePad.getValue(InputParameter.Run.toString()))) ? PointType.UNSELECTED : pointType;  
+
+				pointType = (!Double.isNaN(startTime) && (replicatePad.getDate() < startTime || replicatePad.getDate() > endTime)) ? PointType.UNSELECTED : pointType;
+
+				PointDesign pointDesign = getPointDesign(replicatePad.getSourceId(), pointType);
 
 				if (pointDesign == null) {
 					continue;
@@ -296,29 +440,108 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 				tooltipList.add(Messages.tabOffsetsComposite_measured + doubleValue.toString());
 				tooltipList.add(Messages.tabOffsetsComposite_expected + expected.toString());
 
-				if (!absolute.getSelection()) {
+				if (graphType.getSelectionIndex() == RELATIVE_GRAPH) {
 					doubleValue = doubleValue - expected;
+					statsValue = doubleValue;
+					graph.setHorizontalAxisShowValues(false);
+					graph.setXRangeEnabled(true);
 					tooltipList.add(Messages.tabOffsetsComposite_difference + doubleValue);
+			        graph.setHorizontalAxisLabel(Messages.tabOffsetsComposite_horizontalLabel);
 			        graph.setVerticalAxisLabel(MessageFormat.format(Messages.tabOffsetsComposite_verticalRelativeLabel, standardParameter, standardParameter));
 
-				} else {
+				} else if (graphType.getSelectionIndex() == ABSOLUTE_GRAPH) {
+					statsValue = doubleValue - expected;
+					graph.setHorizontalAxisShowValues(false);
+					graph.setXRangeEnabled(true);
+
 					if (!alreadyGraphedStandardExpectation.contains(standard.getId())) {
 						graph.addDrawableObjectFirst(new LineWithoutEnds(0.0d, expected, Double.NaN, expected, ColorCache.getColorFromPalette(getDisplay(), standard.getColorId()), null));
 						alreadyGraphedStandardExpectation.add(standard.getId());					
 					}
 
 					tooltipList.add(Messages.tabOffsetsComposite_difference + (doubleValue - expected));
+			        graph.setHorizontalAxisLabel(Messages.tabOffsetsComposite_horizontalLabel);
 			        graph.setVerticalAxisLabel(MessageFormat.format(Messages.tabOffsetsComposite_verticalAbsoluteLabel, standardParameter));
-				}
 
+				} else {
+					doubleValue = doubleValue - expected;
+					statsValue = doubleValue;
+					graph.setHorizontalAxisShowValues(true);
+					graph.setXRangeEnabled(false);
+			        graph.setHorizontalAxisLabel(MessageFormat.format(Messages.tabOffsetsComposite_horizontalQQLabel, standardParameter, standardParameter));
+			        graph.setVerticalAxisLabel(MessageFormat.format(Messages.tabOffsetsComposite_verticalRelativeLabel, standardParameter, standardParameter));
+				}
+ 
 				Point point = new Point(date, doubleValue, pointDesign);
 				point.setTooltip(tooltipList.toArray(new String[tooltipList.size()]));
 				point.setInfluencesAutoscale(!booleanDisabled);
+				replicatePad.getValue(Pad.ID);
+				final int replicateId = replicatePad.getReplicateId();
+				point.addMenuItem(new MenuItemListener() {
+					@Override
+					public void handleEvent(Event event) {
+						PartManager.showRawDataPerspective(getEasotopePart());
+						PartManager.openStandardReplicate(getEasotopePart(), replicateId);
+					}
 
-				graph.addDrawableObjectLast(point);
+					@Override
+					public String getName() {
+						return Messages.tabOffsetsComposite_openReplicate;
+					}
+				});
+				if (LoginInfoCache.getInstance().getPermissions().isCanEditAllReplicates()) {
+					point.addMenuItem(new MenuItemListener() {
+						@Override
+						public void handleEvent(Event event) {
+							InputCache.getInstance().replicateDisabledStatusUpdate(replicateId, !booleanDisabled);
+						}
+	
+						@Override
+						public String getName() {
+							return booleanDisabled ? Messages.tabOffsetsComposite_enableReplicate : Messages.tabOffsetsComposite_disableReplicate;
+						}
+					});
+				}
+
+				if (graphType.getSelectionIndex() == QQPLOT_GRAPH) {
+					if (pointType == PointType.NORMAL) {
+						qqplot.addValue(doubleValue, point);
+					}
+				} else {
+					graph.addDrawableObjectLast(point);
+				}
+
+				if (pointType == PointType.NORMAL) {
+					statistics.addNumber(statsValue);
+				}
 			}
 		}
 
+		if (graphType.getSelectionIndex() == QQPLOT_GRAPH) {
+			graph.addDrawableObjectFirst(new LineWithoutEnds(1.0, 0.0, ColorCache.getColor(getDisplay(), ColorCache.BLACK), null));
+
+			for (org.easotope.shared.math.QQPlot.Point p : qqplot.getPoints()) {
+				Point point = (Point) p.getObject();
+				point.setX(p.getTheoreticalQuantile());
+				graph.addDrawableObjectLast(point);
+			}
+
+		} else {
+			graph.addDrawableObjectFirst(new LineWithoutEnds(0, 0, ColorCache.getColor(getDisplay(), ColorCache.BLACK), null));
+		}
+
+		Preferences preferences = LoginInfoCache.getInstance().getPreferences();
+		String numberAsString = DoubleTools.format(statistics.getMean(), preferences.getLeadingExponent(), preferences.getForceExponent());
+		mean.setText(numberAsString);
+
+		numberAsString = DoubleTools.format(statistics.getStandardDeviationSample(), preferences.getLeadingExponent(), preferences.getForceExponent());
+		stddev.setText(numberAsString);
+
+		numberAsString = DoubleTools.format(statistics.getStandardErrorSample(), preferences.getLeadingExponent(), preferences.getForceExponent());
+		stderr.setText(numberAsString);
+
+		bottomComposite.layout();
+		
 		if (autoScale) {
 			graph.autoScale();
 		}
@@ -326,12 +549,34 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 		graph.setRedraw(true);
 	}
 
-	private PointDesign getPointDesign(int sourceId, boolean faded) {
-		PointDesign pointDesign = faded ? fadedPointDesigns.get(sourceId) : pointDesigns.get(sourceId);
+	private PointDesign getPointDesign(int sourceId, PointType pointType) {
+		PointDesign pointDesign = null;
+
+		switch (pointType) {
+			case NORMAL:
+				pointDesign = pointDesigns.get(sourceId);
+				break;
+			case FADED:
+				pointDesign = fadedPointDesigns.get(sourceId);
+				break;
+			case UNSELECTED:
+				pointDesign = unselectedPointDesigns.get(sourceId);
+				break;
+		}
 
 		if (pointDesign == null) {
 			if (StandardCache.getInstance().standardGet(sourceId, this) == Command.UNDEFINED_ID) {
-				pointDesign = faded ? fadedPointDesigns.get(sourceId) : pointDesigns.get(sourceId);
+				switch (pointType) {
+					case NORMAL:
+						pointDesign = pointDesigns.get(sourceId);
+						break;
+					case FADED:
+						pointDesign = fadedPointDesigns.get(sourceId);
+						break;
+					case UNSELECTED:
+						pointDesign = unselectedPointDesigns.get(sourceId);
+						break;
+				}
 			}
 		}
 
@@ -340,6 +585,82 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 
 	public void setCorrIntervalInfo(AnalysisCompiled analysisCompiled, ScratchPad<ReplicatePad> corrIntervalScratchPad) {
 		this.corrIntervalScratchPad = corrIntervalScratchPad;
+
+		if (corrIntervalScratchPad != null) {
+			TreeSet<NameAndId> namesAndIds = new TreeSet<NameAndId>();
+			HashSet<String> seenRunNames = new HashSet<String>();
+			ArrayList<String> runNames = new ArrayList<String>();
+
+			for (ReplicatePad replicatePad : corrIntervalScratchPad.getChildren()) {
+				if (standardList != null) {
+					int sourceId = replicatePad.getSourceId();
+					StandardListItem standardListItem = standardList.get(sourceId);
+	
+					if (standardListItem != null) {
+						namesAndIds.add(new NameAndId(standardListItem.getName(), sourceId));
+					}
+				}
+
+				String run = (String) replicatePad.getValue(InputParameter.Run.toString());
+
+				if (run != null && !seenRunNames.contains(run)) {
+					seenRunNames.add(run);
+					runNames.add(run);
+				}
+			}
+
+			int standardIndex = standard.getSelectionIndex();
+			String previousStandard = (standard.isEnabled() && standardIndex != -1) ? standard.getItem(standardIndex) : null;
+
+			indexToSourceId.clear();
+			standard.removeAll();
+
+			if (!namesAndIds.isEmpty()) {
+				int newSelectionIndex = -1;
+				standard.add("");
+
+				for (NameAndId nameAndId : namesAndIds) {
+					if (nameAndId.getName().equals(previousStandard)) {
+						newSelectionIndex = standard.getItemCount();
+					}
+	
+					indexToSourceId.put(standard.getItemCount(), nameAndId.getId());
+					standard.add(nameAndId.getName());
+				}
+				
+				if (newSelectionIndex != -1) {
+					standard.select(newSelectionIndex);
+				}
+			}
+
+			standard.setEnabled(!namesAndIds.isEmpty());
+
+			int runIndex = run.getSelectionIndex();
+			String previousRun = (run.isEnabled() && runIndex != -1) ? run.getItem(runIndex) : null;
+
+			indexToRun.clear();
+			run.removeAll();
+
+			if (!runNames.isEmpty()) {
+				int newSelectionIndex = -1;
+				run.add("");
+
+				for (String name : runNames) {
+					if (name.equals(previousRun)) {
+						newSelectionIndex = run.getItemCount();
+					}
+
+					indexToRun.put(run.getItemCount(), name);
+					run.add(name);
+				}
+
+				if (newSelectionIndex != -1) {
+					run.select(newSelectionIndex);
+				}
+			}
+
+			run.setEnabled(!runNames.isEmpty());
+		}
 
 		if (analysisCompiled != null) {
 			int currentlySelectedIndex = -1;
@@ -429,6 +750,9 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 
 		color = ColorCache.getFadedColorFromPalette(getDisplay(), standard.getColorId());
 		fadedPointDesigns.put(standard.getId(), new PointDesign(getDisplay(), color, PointStyle.values()[standard.getShapeId()]));
+
+		color = ColorCache.getColor(getDisplay(), ColorCache.LIGHT_GREY);
+		unselectedPointDesigns.put(standard.getId(), new PointDesign(getDisplay(), color, PointStyle.values()[standard.getShapeId()]));
 	}
 
 	@Override
@@ -449,5 +773,28 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 	@Override
 	public void standardGetError(int commandId, String message) {
 		getEasotopePart().raiseError(message);
+	}
+
+	public class NameAndId implements Comparable<NameAndId> {
+		private String name;
+		private int id;
+		
+		public NameAndId(String name, int id) {
+			this.name = name;
+			this.id = id;
+		}
+		
+		public String getName() {
+			return name;
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		@Override
+		public int compareTo(NameAndId that) {
+			return this.name.compareTo(that.name);
+		}
 	}
 }

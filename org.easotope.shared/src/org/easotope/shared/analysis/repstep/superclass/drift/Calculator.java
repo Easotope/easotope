@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -36,6 +36,7 @@ import org.easotope.shared.analysis.execute.RepStepCalculator;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
 import org.easotope.shared.analysis.repstep.superclass.drift.dependencies.Dependencies;
 import org.easotope.shared.analysis.tables.RepStep;
+import org.easotope.shared.core.scratchpad.Pad;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
 import org.easotope.shared.math.LinearRegression;
 import org.easotope.shared.math.Statistics;
@@ -112,7 +113,7 @@ public abstract class Calculator extends RepStepCalculator {
 			Standard standard = standardIdToStandard.get(standardId);
 
 			uniqueStandardIds.add(replicatePad.getSourceId());
-			driftPoints.add(new DriftPoint(standard, expectedValue, measuredValue, replicatePad.getDate(), false));
+			driftPoints.add(new DriftPoint(replicatePad.getReplicateId(), standard, expectedValue, measuredValue, replicatePad.getDate(), false));
 		}
 
 		Double value = getDouble(replicatePads[targetPadNumber], getInputLabel());
@@ -132,7 +133,7 @@ public abstract class Calculator extends RepStepCalculator {
 			Double measuredValue = getDouble(replicatePad, getInputLabel());
 			Standard standard = standardIdToStandard.get(standardId);
 
-			driftPoints.add(new DriftPoint(standard, expectedValue, measuredValue, replicatePad.getDate(), true));
+			driftPoints.add(new DriftPoint(replicatePad.getReplicateId(), standard, expectedValue, measuredValue, replicatePad.getDate(), true));
 		}
 
 		replicatePads[targetPadNumber].setVolatileData(getVolatiles().getVolatileDataDriftPointsKey(), driftPoints);
@@ -141,7 +142,8 @@ public abstract class Calculator extends RepStepCalculator {
 		if (value != null) {
 			double oldValue = value;
 			value += offset;
-			driftPoints.add(new DriftPoint(null, value, oldValue, replicatePads[targetPadNumber].getDate(), false));
+			boolean isDisabled = (Boolean) replicatePads[targetPadNumber].getValue(Pad.DISABLED);
+			driftPoints.add(new DriftPoint(replicatePads[targetPadNumber].getReplicateId(), null, value, oldValue, replicatePads[targetPadNumber].getDate(), isDisabled));
 		}
 
 		replicatePads[targetPadNumber].setValue(labelToColumnName(getOutputLabel()), value);
@@ -175,18 +177,24 @@ public abstract class Calculator extends RepStepCalculator {
 	}
 
 	public class DriftPoint {
+		private int replicateId;
 		private Standard standard;
 		private double expectedValue;
 		private double measuredValue;
 		private long date;
 		private boolean disabled;
 
-		public DriftPoint(Standard standard, double expectedValue, double measuredValue, long date, boolean disabled) {
+		public DriftPoint(int replicateId, Standard standard, double expectedValue, double measuredValue, long date, boolean disabled) {
+			this.replicateId = replicateId;
 			this.standard = standard;
 			this.expectedValue = expectedValue;
 			this.measuredValue = measuredValue;
 			this.date = date;
 			this.disabled = disabled;
+		}
+
+		public int getReplicateId() {
+			return replicateId;
 		}
 
 		public Standard getStandard() {

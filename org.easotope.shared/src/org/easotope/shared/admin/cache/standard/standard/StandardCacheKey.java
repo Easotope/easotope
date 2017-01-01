@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -31,6 +31,6 @@ import org.easotope.shared.core.cache.CacheKey;
 
 public class StandardCacheKey extends CacheKey {
 	public StandardCacheKey(int standardId) {
-		super(StandardPlugin.class.getName() + " " + standardId);
+		super(StandardCacheKey.class.getName() + " " + standardId);
 	}
 }

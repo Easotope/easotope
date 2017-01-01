@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -52,7 +52,7 @@ public class Preferences extends TableObjectWithIntegerId {
 	@DatabaseField(columnName=CHECKFORUPDATES_FIELD_NAME)
 	private boolean checkForUpdates = true;
 	@DatabaseField(columnName=SHOWTIMEZONE_FIELD_NAME)
-	private boolean showTimeZone = true;
+	private boolean showTimeZone = false;
 	@DatabaseField(columnName=PREVIOUSBESTSERVER_FIELD_NAME)
 	private int previousBestServer = 0;
 	@DatabaseField(columnName=LEADINGEXPONENT_FIELD_NAME)

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -27,8 +27,6 @@
 
 package org.easotope.shared.plugin.analysis.databaseupgradehandler;
 
-import java.util.List;
-
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.dbcore.tables.RawFile;
@@ -50,6 +48,7 @@ import org.easotope.shared.rawdata.tables.old.ScanV1;
 import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.support.ConnectionSource;
 
 public class Upgrade20160105 extends DatabaseUpgrade {
@@ -86,8 +85,26 @@ public class Upgrade20160105 extends DatabaseUpgrade {
 			while (scanIterator.hasNext()) {
 				ScanV1 scan = scanIterator.next();
 
-				for (ScanFileParsedV0 scanFileParsedV0 : scanFileParsedDao.queryForEq(ScanFileParsedV0.SCANID_FIELD_NAME, scan.getId())) {
-					RawFile rawFile = rawFileDao.queryForId(scanFileParsedV0.getRawFileId());
+				GenericRawResults<String[]> rawResults = scanFileParsedDao.queryRaw("select " + ScanFileParsedV0.RAWFILEID_FIELD_NAME + " from " + ScanFileParsedV0.TABLE_NAME + " where " + ScanFileParsedV0.SCANID_FIELD_NAME + " = " + scan.getId());
+				
+				for (String[] result : rawResults.getResults()) {
+					if (result == null || result.length == 0) {
+						continue;
+					}
+
+					Integer rawFileId = null;
+
+					try {
+						rawFileId = Integer.parseInt(result[0]);
+					} catch (NumberFormatException e) {
+						// ignore
+					}
+
+					if (rawFileId == null) {
+						continue;
+					}
+
+					RawFile rawFile = rawFileDao.queryForId(rawFileId);
 					byte[] fileBytes = rawFileManager.readRawFile(rawFile.getDatabaseName());
 
 					ScanFileParsedV2 newScanFileParsedV1 = ComputeScanFileParsed.compute(rawFile, fileBytes, true);
@@ -117,10 +134,10 @@ public class Upgrade20160105 extends DatabaseUpgrade {
 						scan.setChannelToMzX10(newScanFileParsedV1.getChannelToMzX10());
 					}
 
-					List<ScanFileParsedV0> scanFileParseds = scanFileParsedDao.queryForEq(ScanFileParsedV0.RAWFILEID_FIELD_NAME, rawFile.getId());
+					rawResults = scanFileParsedDao.queryRaw("select " + ScanFileParsedV0.ID_FIELD_NAME + " from " + ScanFileParsedV0.TABLE_NAME + " where " + ScanFileParsedV0.RAWFILEID_FIELD_NAME + " = " + rawFile.getId());
 
-					if (scanFileParseds.size() != 1) {
-						Log.getInstance().log(Level.INFO, Upgrade20160105.class, "Wrong number of ScanFileParsed entries for raw file id " + rawFile.getId() + " - expected 1 but got " + scanFileParseds.size());
+					if (rawResults.getResults().size() != 1) {
+						Log.getInstance().log(Level.INFO, Upgrade20160105.class, "Wrong number of ScanFileParsed entries for raw file id " + rawFile.getId() + " - expected 1 but got " + rawResults.getResults().size());
 						return false;
 					}
 				}
@@ -198,10 +215,10 @@ public class Upgrade20160105 extends DatabaseUpgrade {
 						replicate.setChannelToMzX10(newAcquisitionParsed.getChannelToMzX10());
 					}
 
-					List<AcquisitionParsedV0> acquisitionParseds = acquisitionParsedDao.queryForEq(AcquisitionParsedV0.RAWFILEID_FIELD_NAME, rawFile.getId());
+					GenericRawResults<String[]> rawResults = acquisitionParsedDao.queryRaw("select " + AcquisitionParsedV0.ID_FIELD_NAME + " from " + AcquisitionParsedV0.TABLE_NAME + " where " + AcquisitionParsedV0.RAWFILEID_FIELD_NAME + " = " + rawFile.getId());
 
-					if (acquisitionParseds.size() != 1) {
-						Log.getInstance().log(Level.INFO, Upgrade20160105.class, "Wrong number of AcquisitionParsed entries for raw file id " + rawFile.getId() + " - expected 1 but got " + acquisitionParseds.size());
+					if (rawResults.getResults().size() != 1) {
+						Log.getInstance().log(Level.INFO, Upgrade20160105.class, "Wrong number of AcquisitionParsed entries for raw file id " + rawFile.getId() + " - expected 1 but got " + rawResults.getResults().size());
 						return false;
 					}
 				}

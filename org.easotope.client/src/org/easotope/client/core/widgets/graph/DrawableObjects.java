@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -38,7 +38,7 @@ public class DrawableObjects {
 
 		for (DrawableObject drawable : drawables) {
 			long squareOfDistanceFromThis = drawable.squareOfDistanceFrom(mouseX, mouseY);
-	
+
 			if (squareOfDistanceFromThis <= MAX_ALLOWABLE_SQUARE_OF_DISTANCE && squareOfDistanceFromThis < squareOfDistanceToClosestDrawable) {
 				closestDrawable = drawable;
 				squareOfDistanceToClosestDrawable = squareOfDistanceFromThis;

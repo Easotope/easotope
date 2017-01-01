@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -46,6 +46,10 @@ public class Point extends DrawableObject {
 		this.pointDesign = pointDesign;
 	}
 
+	public void setX(double x) {
+		this.x = x;
+	}
+
 	@Override
 	public double getMaxX() {
 		return x;
@@ -70,6 +74,7 @@ public class Point extends DrawableObject {
 	public long squareOfDistanceFrom(int pixelX, int pixelY) {
 		long xDistance = (this.pixelX - pixelX);
 		long yDistance = (this.pixelY - pixelY);
+
 		return (xDistance * xDistance) + (yDistance * yDistance);
 	}
 

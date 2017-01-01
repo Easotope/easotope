@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -47,7 +47,7 @@ public class DoubleTools {
 		DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
 
 		if (Double.isNaN(number)) {
-			return decimalFormatSymbols.getNaN();
+			return "NaN";
 		}
 
 		if (Double.isInfinite(number)) {

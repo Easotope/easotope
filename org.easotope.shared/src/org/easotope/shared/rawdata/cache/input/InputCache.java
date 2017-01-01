@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -28,9 +28,14 @@
 package org.easotope.shared.rawdata.cache.input;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
+import org.easotope.framework.dbcore.cmdprocessors.Processor;
+import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
+import org.easotope.shared.commands.DisabledStatusUpdate;
 import org.easotope.shared.core.cache.AbstractCache;
 import org.easotope.shared.core.cache.CacheListener;
+import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.rawdata.Acquisition;
 import org.easotope.shared.rawdata.ScanFile;
 import org.easotope.shared.rawdata.cache.input.project.ProjectPlugin;
@@ -108,6 +113,13 @@ public class InputCache extends AbstractCache {
 
 	public synchronized int replicateSave(ReplicateV1 replicate, ArrayList<Acquisition> acquisitions, CacheListener listener) {
 		return saveObject(replicatePlugin, listener, replicate, acquisitions);
+	}
+
+	public synchronized void replicateDisabledStatusUpdate(int replicateId, boolean disabled) {
+		DisabledStatusUpdate disabledStatusUpdate = new DisabledStatusUpdate(replicateId, disabled);
+		Hashtable<String,Object> authenticationObjects = LoginInfoCache.getInstance().getAuthenticationObjects();
+		Processor processor = ProcessorManager.getInstance().getProcessor();
+		processor.process(disabledStatusUpdate, authenticationObjects, null);
 	}
 
 	public synchronized int replicateDelete(int replicateId, CacheListener listener) {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -48,7 +48,7 @@ public class RawDataHelper {
 
 	public static int addReplicateToScratchPad(ScratchPad<ReplicatePad> scratchPad, ReplicateV1 replicate, List<Acquisition> acquisitions) {
 		ReplicateType replicateType = (replicate.getStandardId() == DatabaseConstants.EMPTY_DB_ID) ? ReplicateType.SAMPLE_RUN : ReplicateType.STANDARD_RUN;
-		ReplicatePad replicatePad = new ReplicatePad(scratchPad, replicate.getDate(), replicateType);
+		ReplicatePad replicatePad = new ReplicatePad(scratchPad, replicate.getDate(), replicate.getId(), replicateType);
 		replicatePad.setSourceId((replicate.getStandardId() == DatabaseConstants.EMPTY_DB_ID) ? replicate.getSampleId() : replicate.getStandardId());
 		replicatePad.setValue(Pad.DISABLED, replicate.isDisabled());
 
@@ -58,6 +58,11 @@ public class RawDataHelper {
 
 			AcquisitionPad acquisitionPad = new AcquisitionPad(replicatePad, acquisitionParsed.getDate());
 			acquisitionPad.setValue(Pad.DISABLED, acquisitionInput.isDisabled());
+
+			for (InputParameter inputParameter : acquisitionParsed.getMisc().keySet()) {
+				Object object = acquisitionParsed.getMisc().get(inputParameter);
+				acquisitionPad.setValue(inputParameter.toString(), object);
+			}
 
 			HashMap<InputParameter,Double> backgrounds = new HashMap<InputParameter,Double>();
 

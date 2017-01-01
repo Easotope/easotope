@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -36,6 +36,7 @@ package org.easotope.shared.rawdata;
 
 public enum InputParameterType {
 	Timestamp,
+	GenericData,
 	RefMeasurements,
 	SampleMeasurements,
 	Background,
@@ -45,5 +46,5 @@ public enum InputParameterType {
 	ChannelData,
 	X2Coeff,
 	X1Coeff,
-	X0Coeff,
+	X0Coeff
 };

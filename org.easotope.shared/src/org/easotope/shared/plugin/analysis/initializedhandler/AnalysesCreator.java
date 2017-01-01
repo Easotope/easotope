@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -86,10 +86,12 @@ public class AnalysesCreator {
 			});
 			setStepOutputs(repStep, new String[] {
 					"Mass Spec",
-					"Source Name",
+					"Easotope Name",
 					"Sample Type",
 					"Corr Interval",
-					"Acid Temp"
+					"Acid Temp",
+					"Acquisitions",
+					"Enabled Acquisitions"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -333,10 +335,12 @@ public class AnalysesCreator {
 			});
 			setStepOutputs(repStep, new String[] {
 					"Mass Spec",
-					"Source Name",
+					"Easotope Name",
 					"Sample Type",
 					"Corr Interval",
-					"Acid Temp"
+					"Acid Temp",
+					"Acquisitions",
+					"Enabled Acquisitions"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -602,10 +606,12 @@ public class AnalysesCreator {
 			});
 			setStepOutputs(repStep, new String[] {
 					"Mass Spec",
-					"Source Name",
+					"Easotope Name",
 					"Sample Type",
 					"Corr Interval",
-					"Acid Temp"
+					"Acid Temp",
+					"Acquisitions",
+					"Enabled Acquisitions"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -889,10 +895,12 @@ public class AnalysesCreator {
 			});
 			setStepOutputs(repStep, new String[] {
 					"Mass Spec",
-					"Source Name",
+					"Easotope Name",
 					"Sample Type",
 					"Corr Interval",
-					"Acid Temp"
+					"Acid Temp",
+					"Acquisitions",
+					"Enabled Acquisitions"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -1002,8 +1010,21 @@ public class AnalysesCreator {
 
 			SamStep samStep = new SamStep();
 			samStep.setAnalysisId(samAnalysis.getId());
-			samStep.setClazz("org.easotope.shared.analysis.samstep.co2.co2average.Controller");
+			samStep.setClazz("org.easotope.shared.analysis.samstep.generic.sample.Controller");
 			samStep.setPosition(0);
+			setStepInputs(samStep, new String[] {
+
+			});
+			setStepOutputs(samStep, new String[] {
+
+			});
+			setStepFormats(samStep);
+			samStepDao.create(samStep);
+
+			samStep = new SamStep();
+			samStep.setAnalysisId(samAnalysis.getId());
+			samStep.setClazz("org.easotope.shared.analysis.samstep.co2.co2average.Controller");
+			samStep.setPosition(1);
 			setStepInputs(samStep, new String[] {
 					"δ¹³C VPDB (Final)",
 					"δ¹⁸O VPDB (Final)",
@@ -1026,7 +1047,7 @@ public class AnalysesCreator {
 			samStep = new SamStep();
 			samStep.setAnalysisId(samAnalysis.getId());
 			samStep.setClazz("org.easotope.shared.analysis.samstep.co2.clumpaverage.Controller");
-			samStep.setPosition(1);
+			samStep.setPosition(2);
 			setStepInputs(samStep, new String[] {
 					"Δ47 CDES (Final)"
 			});
@@ -1041,7 +1062,7 @@ public class AnalysesCreator {
 			samStep = new SamStep();
 			samStep.setAnalysisId(samAnalysis.getId());
 			samStep.setClazz("org.easotope.shared.analysis.samstep.co2.clumptemp.Controller");
-			samStep.setPosition(2);
+			samStep.setPosition(3);
 			setStepInputs(samStep, new String[] {
 					"Acid Temp",
 					"Clumped AFF",
@@ -1096,8 +1117,21 @@ public class AnalysesCreator {
 
 			samStep = new SamStep();
 			samStep.setAnalysisId(samAnalysis.getId());
-			samStep.setClazz("org.easotope.shared.analysis.samstep.co2.co2average.Controller");
+			samStep.setClazz("org.easotope.shared.analysis.samstep.generic.sample.Controller");
 			samStep.setPosition(0);
+			setStepInputs(samStep, new String[] {
+
+			});
+			setStepOutputs(samStep, new String[] {
+
+			});
+			setStepFormats(samStep);
+			samStepDao.create(samStep);
+
+			samStep = new SamStep();
+			samStep.setAnalysisId(samAnalysis.getId());
+			samStep.setClazz("org.easotope.shared.analysis.samstep.co2.co2average.Controller");
+			samStep.setPosition(1);
 			setStepInputs(samStep, new String[] {
 					"δ¹³C VPDB (Final)",
 					"δ¹⁸O VPDB (Final)",

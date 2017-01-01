@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -88,9 +88,7 @@ public class Upgrade20160306 extends DatabaseUpgrade {
 			Dao<User,Integer> userDao = DaoManager.createDao(connectionSource, User.class);
 
 			for (User user : userDao.queryForEq(User.ISADMIN_FIELD_NAME, true)) {
-				Permissions permissions = permissionsDao.queryForId(user.getId());
-				permissions.setCanEditConstants(true);
-				permissionsDao.update(permissions);
+				permissionsDao.executeRaw("UPDATE " + Permissions.TABLE_NAME + " SET " + Permissions.CANEDITCONSTANTS_FIELD_NAME + "=1 WHERE " + Permissions.USERID_FIELD_NAME + "=" + user.getId());
 			}
 
 		} catch (Exception e) {

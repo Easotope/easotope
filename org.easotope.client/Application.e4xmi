@@ -35,7 +35,7 @@
       <children xsi:type="advanced:Perspective" xmi:id="_5qyR4KKIEea--pdW5aFKrA" elementId="org.easotope.sampleanalysis.perspective">
         <children xsi:type="basic:Part" xmi:id="_8ntWAKKIEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.part.1" contributionURI="bundleclass://org.easotope.client/org.easotope.client.analysis.part.analysis.sample.SampleAnalysisPart" label="%samAnalysisEditorPart"/>
       </children>
-      <children xsi:type="advanced:Perspective" xmi:id="_Eh6zgKKJEea--pdW5aFKrA" elementId="org.easotope.export.perspective">
+      <children xsi:type="advanced:Perspective" xmi:id="_Eh6zgKKJEea--pdW5aFKrA" elementId="org.easotope.tableoverview.perspective">
         <children xsi:type="basic:Part" xmi:id="_F4rLEKKJEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.part.2" contributionURI="bundleclass://org.easotope.client/org.easotope.client.analysis.part.export.ExportPart" label="%exportEditorPart"/>
       </children>
     </children>
@@ -52,7 +52,11 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_SgEQoKGdEea7k6glbK9iUg" elementId="org.easotope.rawdata.handledmenuitem.sampleruns" label="%rawdataMenuItem" command="_AUQAcKGdEea7k6glbK9iUg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_BSVcoKKKEea--pdW5aFKrA" elementId="org.easotope.analysis.handledmenuitem" label="%replicateAnalysisMenuItem" command="_WtLqEKKJEea--pdW5aFKrA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_HFMzIKKKEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.handledmenuitem.0" label="%sampleAnalysisMenuItem" command="_Yj57IKKJEea--pdW5aFKrA"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_Ms0i8KKKEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.handledmenuitem.1" label="%exportMenuItem" command="_bbQiwKKJEea--pdW5aFKrA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_Ms0i8KKKEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.handledmenuitem.1" label="%tableOverviewMenuItem" command="_bbQiwKKJEea--pdW5aFKrA"/>
+      </children>
+      <children xsi:type="menu:Menu" xmi:id="_hGy9cL4NEea4h7iswIQV5Q" elementId="org.easotope.client.menu.specialmenu" toBeRendered="false" visible="false" label="%commandsMenu">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_OzNu4LhbEeap39TQzuUalg" elementId="" label="%batchImportMenuItem" command="_rvq3ILhbEeap39TQzuUalg"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_4l8vgL4NEea4h7iswIQV5Q" elementId="org.easotope.client.handledmenuitem.trimdatabasemenuitem" label="%trimDatabaseMenuItem" command="_Hs9x8L4OEea4h7iswIQV5Q"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_UwYopVAEEeKcQrcP49hWoA" label="Help">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_UwYoplAEEeKcQrcP49hWoA" label="%aboutMenuItem" command="_UwYBpFAEEeKcQrcP49hWoA"/>
@@ -65,6 +69,7 @@
           <children xsi:type="menu:HandledMenuItem" xmi:id="_6sOKkFskEeKluZjCqYTjtw" elementId="org.easotope.client.handledmenuitem.serverDocs" label="%serverDocsMenuItem" command="_3T9DsFsjEeKluZjCqYTjtw"/>
           <children xsi:type="menu:HandledMenuItem" xmi:id="_jrrtYNVgEeW-Jvbf4UNAOw" elementId="org.easotope.client.handledmenuitem.propertyDocs" label="%propertiesDocsMenuItem" command="_QQhfwNVhEeW-Jvbf4UNAOw"/>
         </children>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_MHqQ0MEdEeaUxqyYfZ1GsQ" elementId="org.easotope.client.handledmenuitem.showsourcecode" label="%showSourceCode" command="_DfPpgMEdEeaUxqyYfZ1GsQ"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_ub-LIKj1EeW-9pU1pQgP0Q" elementId="org.easotope.client.handledmenuitem.showreference" label="%showReferenceMenuItem" command="_n_44gKj1EeW-9pU1pQgP0Q"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_ZNVgUPorEeO8HNtiUJnAJg" elementId="org.easotope.client.handledmenuitem.showlicense" label="%showLicenseMenuItem" command="_xnia0PoqEeO8HNtiUJnAJg"/>
       </children>
@@ -97,12 +102,21 @@
   <handlers xmi:id="_FpTZkKGdEea7k6glbK9iUg" elementId="org.easotope.rawdata.handler" contributionURI="bundleclass://org.easotope.client/org.easotope.client.rawdata.handler.ShowRawdata" command="_AUQAcKGdEea7k6glbK9iUg"/>
   <handlers xmi:id="_hjba4KKJEea--pdW5aFKrA" elementId="org.easotope.analysis.handler" contributionURI="bundleclass://org.easotope.client/org.easotope.client.analysis.handler.ShowReplicateAnalysis" command="_WtLqEKKJEea--pdW5aFKrA"/>
   <handlers xmi:id="_nPHLUKKJEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.handler.0" contributionURI="bundleclass://org.easotope.client/org.easotope.client.analysis.handler.ShowSampleAnalysis" command="_Yj57IKKJEea--pdW5aFKrA"/>
-  <handlers xmi:id="_vCyjAKKJEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.handler.1" contributionURI="bundleclass://org.easotope.client/org.easotope.client.analysis.handler.ShowExport" command="_bbQiwKKJEea--pdW5aFKrA"/>
+  <handlers xmi:id="_vCyjAKKJEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.handler.1" contributionURI="bundleclass://org.easotope.client/org.easotope.client.analysis.handler.ShowTableOverview" command="_bbQiwKKJEea--pdW5aFKrA"/>
+  <handlers xmi:id="_ww4uQLhbEeap39TQzuUalg" elementId="org.easotope.client.handler.8" contributionURI="bundleclass://org.easotope.client/org.easotope.client.rawdata.handler.BatchImport" command="_rvq3ILhbEeap39TQzuUalg"/>
+  <handlers xmi:id="_KeOYoL4OEea4h7iswIQV5Q" elementId="org.easotope.client.handler.9" contributionURI="bundleclass://org.easotope.client/org.easotope.client.rawdata.handler.TrimDatabase" command="_Hs9x8L4OEea4h7iswIQV5Q"/>
+  <handlers xmi:id="_96NToMEcEeaUxqyYfZ1GsQ" elementId="org.easotope.client.handler.10" contributionURI="bundleclass://org.easotope.client/org.easotope.client.handler.ShowSourceCode" command="_DfPpgMEdEeaUxqyYfZ1GsQ"/>
   <bindingTables xmi:id="_UwYBnFAEEeKcQrcP49hWoA" bindingContext="_UwYBkVAEEeKcQrcP49hWoA">
     <bindings xmi:id="_UwYBnVAEEeKcQrcP49hWoA" keySequence="M1+Q" command="_rWxIIGu6EeKjfveM34ZtBA"/>
     <bindings xmi:id="_UwYBoFAEEeKcQrcP49hWoA" keySequence="M1+O" command="_xxEggHH5EeKIcZcPgOvz7A"/>
     <bindings xmi:id="_UwYBo1AEEeKcQrcP49hWoA" keySequence="M1+S" command="_UwYBoVAEEeKcQrcP49hWoA"/>
     <bindings xmi:id="_nZgksAmNEeSUNaY5OkIILQ" elementId="org.easotope.client.keybinding.revert" keySequence="M1+Z" command="_SmKTAMSsEeO6rLh-TaDWLg"/>
+    <bindings xmi:id="_HFfY0LoJEeaDjPwDMFa2oA" elementId="org.easotope.client.keybinding.0" keySequence="M1+ALT+B" command="_rvq3ILhbEeap39TQzuUalg"/>
+    <bindings xmi:id="_Z2SQ4MN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.1" keySequence="M1+ALT+C" command="_szha4GrGEeKLaeEeNj89QA"/>
+    <bindings xmi:id="_dgWu4MN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.2" keySequence="M1+ALT+I" command="_AUQAcKGdEea7k6glbK9iUg"/>
+    <bindings xmi:id="_jh1wMMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.3" keySequence="M1+ALT+R" command="_WtLqEKKJEea--pdW5aFKrA"/>
+    <bindings xmi:id="_mwCKgMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.4" keySequence="M1+ALT+S" command="_Yj57IKKJEea--pdW5aFKrA"/>
+    <bindings xmi:id="_pr5esMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.5" keySequence="M1+ALT+T" command="_bbQiwKKJEea--pdW5aFKrA"/>
   </bindingTables>
   <rootContext xmi:id="_UwYBkVAEEeKcQrcP49hWoA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_UwYBklAEEeKcQrcP49hWoA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
@@ -129,7 +143,10 @@
   <commands xmi:id="_AUQAcKGdEea7k6glbK9iUg" elementId="org.easotope.rawdata.command" commandName="showRawdata"/>
   <commands xmi:id="_WtLqEKKJEea--pdW5aFKrA" elementId="org.easotope.analysis.command" commandName="showReplicateAnalysis"/>
   <commands xmi:id="_Yj57IKKJEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.command.0" commandName="showSampleAnalysis"/>
-  <commands xmi:id="_bbQiwKKJEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.command.1" commandName="showExport"/>
+  <commands xmi:id="_bbQiwKKJEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.command.1" commandName="showTableOverview"/>
+  <commands xmi:id="_rvq3ILhbEeap39TQzuUalg" elementId="org.easotope.client.command.batchImport" commandName="batchImport"/>
+  <commands xmi:id="_Hs9x8L4OEea4h7iswIQV5Q" elementId="org.easotope.client.command.trimdatabase" commandName="trimDatabase"/>
+  <commands xmi:id="_DfPpgMEdEeaUxqyYfZ1GsQ" elementId="org.easotope.client.command.showsourcecode" commandName="showSourceCode"/>
   <addons xmi:id="_UwYBlFAEEeKcQrcP49hWoA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_UwYBlVAEEeKcQrcP49hWoA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_UwYBllAEEeKcQrcP49hWoA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -117,7 +117,10 @@ public class AcidTemp extends TableObjectWithIntegerId {
 
 		for (Integer key : values.keySet()) {
 			Object[] objects = values.get(key);
-			valuesAsNumericValues.put(key, new NumericValue((Double) objects[0], (Integer) objects[1], (String) objects[2]));
+			
+			if (objects != null) {
+				valuesAsNumericValues.put(key, new NumericValue((Double) objects[0], (Integer) objects[1], (String) objects[2]));
+			}
 		}
 
 		return (Map<Integer,NumericValue>) Collections.unmodifiableMap(valuesAsNumericValues);
@@ -135,7 +138,10 @@ public class AcidTemp extends TableObjectWithIntegerId {
 
 		for (Integer key : valuesAsNumericValues.keySet()) {
 			NumericValue numericValue = valuesAsNumericValues.get(key);
-			values.put(key, new Object[] { numericValue.getValue(), numericValue.getDescription(), numericValue.getReference() });
+			
+			if (numericValue != null) {
+				values.put(key, new Object[] { numericValue.getValue(), numericValue.getDescription(), numericValue.getReference() });
+			}
 		}
 	}
 }

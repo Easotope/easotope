@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 by Devon Bowen.
+ * Copyright © 2016-2017 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -46,6 +46,7 @@ public class AcquisitionParsedV2 extends TableObjectWithIntegerId {
 	public static final String MEASUREMENTS_FIELD_NAME = "MEASUREMENTS";
 	public static final String BACKGROUND_FIELD_NAME = "BACKGROUND";
 	public static final String CHANNEL_TO_MZX10_FIELD_NAME = "CHANNELTOMZX10";
+	public static final String MISC_FIELD_NAME = "MISC";
 
 	@DatabaseField(columnName=DATE_FIELD_NAME, canBeNull=false, index=true)
 	private long date;
@@ -57,6 +58,8 @@ public class AcquisitionParsedV2 extends TableObjectWithIntegerId {
 	private HashMap<InputParameter,Double> backgrounds;
 	@DatabaseField(columnName=CHANNEL_TO_MZX10_FIELD_NAME, dataType=DataType.SERIALIZABLE)
 	public Integer[] channelToMzX10;
+	@DatabaseField(columnName=MISC_FIELD_NAME, canBeNull=false, dataType=DataType.SERIALIZABLE)
+	private HashMap<InputParameter,Object> misc;
 
 	public AcquisitionParsedV2() { }
 
@@ -75,6 +78,8 @@ public class AcquisitionParsedV2 extends TableObjectWithIntegerId {
 				this.channelToMzX10[i] = acquisitionParsed.channelToMzX10[i];
 			}
 		}
+
+		this.misc = acquisitionParsed.misc == null ? null : new HashMap<InputParameter,Object>(acquisitionParsed.misc);
 	}
 
 	public long getDate() {
@@ -115,5 +120,13 @@ public class AcquisitionParsedV2 extends TableObjectWithIntegerId {
 
 	public void setChannelToMzX10(Integer[] channelToMzX10) {
 		this.channelToMzX10 = channelToMzX10;
+	}
+
+	public HashMap<InputParameter,Object> getMisc() {
+		return misc;
+	}
+
+	public void setMisc(HashMap<InputParameter,Object> misc) {
+		this.misc = misc;
 	}
 }

@@ -137,6 +137,11 @@ public class CalculatedRepAnalysisChoicePlugin extends CachePlugin {
 	}
 
 	@Override
+	public void callbackVerifyAndResend(Object listener, int commandId, String message) {
+		assert(false);
+	}
+
+	@Override
 	public int deleteData(AbstractCache abstractCache, Object[] parameters) {
 		// TODO Auto-generated method stub
 		return 0;

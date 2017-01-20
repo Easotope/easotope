@@ -382,7 +382,7 @@ public class SampleComposite extends EditorComposite implements InputCacheSample
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		Sample sample = new Sample();
 		Sample currentSample = getCurrentSample();
 

@@ -464,7 +464,7 @@ public class BatchImportComposite extends EditorComposite {
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 //		Project project = new Project();
 //		Project currentProject = getCurrentProject();
 //
@@ -506,7 +506,7 @@ public class BatchImportComposite extends EditorComposite {
 
 	public void newSourceList(SourceList sourceList) {
 		for (SourceListItem item : sourceList) {
-			System.err.println("BLAH " + item);
+
 		}
 
 		threadedFileReader.setSourceList(sourceList);

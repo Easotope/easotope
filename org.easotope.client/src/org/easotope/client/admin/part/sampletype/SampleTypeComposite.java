@@ -349,7 +349,7 @@ public class SampleTypeComposite extends EditorComposite implements SampleTypeCa
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		SampleType oldSampleType = getCurrentSampleType();
 		SampleType newSampleType = new SampleType();
 

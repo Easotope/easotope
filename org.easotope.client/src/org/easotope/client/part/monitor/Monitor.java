@@ -66,6 +66,7 @@ public class Monitor implements LogListener, ProcessorManagerListener {
 	private Label commandsExecuted;
 	private Label permissionErrors;
 	private Label executionErrors;
+	private Label verifyAndResends;
 	private Label localEvents;
 	private Label remoteEvents;
 	private Text log;
@@ -99,9 +100,14 @@ public class Monitor implements LogListener, ProcessorManagerListener {
 
 		Label executionErrorsLabel = new Label(gridComposite, SWT.NONE);
 		executionErrorsLabel.setText(Messages.part_dbMonitor_executionErrorsLabel);
-		
+
 		executionErrors = new Label(gridComposite, SWT.NONE);
-		
+
+		Label verifyAndResendLabel = new Label(gridComposite, SWT.NONE);
+		verifyAndResendLabel.setText(Messages.part_dbMonitor_verifyAndResendLabel);
+
+		verifyAndResends = new Label(gridComposite, SWT.NONE);
+
 		Label permissionErrorsLabel = new Label(gridComposite, SWT.NONE);
 		permissionErrorsLabel.setText(Messages.part_dbMonitor_permissionErrorsLabel);
 		
@@ -174,6 +180,7 @@ public class Monitor implements LogListener, ProcessorManagerListener {
 		commandsExecuted.setText(String.valueOf(processor.getNumCommandsExecuted()));
 		permissionErrors.setText(String.valueOf(processor.getNumPermissionErrors()));
 		executionErrors.setText(String.valueOf(processor.getNumExecutionErrors()));
+		verifyAndResends.setText(String.valueOf(processor.getNumVerifyAndResend()));
 		localEvents.setText(String.valueOf(processor.getNumLocalEvents()));
 		remoteEvents.setText(String.valueOf(processor.getNumRemoteEvents()));
 	}

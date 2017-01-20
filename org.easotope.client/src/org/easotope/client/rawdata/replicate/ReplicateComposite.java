@@ -133,6 +133,7 @@ public class ReplicateComposite extends EditorComposite
 	private final String WAITING_FOR_CORR_INTERVAL_LIST_MAIN = "WAITING_FOR_CORR_INTERVAL_LIST_MAIN";
 
 	private boolean standardMode;
+	private boolean currentSaveIsReallyAnExplode;
 
 	private Integer initialUserId;
 	private Integer initialProjectId;
@@ -1205,13 +1206,50 @@ public class ReplicateComposite extends EditorComposite
 	}
 
 	@Override
-	protected void requestSave() {
-		int commandId = InputCache.getInstance().replicateSave(newReplicate, acquisitionsWidget.getAcquisitions(), this);
+	protected void requestSave(boolean isResend) {
+		int commandId = InputCache.getInstance().replicateSave(newReplicate, acquisitionsWidget.getAcquisitions(), currentSaveIsReallyAnExplode, isResend, this);
 		waitingFor(WAITING_FOR_REPLICATE_SAVE, commandId);
+	}
+
+	public boolean canExplode() {
+		User currentUser = LoginInfoCache.getInstance().getUser();
+		Permissions permissions = LoginInfoCache.getInstance().getPermissions();
+
+		boolean isModified = getChainedPart().canRevert();
+		boolean hasError = !getChainedPart().canPersist() && isModified;
+
+		if (hasError) {
+			return false;
+		}
+
+		boolean canEditAllInput = permissions.isCanEditAllReplicates();
+		boolean belongsToUser = getCurrentReplicate() == null ? true : getCurrentReplicate().getUserId() == currentUser.getId();
+		boolean hasGeneralEditPermission = canEditAllInput || belongsToUser;
+
+		boolean potentialExplosion = acquisitionsWidget.getAcquisitions().size() > 1;
+
+		return (hasGeneralEditPermission && potentialExplosion) || isModified;
+	}
+
+	public boolean reallyExplode() {
+		if (acquisitionsWidget.getAcquisitions().size() <= 1) {
+			return true;
+		}
+
+		if (getChainedPart().raiseQuestion(Messages.replicateComposite_reallyExplode)) {
+			currentSaveIsReallyAnExplode = true;
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
 	protected boolean canDelete() {
+		if (getChainedPart().canRevert()) {
+			return false; 
+		}
+
 		ReplicateV1 currentReplicate = getCurrentReplicate();
 
 		if (currentReplicate != null) {
@@ -1305,6 +1343,7 @@ public class ReplicateComposite extends EditorComposite
 	public void replicateSaveCompleted(int commandId) {
 		if (commandIdForKey(WAITING_FOR_REPLICATE_SAVE) == commandId) {
 			saveComplete(WAITING_FOR_REPLICATE_SAVE, null);
+			currentSaveIsReallyAnExplode = false;
 		}
 	}
 
@@ -1312,6 +1351,21 @@ public class ReplicateComposite extends EditorComposite
 	public void replicateSaveError(int commandId, String message) {
 		if (commandIdForKey(WAITING_FOR_REPLICATE_SAVE) == commandId) {
 			raiseSaveOrDeleteError(WAITING_FOR_REPLICATE_SAVE, message);
+			currentSaveIsReallyAnExplode = false;
+		}
+	}
+
+	@Override
+	public void replicateRequestResend(int commandId, String message) {
+		if (commandIdForKey(WAITING_FOR_REPLICATE_SAVE) == commandId) {
+			Permissions permissions = LoginInfoCache.getInstance().getPermissions();
+
+			if (permissions.isCanImportDuplicates()) {
+				raiseResendRequest(WAITING_FOR_REPLICATE_SAVE, Messages.replicateComposite_doYouReallyWantTo + message);
+			} else {
+				raiseSaveOrDeleteError(WAITING_FOR_REPLICATE_SAVE, message);
+				currentSaveIsReallyAnExplode = false;
+			}
 		}
 	}
 

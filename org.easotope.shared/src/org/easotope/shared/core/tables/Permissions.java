@@ -47,6 +47,7 @@ public class Permissions extends TableObjectWithIntegerId {
 	public static final String CANDELETEOWN_FIELD_NAME = "CANDELETEOWN";
 	public static final String CANEDITCONSTANTS_FIELD_NAME = "CANEDITCONSTANTS";
 	public static final String CANBATCHIMPORT_FIELD_NAME = "CANBATCHIMPORT";
+	public static final String CANIMPORTDUPLICATES_FIELD_NAME = "CANIMPORTDUPLICATES";
 
 	@DatabaseField(columnName=USERID_FIELD_NAME, uniqueIndex=true)
 	public int userId;
@@ -68,6 +69,8 @@ public class Permissions extends TableObjectWithIntegerId {
 	private boolean canEditConstants;
 	@DatabaseField(columnName=CANBATCHIMPORT_FIELD_NAME)
 	private boolean canBatchImport;
+	@DatabaseField(columnName=CANIMPORTDUPLICATES_FIELD_NAME)
+	private boolean canImportDuplicates;
 
 	public Permissions() { }
 
@@ -84,6 +87,7 @@ public class Permissions extends TableObjectWithIntegerId {
 		canDeleteOwn = permissions.canDeleteOwn;
 		canEditConstants = permissions.canEditConstants;
 		canBatchImport = permissions.canBatchImport;
+		canImportDuplicates = permissions.canImportDuplicates;
 	}
 
 	public int getUserId() {
@@ -164,5 +168,13 @@ public class Permissions extends TableObjectWithIntegerId {
 
 	public void setCanBatchImport(boolean canBatchImport) {
 		this.canBatchImport = canBatchImport;
+	}
+
+	public boolean isCanImportDuplicates() {
+		return canImportDuplicates;
+	}
+
+	public void setCanImportDuplicates(boolean canImportDuplicates) {
+		this.canImportDuplicates = canImportDuplicates;
 	}
 }

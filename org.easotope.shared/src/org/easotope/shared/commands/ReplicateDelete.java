@@ -81,11 +81,13 @@ public class ReplicateDelete extends Command {
 			AcquisitionParsedV2 acquisitionParsed = acquisitionParsedDao.queryForId(acquisitionInput.getAcquisitionParsedId());
 			acquisitionParsedDao.deleteById(acquisitionParsed.getId());
 
-			RawFile rawFile = rawFileDao.queryForId(acquisitionInput.getRawFileId());
-
-			if (rawFile != null) {
-				rawFileManager.deleteRawFile(rawFile.getDatabaseName());
-				rawFileDao.deleteById(rawFile.getId());
+			if (acquisitionInputDao.queryForEq(AcquisitionInputV0.RAWFILEID_FIELD_NAME, acquisitionInput.getRawFileId()).size() == 0) {
+				RawFile rawFile = rawFileDao.queryForId(acquisitionInput.getRawFileId());
+				
+				if (rawFile != null) {
+					rawFileManager.deleteRawFile(rawFile.getDatabaseName());
+					rawFileDao.deleteById(rawFile.getId());
+				}				
 			}
 		}
 

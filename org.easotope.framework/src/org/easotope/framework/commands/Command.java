@@ -42,7 +42,7 @@ public abstract class Command implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static int UNDEFINED_ID = Integer.MIN_VALUE;
-	public enum Status { NONE, PERMISSION_ERROR, EXECUTION_ERROR, DB_ERROR, OK };
+	public enum Status { NONE, PERMISSION_ERROR, EXECUTION_ERROR, DB_ERROR, VERIFY_AND_RESEND, OK };
 
 	private static int clientUniqueIdCounter = UNDEFINED_ID + 1;
 

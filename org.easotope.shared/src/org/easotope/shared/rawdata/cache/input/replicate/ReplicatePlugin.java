@@ -166,6 +166,9 @@ public class ReplicatePlugin extends CachePlugin {
 		ArrayList<Acquisition> acquisitionList = (ArrayList<Acquisition>) parameters[1];
 		replicateUpdate.setAcquisitions(acquisitionList);
 
+		replicateUpdate.setExplode((Boolean) parameters[2]);
+		replicateUpdate.setAllowDuplicates((Boolean) parameters[3]);
+
 		Processor processor = ProcessorManager.getInstance().getProcessor();
 		processor.process(replicateUpdate, LoginInfoCache.getInstance().getAuthenticationObjects(), abstractCache);
 
@@ -183,6 +186,13 @@ public class ReplicatePlugin extends CachePlugin {
 	public void callbackSaveError(Object listener, int commandId, String message) {
 		if (listener instanceof InputCacheReplicateSaveListener) {
 			((InputCacheReplicateSaveListener) listener).replicateSaveError(commandId, message);
+		}
+	}
+
+	@Override
+	public void callbackVerifyAndResend(Object listener, int commandId, String message) {
+		if (listener instanceof InputCacheReplicateSaveListener) {
+			((InputCacheReplicateSaveListener) listener).replicateRequestResend(commandId, message);
 		}
 	}
 

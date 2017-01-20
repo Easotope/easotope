@@ -307,7 +307,7 @@ public class SamAnalysisComposite extends EditorComposite implements AnalysisCac
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		assert(false);
 	}
 

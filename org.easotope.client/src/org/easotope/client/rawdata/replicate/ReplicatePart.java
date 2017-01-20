@@ -150,4 +150,14 @@ public abstract class ReplicatePart extends ChainedPart implements FileEditor {
 	public void addFiles(String[] newFilenames) {
 		replicateComposite.addFiles(newFilenames);
 	}
+
+	public boolean canExplode() {
+		return replicateComposite.canExplode();
+	}
+
+	public void explode() {
+		if (replicateComposite.reallyExplode()) {
+			replicateComposite.persist();
+		}
+	}
 }

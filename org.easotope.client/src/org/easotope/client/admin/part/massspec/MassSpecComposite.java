@@ -279,7 +279,7 @@ public class MassSpecComposite extends EditorComposite implements MassSpecCacheM
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		MassSpec oldMassSpec = getCurrentMassSpec();
 		MassSpec newMassSpec = new MassSpec();
 

@@ -32,6 +32,7 @@ import org.easotope.shared.core.cache.CacheListener;
 public interface InputCacheReplicateSaveListener extends CacheListener {
 	public void replicateSaveCompleted(int commandId);
 	public void replicateSaveError(int commandId, String message);
+	public void replicateRequestResend(int commandId, String message);
 
 	public void replicateDeleteCompleted(int commandId);
 	public void replicateDeleteError(int commandId, String message);

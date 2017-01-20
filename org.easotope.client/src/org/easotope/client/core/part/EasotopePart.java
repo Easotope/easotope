@@ -88,7 +88,7 @@ public class EasotopePart {
 
 	@CanRevert
 	public boolean canRevert() {
-		return dirtyable.isDirty();
+		return parent.getCursor() == null && dirtyable.isDirty();
 	}
 
 	@Revert
@@ -102,7 +102,7 @@ public class EasotopePart {
 
 	@CanPersist
 	public boolean canPersist() {
-		return canPersist;
+		return parent.getCursor() == null && canPersist;
 	}
 
 	@Persist

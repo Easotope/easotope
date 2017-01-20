@@ -64,31 +64,19 @@ public class Accumulator {
 			return frozenValues;
 		}
 
-		double mean = 0;
-		double standardDeviationSample = 0;
-		double standardErrorSample = 0;
-
 		if (owningPad.children.size() == 1) {
 			Object object = owningPad.children.get(0).getValue(property);
-			
+
 			if (object instanceof Accumulator) {
-				double[] values = ((Accumulator) object).getMeanStdDevSampleAndStdError();
-
-				mean = values[0];
-				standardDeviationSample = values[1];
-				standardErrorSample = values[2];
+				double[] values = ((Accumulator) object).getMeanStdDevSampleAndStdError();				
+				return new double[] { values[0], values[1], values[2] };
 			}
-
-		} else {
-			Statistics statistics = new Statistics();
-			addChildPadsToStatistics(owningPad.children, statistics);
-
-			mean = statistics.getMean();
-			standardDeviationSample = statistics.getStandardDeviationSample();
-			standardErrorSample = statistics.getStandardErrorSample();
 		}
 
-		return new double[] { mean, standardDeviationSample, standardErrorSample };
+		Statistics statistics = new Statistics();
+		addChildPadsToStatistics(owningPad.children, statistics);
+
+		return new double[] { statistics.getMean(), statistics.getStandardDeviationSample(), statistics.getStandardErrorSample() };
 	}
 
 	private void addChildPadsToStatistics(ArrayList<Pad> children, Statistics statistics) {

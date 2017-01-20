@@ -304,7 +304,7 @@ public class SciConstantComposite extends EditorComposite implements SciConstant
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		SciConstant oldSciConstant = getCurrentSciConstant();
 		SciConstant newSciConstant = new SciConstant();
 

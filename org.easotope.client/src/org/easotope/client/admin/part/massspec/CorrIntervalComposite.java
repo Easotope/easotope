@@ -382,7 +382,7 @@ public class CorrIntervalComposite extends EditorComposite implements AnalysisCa
 	}
 
 	@Override
-	public void requestSave() {
+	public void requestSave(boolean isResend) {
 		raiseInfoBoxes();
 
 		CorrIntervalV1 oldCorrInterval = getCurrentCorrInterval();

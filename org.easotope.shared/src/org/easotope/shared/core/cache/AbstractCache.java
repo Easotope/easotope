@@ -357,6 +357,8 @@ public abstract class AbstractCache implements CommandListener, EventListener {
 
 					if (command.getStatus() == Status.OK) {
 						cachePlugin.callbackSaveCompleted(cacheListener, command);
+					} else if (command.getStatus() == Status.VERIFY_AND_RESEND) {
+						cachePlugin.callbackVerifyAndResend(cacheListener, command.getClientUniqueId(), command.getMessage());
 					} else {
 						cachePlugin.callbackSaveError(cacheListener, command.getClientUniqueId(), command.getMessage());
 					}

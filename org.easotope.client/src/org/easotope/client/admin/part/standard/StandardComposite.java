@@ -500,7 +500,7 @@ public class StandardComposite extends EditorComposite implements SampleTypeCach
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		Standard oldStandard = getCurrentStandard();
 		Standard newStandard = new Standard();
 

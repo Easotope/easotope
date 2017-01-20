@@ -50,6 +50,7 @@ public abstract class Processor {
 	private volatile int numDbErrors = 0;
 	private volatile int numPermissionErrors = 0;
 	private volatile int numExecutionErrors = 0;
+	private volatile int numVerifyAndResend = 0;
 	private volatile int numLocalEvents = 0;
 	private volatile int numRemoteEvents = 0;
 
@@ -131,6 +132,14 @@ public abstract class Processor {
 		return numExecutionErrors;
 	}
 
+	public void incNumVerifyAndResend() {
+		numVerifyAndResend++;
+	}
+
+	public int getNumVerifyAndResend() {
+		return numVerifyAndResend;
+	}
+	
 	public void incNumCommandsExecuted() {
 		numCommandsExecuted++;
 	}

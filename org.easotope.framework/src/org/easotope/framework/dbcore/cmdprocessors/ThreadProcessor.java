@@ -114,6 +114,9 @@ public abstract class ThreadProcessor extends Processor implements Runnable {
 					incNumExecutionErrors();
 					break;
 
+				case VERIFY_AND_RESEND:
+					incNumVerifyAndResend();
+
 				case OK:
 					incNumCommandsExecuted();
 					break;

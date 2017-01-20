@@ -329,7 +329,7 @@ public class AcidTempComposite extends EditorComposite implements SampleTypeCach
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		AcidTemp oldAcidTemp = getCurrentAcidTemp();
 		AcidTemp newAcidTemp = new AcidTemp();
 

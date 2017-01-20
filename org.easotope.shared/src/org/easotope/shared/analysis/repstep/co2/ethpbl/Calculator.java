@@ -208,11 +208,12 @@ public class Calculator extends RepStepCalculator {
 					}
 
 					for (int i=0; i<inputLabelRefs.length; i++) {
-						Double slope = (Double) scanFileReplicatePad.getValue(labelToColumnName(inputLabelX1Coeff[i]));
-						Double intercept = (Double) scanFileReplicatePad.getValue(labelToColumnName(inputLabelX0Coeff[i]));
+						Double x2Coeff = (Double) scanFileReplicatePad.getValue(labelToColumnName(inputLabelX2Coeff[i]));
+						Double x1Coeff = (Double) scanFileReplicatePad.getValue(labelToColumnName(inputLabelX1Coeff[i]));
+						Double x0Coeff = (Double) scanFileReplicatePad.getValue(labelToColumnName(inputLabelX0Coeff[i]));
 						Double value = (Double) cyclePad.getValue(labelToColumnName(inputLabelRefs[i]));
 
-						if (slope == null || Double.isNaN(slope) || intercept == null || Double.isNaN(intercept)) {
+						if (x2Coeff == null || Double.isNaN(x2Coeff) || x1Coeff == null || Double.isNaN(x1Coeff) || x0Coeff == null || Double.isNaN(x0Coeff)) {
 							cyclePad.setValue(labelToColumnName(outputLabelRefs[i]), value);
 
 						} else {	
@@ -223,7 +224,7 @@ public class Calculator extends RepStepCalculator {
 									value += background;
 								}
 	
-								double newValue = value - (ref44 * slope + intercept);
+								double newValue = value - (x2Coeff * ref44 * ref44 + x1Coeff * ref44 + x0Coeff);
 								cyclePad.setValue(labelToColumnName(outputLabelRefs[i]), newValue);
 							}
 						}

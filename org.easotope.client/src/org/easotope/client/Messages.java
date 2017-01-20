@@ -117,6 +117,7 @@ public class Messages extends NLS {
 	public static String part_dbMonitor_statusNotConnected;
 	public static String part_dbMonitor_validCommandsLabel;
 	public static String part_dbMonitor_executionErrorsLabel;
+	public static String part_dbMonitor_verifyAndResendLabel;
 	public static String part_dbMonitor_permissionErrorsLabel;
 	public static String part_dbMonitor_localEventsLabel;
 	public static String part_dbMonitor_remoteEventsLabel;
@@ -257,6 +258,7 @@ public class Messages extends NLS {
 	public static String loginInfo_canEditStandards;
 	public static String loginInfo_canEditConstants;
 	public static String loginInfo_canEditAllInput;
+	public static String loginInfo_canImportDuplicates;
 	public static String loginInfo_canBatchImport;
 	public static String loginInfo_canDeleteAll;
 	public static String loginInfo_canDeleteOwn;
@@ -287,6 +289,7 @@ public class Messages extends NLS {
 	public static String userComposite_canEditStandardsLabel;
 	public static String userComposite_canEditConstantsLabel;
 	public static String userComposite_canEditAllInputLabel;
+	public static String userComposite_canImportDuplicatesLabel;
 	public static String userComposite_canBatchImportLabel;
 	public static String userComposite_canDeleteAllLabel;
 	public static String userComposite_canDeleteOwnLabel;
@@ -453,6 +456,8 @@ public class Messages extends NLS {
 	public static String replicateComposite_reallyDelete;
 	public static String replicateComposite_replicateDeleted;
 	public static String replicateComposite_labelPrefix;
+	public static String replicateComposite_doYouReallyWantTo;
+	public static String replicateComposite_reallyExplode;
 
 	public static String scanComposite_idLabel;
 	public static String scanComposite_userLabel;

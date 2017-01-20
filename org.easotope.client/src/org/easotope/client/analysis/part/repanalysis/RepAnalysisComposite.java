@@ -267,7 +267,7 @@ public class RepAnalysisComposite extends EditorComposite implements AnalysisCac
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		assert(false);
 	}
 

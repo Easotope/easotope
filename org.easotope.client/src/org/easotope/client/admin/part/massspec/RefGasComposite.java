@@ -335,7 +335,7 @@ public class RefGasComposite extends EditorComposite implements MassSpecCacheRef
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		RefGas oldRefGas = getCurrentRefGas();
 		RefGas newRefGas = new RefGas();
 

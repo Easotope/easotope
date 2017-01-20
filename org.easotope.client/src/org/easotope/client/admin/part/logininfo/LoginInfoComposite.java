@@ -78,6 +78,7 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 	private Button canEditStandards;
 	private Button canEditConstants;
 	private Button canEditAllInput;
+	private Button canImportDuplicates;
 	private Button canBatchImport;
 	private Button canDeleteAll;
 	private Button canDeleteOwn;
@@ -340,6 +341,12 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 		canEditAllInput.setEnabled(false);
 
 		label = new Label(this, SWT.NONE);
+		label.setText(Messages.loginInfo_canImportDuplicates);
+
+		canImportDuplicates = new Button(this, SWT.CHECK);
+		canImportDuplicates.setEnabled(false);
+
+		label = new Label(this, SWT.NONE);
 		label.setText(Messages.loginInfo_canBatchImport);
 
 		canBatchImport = new Button(this, SWT.CHECK);
@@ -411,6 +418,7 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 		canEditStandards.setSelection(currentPermissions.isCanEditStandards());
 		canEditConstants.setSelection(currentPermissions.isCanEditConstants());
 		canEditAllInput.setSelection(currentPermissions.isCanEditAllReplicates());
+		canImportDuplicates.setSelection(currentPermissions.isCanImportDuplicates());
 		canBatchImport.setSelection(currentPermissions.isCanBatchImport());
 		canDeleteAll.setSelection(currentPermissions.isCanDeleteAll());
 		canDeleteOwn.setSelection(currentPermissions.isCanDeleteOwn());
@@ -520,7 +528,7 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		String password = newPassword1.getText();
 		String tz = indexToTimeZoneId.get(timeZone.getSelectionIndex());
 		boolean showtz = showTimeZone.getSelection();

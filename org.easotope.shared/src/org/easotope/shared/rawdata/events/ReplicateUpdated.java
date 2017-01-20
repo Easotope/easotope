@@ -29,9 +29,9 @@ package org.easotope.shared.rawdata.events;
 
 import java.util.Hashtable;
 
+import org.easotope.framework.dbcore.DatabaseConstants;
 import org.easotope.framework.dbcore.cmdprocessors.Event;
 import org.easotope.framework.dbcore.tables.User;
-import org.easotope.shared.admin.tables.SampleType;
 import org.easotope.shared.core.AuthenticationKeys;
 import org.easotope.shared.core.tables.Permissions;
 import org.easotope.shared.rawdata.tables.ReplicateV1;
@@ -40,43 +40,37 @@ public class ReplicateUpdated extends Event {
 	private static final long serialVersionUID = 1L;
 
 	private ReplicateV1 replicate;
-	private int sampleId;
-	private String sampleName;
-	private SampleType sampleType;
-	private Integer projectId;
+	private int sampleId = DatabaseConstants.EMPTY_DB_ID;
+	private String sampleName = null;
 
-	public ReplicateUpdated(ReplicateV1 replicate, int sampleId, String sampleName, SampleType sampleType, Integer projectId) {
+	public ReplicateUpdated(ReplicateV1 replicate) {
 		this.replicate = replicate;
-		this.sampleId = sampleId;
-		this.sampleName = sampleName;
-		this.sampleType = sampleType;
-		this.projectId = projectId;
 	}
 
 	@Override
 	public boolean isAuthorized(Hashtable<String, Object> authenticationObjects) {
 		User user = (User) authenticationObjects.get(AuthenticationKeys.USER);
 		Permissions permissions = (Permissions) authenticationObjects.get(AuthenticationKeys.PERMISSIONS);
-		return user.id == replicate.getUserId() || permissions.isCanEditAllReplicates();
+		return replicate.getStandardId() != DatabaseConstants.EMPTY_DB_ID || user.id == replicate.getUserId() || permissions.isCanEditAllReplicates();
 	}
 
 	public ReplicateV1 getReplicate() {
 		return replicate;
 	}
-
+	
 	public int getSampleId() {
 		return sampleId;
+	}
+
+	public void setSampleId(int sampleId) {
+		this.sampleId = sampleId;
 	}
 
 	public String getSampleName() {
 		return sampleName;
 	}
 
-	public SampleType getSampleType() {
-		return sampleType;
-	}
-	
-	public Integer getProjectId() {
-		return projectId;
+	public void setSampleName(String sampleName) {
+		this.sampleName = sampleName;
 	}
 }

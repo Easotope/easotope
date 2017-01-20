@@ -350,7 +350,7 @@ public class ScanFilesWidget extends EasotopeComposite {
 					Integer[] originalReferenceChannels = originalScan.getReferenceChannel();
 					Integer origReferenceChannel = (originalReferenceChannels != null) ? originalReferenceChannels[tabCount] : null;
 
-					if (referenceChannel != origReferenceChannel) {
+					if (!referenceChannel.equals(origReferenceChannel)) {
 						return true;
 					}
 

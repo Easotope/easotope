@@ -111,8 +111,8 @@ public class InputCache extends AbstractCache {
 		return getObject(replicatePlugin, listener, replicateId);
 	}
 
-	public synchronized int replicateSave(ReplicateV1 replicate, ArrayList<Acquisition> acquisitions, CacheListener listener) {
-		return saveObject(replicatePlugin, listener, replicate, acquisitions);
+	public synchronized int replicateSave(ReplicateV1 replicate, ArrayList<Acquisition> acquisitions, boolean explode, boolean allowDuplicates, CacheListener listener) {
+		return saveObject(replicatePlugin, listener, replicate, acquisitions, explode, allowDuplicates);
 	}
 
 	public synchronized void replicateDisabledStatusUpdate(int replicateId, boolean disabled) {

@@ -41,7 +41,6 @@ import org.easotope.framework.dbcore.tables.User;
 import org.easotope.framework.dbcore.util.RawFileManager;
 import org.easotope.shared.Messages;
 import org.easotope.shared.admin.events.CorrIntervalsNeedRecalcByTime;
-import org.easotope.shared.admin.tables.SampleType;
 import org.easotope.shared.core.AuthenticationKeys;
 import org.easotope.shared.core.tables.Permissions;
 import org.easotope.shared.rawdata.Acquisition;
@@ -60,44 +59,78 @@ public class ReplicateUpdate extends Command {
 	private static final long serialVersionUID = 1L;
 
 	private ReplicateV1 replicate;
-	private transient Sample sample;
+	private transient ReplicateV1 oldReplicate;
 	private ArrayList<Acquisition> acquisitions;
-	private String name;
-
-	@Override
-	public String getName() {
-		return (name != null) ? name : getClass().getSimpleName() + "(id=" + replicate.getId() + ", date=" + replicate.getDate() + ")";
-	}
+	private transient Sample sample;
+	private boolean explode = false;
+	private boolean allowDuplicates = false;
 
 	@Override
 	public boolean authenticate(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception {
-		if (replicate.getSampleId() != DatabaseConstants.EMPTY_DB_ID) {
-			Dao<Sample,Integer> sampleDao = DaoManager.createDao(connectionSource, Sample.class);
-			sample = sampleDao.queryForId(replicate.getSampleId());
+		User user = (User) authenticationObjects.get(AuthenticationKeys.USER);
+		Permissions permissions = (Permissions) authenticationObjects.get(AuthenticationKeys.PERMISSIONS);
 
-			if (sample == null) {
+		if (allowDuplicates && !permissions.isCanImportDuplicates()) {
+			replicate = null;
+			acquisitions = null;
+			return false;
+		}
+
+		if (permissions.isCanEditAllReplicates()) {
+			return true;
+		}
+
+		if (replicate.getId() != DatabaseConstants.EMPTY_DB_ID) {
+			Dao<ReplicateV1,Integer> replicateDao = DaoManager.createDao(connectionSource, ReplicateV1.class);
+			oldReplicate = replicateDao.queryForId(replicate.getId());
+
+			if (oldReplicate == null || oldReplicate.getUserId() != user.getId()) {
+				replicate = null;
+				acquisitions = null;
 				return false;
 			}
 		}
 
-		User user = (User) authenticationObjects.get(AuthenticationKeys.USER);
-		Permissions permissions = (Permissions) authenticationObjects.get(AuthenticationKeys.PERMISSIONS);
-		return replicate.getSampleId() == DatabaseConstants.EMPTY_DB_ID || (sample != null && user.id == sample.getUserId()) || permissions.isCanEditAllReplicates();
+		if (replicate.getSampleId() != DatabaseConstants.EMPTY_DB_ID) {
+			Dao<Sample,Integer> sampleDao = DaoManager.createDao(connectionSource, Sample.class);
+			sample = sampleDao.queryForId(replicate.getSampleId());
+
+			if (sample == null || sample.getUserId() != user.getId()) {
+				replicate = null;
+				acquisitions = null;
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Override
 	public void execute(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception {
+
+		// if duplicates are not allowed, verify that none exist
+
 		Dao<AcquisitionInputV0,Integer> acquisitionInputDao = DaoManager.createDao(connectionSource, AcquisitionInputV0.class);
 		Dao<AcquisitionParsedV2,Integer> acquisitionParsedDao = DaoManager.createDao(connectionSource, AcquisitionParsedV2.class);
 		Dao<RawFile,Integer> rawFileDao = DaoManager.createDao(connectionSource, RawFile.class);
 
-		String duplicates = getDuplicates(rawFileManager, rawFileDao, acquisitionInputDao, acquisitionParsedDao);
+		if (!allowDuplicates) {
+			String duplicates = getDuplicates(rawFileManager, rawFileDao, acquisitionInputDao, acquisitionParsedDao);
 
-		if (!duplicates.isEmpty()) {
-			String message = MessageFormat.format(Messages.replicateUpdate_duplicateReplicate, duplicates);
-			setStatus(Command.Status.EXECUTION_ERROR, message);
-			return;
+			if (!duplicates.isEmpty()) {			
+				String message = MessageFormat.format(Messages.replicateUpdate_duplicateReplicate, duplicates);
+				setStatus(Command.Status.VERIFY_AND_RESEND, message);
+
+				replicate = null;
+				acquisitions = null;
+
+				return;
+			}
 		}
+
+		// figure out which user id we need to use for the replicates
+
+		Dao<ReplicateV1,Integer> replicateDao = DaoManager.createDao(connectionSource, ReplicateV1.class);
 
 		User user = (User) authenticationObjects.get(AuthenticationKeys.USER);
 		Permissions permissions = (Permissions) authenticationObjects.get(AuthenticationKeys.PERMISSIONS);
@@ -107,19 +140,26 @@ public class ReplicateUpdate extends Command {
 		if (permissions.isCanEditAllReplicates()) {
 			userId = replicate.getUserId();
 		} else {
-			userId = (replicate.getSampleId() != DatabaseConstants.EMPTY_DB_ID) ? sample.getUserId() : user.id;
+			if (replicate.getSampleId() != DatabaseConstants.EMPTY_DB_ID) {
+				userId = sample.getUserId();
+			} else {
+				userId = user.getId();
+			}
 		}
 
 		replicate.setUserId(userId);
 
-		Dao<ReplicateV1,Integer> replicateDao = DaoManager.createDao(connectionSource, ReplicateV1.class);
+		// create or update the primary replicate
+
 		CorrIntervalsNeedRecalcByTime corrIntervalsNeedRecalc = new CorrIntervalsNeedRecalcByTime();
 
 		if (replicate.getId() == DatabaseConstants.EMPTY_DB_ID) {
 			replicateDao.create(replicate);
 
 		} else {
-			ReplicateV1 oldReplicate = replicateDao.queryForId(replicate.getId());
+			if (oldReplicate == null) {
+				oldReplicate = replicateDao.queryForId(replicate.getId());
+			}
 
 			if (oldReplicate == null) {
 				setStatus(Command.Status.EXECUTION_ERROR, Messages.replicateUpdate_doesNotExist, new Object[] { replicate.getId() } );
@@ -133,13 +173,7 @@ public class ReplicateUpdate extends Command {
 			replicateDao.update(replicate);
 		}
 
-		if (replicate.getStandardId() != DatabaseConstants.EMPTY_DB_ID) {
-			corrIntervalsNeedRecalc.addTime(replicate.getMassSpecId(), replicate.getDate());
-		}
-
-		if (corrIntervalsNeedRecalc.getFromToRanges().size() != 0) {
-			addEvent(corrIntervalsNeedRecalc);
-		}
+		// if any of our acquisitions are new create the acquisitionParsed database entries
 
 		HashMap<byte[],RawFile> fileBytesToRawFile = new HashMap<byte[],RawFile>();
 
@@ -179,18 +213,53 @@ public class ReplicateUpdate extends Command {
 			}
 		}
 
-		for (AcquisitionInputV0 acquisitionInput : acquisitionInputDao.queryForEq(AcquisitionInputV0.REPLICATEID_FIELD_NAME, replicate.getId())) {
+		// if we're exploding the replicate, create copies and fill in replicate array
+
+		ArrayList<ReplicateV1> replicates = new ArrayList<ReplicateV1>();
+		replicates.add(replicate);
+
+		if (explode) {
+			boolean isFirst = true;
+
+			for (Acquisition acquisition : acquisitions) {
+				if (isFirst) {
+					if (acquisition.getAcquisitionParsed().getDate() != replicate.getDate()) {
+						replicate.setDate(acquisition.getAcquisitionParsed().getDate());
+						replicateDao.update(replicate);
+					}
+
+					isFirst = false;
+
+				} else {
+					ReplicateV1 newReplicate = new ReplicateV1(replicate);
+					newReplicate.setId(DatabaseConstants.EMPTY_DB_ID);
+					newReplicate.setDate(acquisition.getAcquisitionParsed().getDate());
+
+					replicateDao.create(newReplicate);
+					replicates.add(newReplicate);
+				}
+			}
+		}
+
+		// remove any old acquisitions associated with the primary replicate
+
+		for (AcquisitionInputV0 acquisitionInput : acquisitionInputDao.queryForEq(AcquisitionInputV0.REPLICATEID_FIELD_NAME, replicates.get(0).getId())) {
 			acquisitionInputDao.deleteById(acquisitionInput.getId());
 		}
 
+		// create the AcquisitionInput database entries
+
+		int count = 0;
 		for (Acquisition acquisition : acquisitions) {
 			AcquisitionInputV0 acquisitionInput = acquisition.getAcquisitionInput();
 
 			if (acquisitionInput.getId() == DatabaseConstants.EMPTY_DB_ID) {
 				acquisitionInput.setRawFileId(acquisition.getRawFile().getId());
-				acquisitionInput.setReplicateId(replicate.getId());
 				acquisitionInput.setAcquisitionParsedId(acquisition.getAcquisitionParsed().getId());
 			}
+
+			int replicateId = (replicates.size() == 1) ? replicates.get(0).getId() : replicates.get(count).getId();
+			acquisitionInput.setReplicateId(replicateId);
 
 			acquisitionInput.setId(DatabaseConstants.EMPTY_DB_ID);
 			acquisitionInputDao.create(acquisitionInput);
@@ -199,25 +268,32 @@ public class ReplicateUpdate extends Command {
 			acquisition.setAcquisitionParsed(acquisitionParsed);
 
 			acquisition.setRawFile(null);
+			count++;
 		}
 
-		//TODO this code doesn't seem to be needed - the last two parameters of ReplicateUpdated are never accessed
-		Integer projectId = null;
-		SampleType sampleType = null;
-		
-		if (replicate.getSampleId() != DatabaseConstants.EMPTY_DB_ID) {
-			Dao<Sample,Integer> sampleDao = DaoManager.createDao(connectionSource, Sample.class);
-			Sample sample = sampleDao.queryForId(replicate.getSampleId());
+		// create replicate update event
 
-			projectId = sample.getProjectId();
+		for (ReplicateV1 replicate : replicates) {
+			ReplicateUpdated replicateUpdated = new ReplicateUpdated(replicate);
 
-			Dao<SampleType,Integer> sampleTypeDao = DaoManager.createDao(connectionSource, SampleType.class);
-			sampleType = sampleTypeDao.queryForId(sample.getSampleTypeId());
+			if (sample != null) {
+				replicateUpdated.setSampleId(sample.getId());
+				replicateUpdated.setSampleName(sample.getName());
+			}
+
+			addEvent(replicateUpdated);
+			
+			if (replicate.getStandardId() != DatabaseConstants.EMPTY_DB_ID) {
+				corrIntervalsNeedRecalc.addTime(replicate.getMassSpecId(), replicate.getDate());
+			}
 		}
 
-		addEvent(new ReplicateUpdated(replicate, sample != null ? sample.getId() : DatabaseConstants.EMPTY_DB_ID, sample != null ? sample.getName() : null, sampleType, projectId));
+		if (corrIntervalsNeedRecalc.getFromToRanges().size() != 0) {
+			addEvent(corrIntervalsNeedRecalc);
+		}
 
-		name = getClass().getSimpleName() + "(id=" + replicate.getId() + ", date=" + replicate.getDate() + ")";
+		// remove big data for return trip to client
+
 		replicate = null;
 		acquisitions = null;
 	}
@@ -246,7 +322,7 @@ public class ReplicateUpdate extends Command {
 					}
 				}
 			}
-			
+
 			count++;
 		}
 
@@ -259,5 +335,17 @@ public class ReplicateUpdate extends Command {
 
 	public void setAcquisitions(ArrayList<Acquisition> acquisitions) {
 		this.acquisitions = acquisitions;
+	}
+
+	public boolean isExplode() {
+		return explode;
+	}
+
+	public void setExplode(boolean explode) {
+		this.explode = explode;
+	}
+
+	public void setAllowDuplicates(boolean allowDuplicates) {
+		this.allowDuplicates = allowDuplicates;
 	}
 }

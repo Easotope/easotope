@@ -35,7 +35,6 @@ import org.easotope.framework.dbcore.tables.User;
 import org.easotope.framework.dbcore.util.RawFileManager;
 import org.easotope.shared.Messages;
 import org.easotope.shared.admin.events.CorrIntervalsNeedRecalcByTime;
-import org.easotope.shared.admin.tables.SampleType;
 import org.easotope.shared.core.AuthenticationKeys;
 import org.easotope.shared.core.tables.Permissions;
 import org.easotope.shared.rawdata.events.ReplicateUpdated;
@@ -127,17 +126,13 @@ public class DisabledStatusUpdate extends Command {
 			addEvent(corrIntervalsNeedRecalc);
 		}
 
-		//TODO this code doesn't seem to be needed - the last two parameters of ReplicateUpdated are never accessed
-		Integer projectId = null;
-		SampleType sampleType = null;
-
-		if (replicate.getSampleId() != DatabaseConstants.EMPTY_DB_ID) {
-			projectId = sample.getProjectId();
-
-			Dao<SampleType,Integer> sampleTypeDao = DaoManager.createDao(connectionSource, SampleType.class);
-			sampleType = sampleTypeDao.queryForId(sample.getSampleTypeId());
+		ReplicateUpdated replicateUpdated = new ReplicateUpdated(replicate);
+		
+		if (sample != null) {
+			replicateUpdated.setSampleId(sample.getId());
+			replicateUpdated.setSampleName(sample.getName());
 		}
-
-		addEvent(new ReplicateUpdated(replicate, sample != null ? sample.getId() : DatabaseConstants.EMPTY_DB_ID, sample != null ? sample.getName() : null, sampleType, projectId));
+		
+		addEvent(replicateUpdated);
 	}
 }

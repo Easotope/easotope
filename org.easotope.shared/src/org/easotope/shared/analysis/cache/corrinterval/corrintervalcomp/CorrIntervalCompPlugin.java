@@ -85,7 +85,7 @@ public class CorrIntervalCompPlugin extends CachePlugin {
 		CorrIntervalScratchPad corrIntervalScratchPad = (CorrIntervalScratchPad) ((Object[]) result)[3];
 		@SuppressWarnings("unchecked")
 		List<CorrIntervalError> errors = (List<CorrIntervalError>) ((Object[]) result)[4];
-		
+
 		if (listener instanceof CorrIntervalCacheCorrIntervalCompGetListener) {
 			((CorrIntervalCacheCorrIntervalCompGetListener) listener).corrIntervalCompGetCompleted(commandId, corrIntervalId, dataAnalysisId, repStepParams, corrIntervalScratchPad, errors);
 		}
@@ -162,6 +162,11 @@ public class CorrIntervalCompPlugin extends CachePlugin {
 	@Override
 	public void callbackSaveError(Object listener, int commandId, String message) {
 		// ignore
+	}
+	
+	@Override
+	public void callbackVerifyAndResend(Object listener, int commandId, String message) {
+		assert(false);
 	}
 	
 	@Override

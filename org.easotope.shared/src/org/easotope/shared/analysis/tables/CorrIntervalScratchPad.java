@@ -65,7 +65,7 @@ public class CorrIntervalScratchPad extends TableObjectWithIntegerId {
 	public CorrIntervalScratchPad(CorrIntervalScratchPad analysisResults) {
 		this.corrIntervalId = analysisResults.corrIntervalId;
 		this.dataAnalysisId = analysisResults.dataAnalysisId;
-		this.scratchPad = analysisResults.scratchPad;
+		this.scratchPad = new ScratchPad<ReplicatePad>(analysisResults.scratchPad);
 		this.columnOrdering = new ColumnOrdering(analysisResults.columnOrdering);
 		this.formatLookup = new FormatLookup(analysisResults.formatLookup);
 	}

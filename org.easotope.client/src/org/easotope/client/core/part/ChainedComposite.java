@@ -121,7 +121,7 @@ public abstract class ChainedComposite extends EasotopeComposite {
 		return canPersist;
 	}
 
-	void persist() {
+	public void persist() {
 		
 	}
 

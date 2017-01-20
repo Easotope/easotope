@@ -146,6 +146,11 @@ public class ProjectPlugin extends CachePlugin {
 	}
 	
 	@Override
+	public void callbackVerifyAndResend(Object listener, int commandId, String message) {
+		assert(false);
+	}
+	
+	@Override
 	public int deleteData(AbstractCache abstractCache, Object[] parameters) {
 		assert(false);
 		return 0;

@@ -113,7 +113,7 @@ public abstract class SamStepParamComposite extends EditorComposite implements C
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		RepStepParams repStepParams = null;
 
 		if (getCurrentObject() == null) {

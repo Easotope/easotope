@@ -109,7 +109,7 @@ public abstract class EditorComposite extends ChainedComposite implements CacheL
 	/**
 	 * Build and save the object to the database.
 	 */
-	abstract protected void requestSave();
+	abstract protected void requestSave(boolean isResend);
 
 	/**
 	 * This method is called to ask whether the user has permission to
@@ -225,9 +225,9 @@ public abstract class EditorComposite extends ChainedComposite implements CacheL
 	 * Called from above
 	 */
 	@Override
-	final void persist() {
+	public final void persist() {
 		BlockUntilNoOnePersisting.getInstance().startPersisting();
-		requestSave();
+		requestSave(false);
 		widgetsAreEnabled = false;
 		disableWidgets();
 	}
@@ -407,6 +407,23 @@ public abstract class EditorComposite extends ChainedComposite implements CacheL
 		enableWidgets();
 		waitingForObjectCommandIds.remove(key);
 		getChainedPart().setCursor();
+		BlockUntilNoOnePersisting.getInstance().stopPersisting(true);
+	}
+
+	/**
+	 * Called from below
+	 */
+	protected final void raiseResendRequest(String key, String message) {
+		waitingForObjectCommandIds.remove(key);
+		getChainedPart().setCursor();
+
+		if (getChainedPart().raiseQuestion(message)) {
+			requestSave(true);
+			return;
+		}
+
+		widgetsAreEnabled = true;
+		enableWidgets();
 		BlockUntilNoOnePersisting.getInstance().stopPersisting(true);
 	}
 

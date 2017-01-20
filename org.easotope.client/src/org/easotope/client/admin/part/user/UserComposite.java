@@ -78,6 +78,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 	private VButton canEditStandards;
 	private VButton canEditConstants;
 	private VButton canEditAllInput;
+	private VButton canImportDuplicates;
 	private VButton canBatchImport;
 	private VButton canDeleteAll;
 	private VButton canDeleteOwn;
@@ -279,6 +280,16 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 			}
 		});
 
+		Label canImportDuplicatesLabel = new Label(this, SWT.NONE);
+		canImportDuplicatesLabel.setText(Messages.userComposite_canImportDuplicatesLabel);
+
+		canImportDuplicates = new VButton(this, SWT.CHECK);
+		canImportDuplicates.addSelectionListener(new LoggingSelectionAdaptor() {
+			public void loggingWidgetSelected(SelectionEvent e) {
+				widgetStatusChanged();
+			}
+		});
+
 		Label canBatchImportLabel = new Label(this, SWT.NONE);
 		canBatchImportLabel.setText(Messages.userComposite_canBatchImportLabel);
 
@@ -345,6 +356,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 		canEditStandards.setSelection(currentPermissions.isCanEditStandards());
 		canEditConstants.setSelection(currentPermissions.isCanEditConstants());
 		canEditAllInput.setSelection(currentPermissions.isCanEditAllReplicates());
+		canImportDuplicates.setSelection(currentPermissions.isCanImportDuplicates());
 		canBatchImport.setSelection(currentPermissions.isCanBatchImport());
 		canDeleteAll.setSelection(currentPermissions.isCanDeleteAll());
 		canDeleteOwn.setSelection(currentPermissions.isCanDeleteOwn());
@@ -364,6 +376,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 		canEditStandards.setSelection(false);
 		canEditConstants.setSelection(false);
 		canEditAllInput.setSelection(false);
+		canImportDuplicates.setSelection(false);
 		canBatchImport.setSelection(false);
 		canDeleteAll.setSelection(false);
 		canDeleteOwn.setSelection(false);
@@ -436,6 +449,12 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 			canEditAllInput.revert();
 		}
 
+		canImportDuplicates.setEnabled(hasAdminPermissions && (currentUser == null || currentUser.getId() != 1));
+
+		if (!hasAdminPermissions) {
+			canImportDuplicates.revert();
+		}
+
 		canBatchImport.setEnabled(hasAdminPermissions && (currentUser == null || currentUser.getId() != 1));
 
 		if (!hasAdminPermissions) {
@@ -468,6 +487,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 		canEditStandards.setEnabled(false);
 		canEditConstants.setEnabled(false);
 		canEditAllInput.setEnabled(false);
+		canImportDuplicates.setEnabled(false);
 		canBatchImport.setEnabled(false);
 		canDeleteAll.setEnabled(false);
 		canDeleteOwn.setEnabled(false);
@@ -482,6 +502,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 			canEditStandards.setSelectionButLeaveRevertValue(true);
 			canEditConstants.setSelectionButLeaveRevertValue(true);
 			canEditAllInput.setSelectionButLeaveRevertValue(true);
+			canImportDuplicates.setSelectionButLeaveRevertValue(true);
 			canBatchImport.setSelectionButLeaveRevertValue(true);
 			canDeleteAll.setSelectionButLeaveRevertValue(true);
 			canDeleteOwn.setSelectionButLeaveRevertValue(true);
@@ -500,6 +521,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 		isDirty = isDirty || canEditStandards.hasChanged();
 		isDirty = isDirty || canEditConstants.hasChanged();
 		isDirty = isDirty || canEditAllInput.hasChanged();
+		isDirty = isDirty || canImportDuplicates.hasChanged();
 		isDirty = isDirty || canBatchImport.hasChanged();
 		isDirty = isDirty || canDeleteAll.hasChanged();
 		isDirty = isDirty || canDeleteOwn.hasChanged();
@@ -584,7 +606,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		User oldUser = getCurrentUser();
 		User newUser = new User();
 
@@ -622,6 +644,7 @@ public class UserComposite extends EditorComposite implements UserCacheUserGetLi
 		newPermissions.setCanEditStandards(canEditStandards.getSelection());
 		newPermissions.setCanEditConstants(canEditConstants.getSelection());
 		newPermissions.setCanEditAllReplicates(canEditAllInput.getSelection());
+		newPermissions.setCanImportDuplicates(canImportDuplicates.getSelection());
 		newPermissions.setCanBatchImport(canBatchImport.getSelection());
 		newPermissions.setCanDeleteAll(canDeleteAll.getSelection());
 		newPermissions.setCanDeleteOwn(canDeleteOwn.getSelection());

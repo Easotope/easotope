@@ -86,6 +86,7 @@ public class InitializeWithPermsPrefs extends Initialize {
 		permissions.setCanEditConstants(true);
 		permissions.setCanEditAllReplicates(true);
 		permissions.setCanEditCorrIntervals(true);
+		permissions.setCanImportDuplicates(true);
 		permissions.setCanBatchImport(true);
 		permissions.setCanDeleteAll(true);
 		permissions.setCanDeleteOwn(true);

@@ -230,6 +230,7 @@ public abstract class DatabaseUpgrade {
 		new Upgrade20160704(),
 		new Upgrade20160805(),
 		new Upgrade20161009(),
-		new Upgrade20161129()
+		new Upgrade20161129(),
+		new Upgrade20170101()
 	};
 }

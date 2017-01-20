@@ -44,6 +44,7 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_UwYoolAEEeKcQrcP49hWoA" label="Open" iconURI="" command="_xxEggHH5EeKIcZcPgOvz7A"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_j6jL8MSsEeO6rLh-TaDWLg" elementId="org.easotope.client.handledmenuitem.revert" label="%revertMenuItem" command="_SmKTAMSsEeO6rLh-TaDWLg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_hcuEkILkEeWs4dYdVocaCg" elementId="org.easotope.client.handledmenuitem.delete" label="%deleteMenuItem" command="_pUOMUILkEeWs4dYdVocaCg"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_MEmDoNlkEea1zuye9PVIxg" elementId="org.easotope.client.handledmenuitem.explodemenuitem" label="%explodeMenuItem" command="_BnbhMNlkEea1zuye9PVIxg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_UwYoo1AEEeKcQrcP49hWoA" label="Save" iconURI="" command="_UwYBoVAEEeKcQrcP49hWoA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_UwYopFAEEeKcQrcP49hWoA" label="Quit" command="_rWxIIGu6EeKjfveM34ZtBA"/>
       </children>
@@ -106,6 +107,7 @@
   <handlers xmi:id="_ww4uQLhbEeap39TQzuUalg" elementId="org.easotope.client.handler.8" contributionURI="bundleclass://org.easotope.client/org.easotope.client.rawdata.handler.BatchImport" command="_rvq3ILhbEeap39TQzuUalg"/>
   <handlers xmi:id="_KeOYoL4OEea4h7iswIQV5Q" elementId="org.easotope.client.handler.9" contributionURI="bundleclass://org.easotope.client/org.easotope.client.rawdata.handler.TrimDatabase" command="_Hs9x8L4OEea4h7iswIQV5Q"/>
   <handlers xmi:id="_96NToMEcEeaUxqyYfZ1GsQ" elementId="org.easotope.client.handler.10" contributionURI="bundleclass://org.easotope.client/org.easotope.client.handler.ShowSourceCode" command="_DfPpgMEdEeaUxqyYfZ1GsQ"/>
+  <handlers xmi:id="_HDMmUNlkEea1zuye9PVIxg" elementId="org.easotope.client.handler.11" contributionURI="bundleclass://org.easotope.client/org.easotope.client.handler.ExplodeHandler" command="_BnbhMNlkEea1zuye9PVIxg"/>
   <bindingTables xmi:id="_UwYBnFAEEeKcQrcP49hWoA" bindingContext="_UwYBkVAEEeKcQrcP49hWoA">
     <bindings xmi:id="_UwYBnVAEEeKcQrcP49hWoA" keySequence="M1+Q" command="_rWxIIGu6EeKjfveM34ZtBA"/>
     <bindings xmi:id="_UwYBoFAEEeKcQrcP49hWoA" keySequence="M1+O" command="_xxEggHH5EeKIcZcPgOvz7A"/>
@@ -117,6 +119,7 @@
     <bindings xmi:id="_jh1wMMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.3" keySequence="M1+ALT+R" command="_WtLqEKKJEea--pdW5aFKrA"/>
     <bindings xmi:id="_mwCKgMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.4" keySequence="M1+ALT+S" command="_Yj57IKKJEea--pdW5aFKrA"/>
     <bindings xmi:id="_pr5esMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.5" keySequence="M1+ALT+T" command="_bbQiwKKJEea--pdW5aFKrA"/>
+    <bindings xmi:id="_TiF3oNpvEea6BLlx0ThZ1w" elementId="org.easotope.client.keybinding.6" keySequence="M1+ALT+E" command="_BnbhMNlkEea1zuye9PVIxg"/>
   </bindingTables>
   <rootContext xmi:id="_UwYBkVAEEeKcQrcP49hWoA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_UwYBklAEEeKcQrcP49hWoA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
@@ -147,6 +150,7 @@
   <commands xmi:id="_rvq3ILhbEeap39TQzuUalg" elementId="org.easotope.client.command.batchImport" commandName="batchImport"/>
   <commands xmi:id="_Hs9x8L4OEea4h7iswIQV5Q" elementId="org.easotope.client.command.trimdatabase" commandName="trimDatabase"/>
   <commands xmi:id="_DfPpgMEdEeaUxqyYfZ1GsQ" elementId="org.easotope.client.command.showsourcecode" commandName="showSourceCode"/>
+  <commands xmi:id="_BnbhMNlkEea1zuye9PVIxg" elementId="org.easotope.client.command.explode" commandName="explodeCommand"/>
   <addons xmi:id="_UwYBlFAEEeKcQrcP49hWoA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_UwYBlVAEEeKcQrcP49hWoA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_UwYBllAEEeKcQrcP49hWoA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

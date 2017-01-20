@@ -212,7 +212,7 @@ public class TableComposite extends EditorComposite implements AnalysisCacheRepA
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		HashMap<Integer,Integer> replicateIdToRepAnalysisIds = new HashMap<Integer,Integer>();
 		HashMap<Integer,RepAnalysisChoice> changes = scratchPadTable.getReplicateIdToRepAnalysisChoice();
 		

@@ -252,7 +252,7 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		Project project = new Project();
 		Project currentProject = getCurrentProject();
 

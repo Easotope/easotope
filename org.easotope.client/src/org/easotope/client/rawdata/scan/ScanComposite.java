@@ -620,7 +620,7 @@ public class ScanComposite extends EditorComposite
 	}
 
 	@Override
-	protected void requestSave() {
+	protected void requestSave(boolean isResend) {
 		ScanV2 scan = new ScanV2();
 
 		if (getCurrentScan() != null) {

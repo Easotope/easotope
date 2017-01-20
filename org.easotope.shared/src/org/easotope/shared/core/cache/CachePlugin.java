@@ -49,6 +49,7 @@ public abstract class CachePlugin {
 	public abstract int saveData(AbstractCache abstractCache, Object[] parameters);
 	public abstract void callbackSaveCompleted(Object listener, Command command);
 	public abstract void callbackSaveError(Object listener, int commandId, String message);
+	public abstract void callbackVerifyAndResend(Object listener, int commandId, String message);
 
 	public abstract int deleteData(AbstractCache abstractCache, Object[] parameters);
 	public abstract void callbackDeleteCompleted(Object listener, Command command);

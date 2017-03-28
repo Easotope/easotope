@@ -86,7 +86,7 @@ public class UserPlugin extends CachePlugin {
 			((UserCacheUserGetListener) listener).userGetError(commandId, message);
 		}
 	}
-	
+
 	@Override
 	public HashSet<CacheKey> getCacheKeysThatShouldBeDeletedBasedOnEvent(Event event, CacheHashMap cache) {
 		return null;

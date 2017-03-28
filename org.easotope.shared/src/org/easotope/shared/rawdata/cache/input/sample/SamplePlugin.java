@@ -30,6 +30,7 @@ package org.easotope.shared.rawdata.cache.input.sample;
 import java.util.HashSet;
 
 import org.easotope.framework.commands.Command;
+import org.easotope.framework.dbcore.DatabaseConstants;
 import org.easotope.framework.dbcore.cmdprocessors.Event;
 import org.easotope.framework.dbcore.cmdprocessors.Processor;
 import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
@@ -40,6 +41,9 @@ import org.easotope.shared.core.cache.CacheHashMap;
 import org.easotope.shared.core.cache.CacheKey;
 import org.easotope.shared.core.cache.CachePlugin;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
+import org.easotope.shared.rawdata.events.ProjectDeleted;
+import org.easotope.shared.rawdata.events.ProjectUpdated;
+import org.easotope.shared.rawdata.events.SampleDeleted;
 import org.easotope.shared.rawdata.events.SampleUpdated;
 import org.easotope.shared.rawdata.tables.Sample;
 
@@ -82,7 +86,31 @@ public class SamplePlugin extends CachePlugin {
 
 	@Override
 	public HashSet<CacheKey> getCacheKeysThatShouldBeDeletedBasedOnEvent(Event event, CacheHashMap cache) {
-		return null;
+		HashSet<CacheKey> result = new HashSet<CacheKey>();
+
+		if (event instanceof SampleDeleted) {
+			SampleDeleted sampleDeleted = (SampleDeleted) event;
+			SampleCacheKey sampleCacheKey = new SampleCacheKey(sampleDeleted.getSampleId());
+
+			if (cache.containsKey(sampleCacheKey)) {
+				CacheKey oldCacheKey = cache.getKey(sampleCacheKey);
+				result.add(oldCacheKey);
+			}
+
+		} else if (event instanceof ProjectDeleted) {
+			ProjectDeleted projectDeleted = (ProjectDeleted) event;
+
+			for (int sampleId : projectDeleted.getDeletedSampleIds()) {
+				SampleCacheKey sampleCacheKey = new SampleCacheKey(sampleId);
+
+				if (cache.containsKey(sampleCacheKey)) {
+					CacheKey oldCacheKey = cache.getKey(sampleCacheKey);
+					result.add(oldCacheKey);
+				}
+			}
+		}
+
+		return result;
 	}
 
 	@Override
@@ -106,6 +134,28 @@ public class SamplePlugin extends CachePlugin {
 
 			} else {
 				cache.put(cacheKey, null, null, sample);
+			}
+
+		} else if (event instanceof ProjectUpdated) {
+			ProjectUpdated projectUpdated = (ProjectUpdated) event;
+
+			int oldUserId = projectUpdated.getOldUserId();
+			int newUserId = projectUpdated.getProject().getUserId();
+
+			if (oldUserId != DatabaseConstants.EMPTY_DB_ID && oldUserId != newUserId) {
+				for (int sampleId : projectUpdated.getReassignedSampleIds()) {
+					CacheKey cacheKey = new SampleCacheKey(sampleId);
+
+					if (cache.containsKey(cacheKey)) {
+						Sample sample = (Sample) cache.get(cacheKey);
+
+						Sample newSample = new Sample(sample);
+						newSample.setUserId(newUserId);
+
+						CacheKey oldCacheKey = cache.update(cacheKey, newSample);
+						result.add(oldCacheKey);
+					}
+				}
 			}
 		}
 

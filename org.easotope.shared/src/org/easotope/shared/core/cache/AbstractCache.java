@@ -41,7 +41,7 @@ import org.easotope.framework.dbcore.cmdprocessors.CommandListener;
 import org.easotope.framework.dbcore.cmdprocessors.Event;
 import org.easotope.framework.dbcore.cmdprocessors.EventListener;
 import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.eclipse.swt.widgets.Display;
 
 public abstract class AbstractCache implements CommandListener, EventListener {
@@ -334,7 +334,7 @@ public abstract class AbstractCache implements CommandListener, EventListener {
 
 				} catch (RuntimeException t) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", t);
-					UnexpectedException.reportErrorToUser(display, t);
+					PotentialGraphicsMethodsShared.reportErrorToUser(display, t);
 				}
 			}
 		};
@@ -365,7 +365,7 @@ public abstract class AbstractCache implements CommandListener, EventListener {
 
 				} catch (RuntimeException t) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", t);
-					UnexpectedException.reportErrorToUser(display, t);
+					PotentialGraphicsMethodsShared.reportErrorToUser(display, t);
 				}
 			}
 		};
@@ -394,7 +394,7 @@ public abstract class AbstractCache implements CommandListener, EventListener {
 
 				} catch (RuntimeException t) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", t);
-					UnexpectedException.reportErrorToUser(display, t);
+					PotentialGraphicsMethodsShared.reportErrorToUser(display, t);
 				}
 			}
 		};
@@ -479,7 +479,7 @@ public abstract class AbstractCache implements CommandListener, EventListener {
 
 				} catch (RuntimeException t) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", t);
-					UnexpectedException.reportErrorToUser(display, t);
+					PotentialGraphicsMethodsShared.reportErrorToUser(display, t);
 				}
 			}
 		};
@@ -514,7 +514,7 @@ public abstract class AbstractCache implements CommandListener, EventListener {
 
 				} catch (RuntimeException t) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", t);
-					UnexpectedException.reportErrorToUser(display, t);
+					PotentialGraphicsMethodsShared.reportErrorToUser(display, t);
 				}
 			}
 		};

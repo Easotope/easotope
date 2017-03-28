@@ -255,6 +255,7 @@ public class AnalysesCreator {
 			});
 			setStepOutputs(repStep, new String[] {
 					"Δ47 Nonlinearity Slope",
+					"Δ47 Nonlinearity Intercepts",
 					"Δ47 WG (HG)"
 			});
 			setStepFormats(repStep);

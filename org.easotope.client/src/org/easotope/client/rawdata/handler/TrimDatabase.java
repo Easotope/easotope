@@ -27,22 +27,20 @@
 
 package org.easotope.client.rawdata.handler;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javax.inject.Named;
 
+import org.easotope.client.dialog.TrimDialog;
 import org.easotope.framework.dbcore.cmdprocessors.FolderProcessor;
 import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.ui.model.application.MContribution;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.swt.widgets.Shell;
 
 public class TrimDatabase {
 	@CanExecute
-	public boolean canExecute(@Named(IServiceConstants.ACTIVE_PART) final MContribution contribution) {
+	public boolean canExecute() {
 		if (LoginInfoCache.getInstance().getUser().getId() != 1) {
 			return false;
 		}
@@ -55,48 +53,7 @@ public class TrimDatabase {
 	}
 
 	@Execute
-	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell, @Named(IServiceConstants.ACTIVE_PART) final MContribution contribution) throws InvocationTargetException, InterruptedException {
-//		Object object = contribution.getObject();
-//
-//		if (object == null || !(object instanceof FileEditor)) {
-//			return;
-//		}
-//
-//		String[] fileExtensions = AutoParser.getFileExtensions();
-//		String[] newFileExtensions = new String[fileExtensions.length+1];
-//		newFileExtensions[0] = "";
-//
-//		for (int i=0; i<fileExtensions.length; i++) {
-//			newFileExtensions[0] += (newFileExtensions[0].isEmpty() ? "*." : ";*.") + fileExtensions[i];
-//			newFileExtensions[i+1] = "*." + fileExtensions[i];
-//		}
-//		
-//		String[] filterNames = AutoParser.getFilterNames();
-//		String[] newFilterNames = new String[filterNames.length+1];
-//		newFilterNames[0] = "All";
-//		
-//		for (int i=0; i<filterNames.length; i++) {
-//			newFilterNames[i+1] = filterNames[i] + " (*." + fileExtensions[i] + ")";
-//		}
-//
-//		FileDialog fileDialog = new FileDialog(shell, SWT.MULTI);
-//		fileDialog.setFilterExtensions(newFileExtensions);
-//		fileDialog.setFilterNames(newFilterNames);
-//		fileDialog.open();
-//
-//		String directory = fileDialog.getFilterPath();
-//		String[] filenames = fileDialog.getFileNames();
-//
-//		if (filenames.length == 0) {
-//			return;
-//		}
-//
-//		String[] newFilenames = new String[filenames.length];
-//
-//		for (int i=0; i<filenames.length; i++) {
-//			newFilenames[i] = directory + File.separator + filenames[i];
-//		}
-//
-//		((FileEditor) object).addFiles(newFilenames);
+	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell) {
+		new TrimDialog(shell).open();
 	}
 }

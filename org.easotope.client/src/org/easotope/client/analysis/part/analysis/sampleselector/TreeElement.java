@@ -53,6 +53,10 @@ public class TreeElement {
 		return parent;
 	}
 
+	void setParent(TreeElement parent) {
+		this.parent = parent;
+	}
+
 	boolean setNameDateAndHasChildren(String name, long date, boolean hasChildren) {
 		boolean stateChanged = false;
 
@@ -64,6 +68,10 @@ public class TreeElement {
 		this.name = name;
 		this.date = date;
 		this.hasChildren = hasChildren;
+
+		if (!hasChildren) {
+			children = null;
+		}
 
 		return stateChanged;
 	}
@@ -83,8 +91,11 @@ public class TreeElement {
 
 		if (children != null) {
 			//TODO do I need to remove children with this element id?? probably not
-			children.add(treeElement);
-			stateChanged = true;
+
+			if (!children.contains(treeElement)) {
+				children.add(treeElement);
+				stateChanged = true;
+			}
 		}
 
 		return stateChanged;

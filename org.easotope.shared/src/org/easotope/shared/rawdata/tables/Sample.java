@@ -63,7 +63,8 @@ public class Sample extends TableObjectWithIntegerId {
 	public Sample() { }
 
 	public Sample(Sample sample) {
-		this.id = sample.id;
+		super(sample);
+
 		this.userId = sample.userId;
 		this.projectId = sample.projectId;
 		this.name = sample.name;

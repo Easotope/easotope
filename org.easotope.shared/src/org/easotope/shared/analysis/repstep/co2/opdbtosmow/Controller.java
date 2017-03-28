@@ -27,6 +27,8 @@
 
 package org.easotope.shared.analysis.repstep.co2.opdbtosmow;
 
+import java.util.HashSet;
+
 import org.easotope.shared.Messages;
 import org.easotope.shared.admin.IsotopicScale;
 import org.easotope.shared.admin.StandardParameter;
@@ -34,9 +36,10 @@ import org.easotope.shared.analysis.repstep.RepInputDescription;
 import org.easotope.shared.analysis.repstep.RepOutputDescription;
 import org.easotope.shared.analysis.step.InputDescription;
 import org.easotope.shared.analysis.step.OutputDescription;
-import org.easotope.shared.analysis.step.StepController;
+import org.easotope.shared.analysis.step.RepStepController;
+import org.easotope.shared.analysis.tables.RepStepParams;
 
-public class Controller extends StepController {
+public class Controller extends RepStepController {
 	@Override
 	public String getStepName() {
 		return Messages.repStepCO2OPdbToSmow_name;
@@ -79,5 +82,10 @@ public class Controller extends StepController {
 		return new OutputDescription[] {
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O, "0.00", StandardParameter.δ18O, IsotopicScale.VSMOW)
 		};
+	}
+
+	@Override
+	public void removeStandardIds(RepStepParams repStepParams, HashSet<Integer> standardIds) {
+
 	}
 }

@@ -30,6 +30,7 @@ package org.easotope.shared.rawdata.cache.input.projectlist;
 import java.util.HashSet;
 
 import org.easotope.framework.commands.Command;
+import org.easotope.framework.dbcore.DatabaseConstants;
 import org.easotope.framework.dbcore.cmdprocessors.Event;
 import org.easotope.framework.dbcore.cmdprocessors.Processor;
 import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
@@ -40,7 +41,9 @@ import org.easotope.shared.core.cache.CacheKey;
 import org.easotope.shared.core.cache.CachePlugin;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.rawdata.cache.input.project.ProjectCacheKey;
+import org.easotope.shared.rawdata.events.ProjectDeleted;
 import org.easotope.shared.rawdata.events.ProjectUpdated;
+import org.easotope.shared.rawdata.events.SampleDeleted;
 import org.easotope.shared.rawdata.events.SampleUpdated;
 import org.easotope.shared.rawdata.tables.Project;
 import org.easotope.shared.rawdata.tables.Sample;
@@ -72,7 +75,6 @@ public class ProjectListPlugin extends CachePlugin {
 
 		ProjectList projectList = new ProjectList(projectListGet.getUserId());
 		projectList.putAll(projectListGet.getProjectList());
-
 		cache.put(new ProjectListCacheKey(projectListGet.getUserId()), this, callParameters, projectList);
 	}
 
@@ -106,41 +108,118 @@ public class ProjectListPlugin extends CachePlugin {
 
 		if (event instanceof ProjectUpdated) {
 			ProjectUpdated projectUpdated = (ProjectUpdated) event;
-			Project project = projectUpdated.getProject();
 
-			CacheKey cacheKey = new ProjectListCacheKey(project.getUserId());
+			Project project = projectUpdated.getProject();
+			boolean hasChildren = projectUpdated.getHasChildren();
+			int oldUserId = projectUpdated.getOldUserId();
+			int newUserId = project.getUserId();
+
+			if (oldUserId != DatabaseConstants.EMPTY_DB_ID && oldUserId != newUserId) {
+				CacheKey cacheKey = new ProjectListCacheKey(oldUserId);
+
+				if (cache.containsKey(cacheKey)) {
+					ProjectList projectList = (ProjectList) cache.get(cacheKey);
+
+					ProjectList newProjectList = new ProjectList(oldUserId);
+					newProjectList.putAll(projectList);
+					newProjectList.remove(project.getId());
+
+					CacheKey oldCacheKey = cache.update(cacheKey, newProjectList);
+					result.add(oldCacheKey);
+				}
+			}
+
+			CacheKey cacheKey = new ProjectListCacheKey(newUserId);
 
 			if (cache.containsKey(cacheKey)) {
 				ProjectList projectList = (ProjectList) cache.get(cacheKey);
 
-				ProjectList newProjectList = new ProjectList(project.getUserId());
+				ProjectList newProjectList = new ProjectList(newUserId);
 				newProjectList.putAll(projectList);
-
-				newProjectList.put(project.getId(), new ProjectListItem(project, projectUpdated.getHasChildren()));
+				newProjectList.put(project.getId(), new ProjectListItem(project, hasChildren));
 
 				CacheKey oldCacheKey = cache.update(cacheKey, newProjectList);
 				result.add(oldCacheKey);
 			}
 
+		} else if (event instanceof ProjectDeleted) {
+			ProjectDeleted projectDeleted = (ProjectDeleted) event;
+			int projectId = projectDeleted.getProjectId();
+			int userId = projectDeleted.getUserId();
+
+			ProjectListCacheKey projectListCacheKey = new ProjectListCacheKey(userId);
+
+			if (cache.containsKey(projectListCacheKey)) {
+				ProjectList oldProjectList = (ProjectList) cache.get(projectListCacheKey);
+
+				ProjectList newProjectList = new ProjectList(userId);
+				newProjectList.putAll(oldProjectList);
+				newProjectList.remove(projectId);
+
+				CacheKey oldCacheKey = cache.update(projectListCacheKey, newProjectList);
+				result.add(oldCacheKey);
+			}
+
 		} else if (event instanceof SampleUpdated) {
 			SampleUpdated sampleUpdated = (SampleUpdated) event;
+
 			Sample sample = sampleUpdated.getSample();
+			int oldProjectId = sampleUpdated.getOldProjectId();
+			boolean oldProjectHasChildren = sampleUpdated.getOldProjectHasChildren();
+			int newProjectId = sample.getProjectId();
+			int oldUserId = sampleUpdated.getOldUserId();
+			int newUserId = sample.getUserId();
 
-			for (CacheKey cacheKey : cache.keySet()) {
-				if (cacheKey instanceof ProjectListCacheKey) {
-					ProjectList oldProjectList = (ProjectList) cache.get(cacheKey);
+			ProjectListCacheKey projectListCacheKey;
 
-					if (oldProjectList != null && oldProjectList.containsKey(sample.getProjectId())) {
-						Project oldProject = oldProjectList.get(sample.getProjectId()).getProject();
+			if (oldProjectId != DatabaseConstants.EMPTY_DB_ID && oldProjectId != newProjectId) {
+				projectListCacheKey = new ProjectListCacheKey(oldUserId);
 
-						ProjectList newProjectList = new ProjectList(oldProjectList.getUserId());
-						newProjectList.putAll(oldProjectList);
-						newProjectList.put(oldProject.getId(), new ProjectListItem(oldProject, true));
+				if (cache.containsKey(projectListCacheKey)) {
+					ProjectList oldProjectList = (ProjectList) cache.get(projectListCacheKey);
+					Project oldProject = oldProjectList.get(oldProjectId).getProject();
 
-						CacheKey oldCacheKey = cache.update(cacheKey, newProjectList);
-						result.add(oldCacheKey);
-					}
+					ProjectList newProjectList = new ProjectList(oldUserId);
+					newProjectList.putAll(oldProjectList);
+					newProjectList.put(oldProjectId, new ProjectListItem(oldProject, oldProjectHasChildren));
+
+					CacheKey oldCacheKey = cache.update(projectListCacheKey, newProjectList);
+					result.add(oldCacheKey);
 				}
+			}
+
+			projectListCacheKey = new ProjectListCacheKey(newUserId);
+
+			if (cache.containsKey(projectListCacheKey)) {
+				ProjectList oldProjectList = (ProjectList) cache.get(projectListCacheKey);
+				Project oldProject = oldProjectList.get(newProjectId).getProject();
+
+				ProjectList newProjectList = new ProjectList(newUserId);
+				newProjectList.putAll(oldProjectList);
+				newProjectList.put(oldProject.getId(), new ProjectListItem(oldProject, true));
+
+				CacheKey oldCacheKey = cache.update(projectListCacheKey, newProjectList);
+				result.add(oldCacheKey);
+			}
+
+		} else if (event instanceof SampleDeleted) {
+			SampleDeleted sampleDeleted = (SampleDeleted) event;
+			int oldProjectId = sampleDeleted.getProjectId();
+			boolean oldProjectHasChildren = sampleDeleted.getProjectHasChildren();
+			int oldUserId = sampleDeleted.getUserId();
+
+			ProjectListCacheKey projectListCacheKey = new ProjectListCacheKey(oldUserId);
+
+			if (cache.containsKey(projectListCacheKey)) {
+				ProjectList oldProjectList = (ProjectList) cache.get(projectListCacheKey);
+				Project oldProject = oldProjectList.get(oldProjectId).getProject();
+
+				ProjectList newProjectList = new ProjectList(oldUserId);
+				newProjectList.putAll(oldProjectList);
+				newProjectList.put(oldProjectId, new ProjectListItem(oldProject, oldProjectHasChildren));
+
+				CacheKey oldCacheKey = cache.update(projectListCacheKey, newProjectList);
+				result.add(oldCacheKey);
 			}
 		}
 

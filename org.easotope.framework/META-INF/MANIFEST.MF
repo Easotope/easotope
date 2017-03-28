@@ -14,6 +14,7 @@ Bundle-ClassPath: .,
  lib/ormlite-jdbc-5.0.jar
 Export-Package: com.j256.ormlite.dao,
  com.j256.ormlite.field,
+ com.j256.ormlite.jdbc,
  com.j256.ormlite.stmt,
  com.j256.ormlite.support,
  com.j256.ormlite.table,

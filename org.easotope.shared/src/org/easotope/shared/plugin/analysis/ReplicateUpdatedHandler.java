@@ -52,7 +52,7 @@ public class ReplicateUpdatedHandler {
 			}
 		}
 
-		for (Integer calcSampleCacheId : LoadOrCalculateSample.getCalcSampleCacheIdsFromSampleId(event.getSampleId(), connectionSource)) {
+		for (Integer calcSampleCacheId : LoadOrCalculateSample.getCalcSampleCacheIdsFromSampleId(event.getNewSampleId(), connectionSource)) {
 			CalcSampleCache calcSampleCache = LoadOrCalculateSample.removeSampleCalculations(calcSampleCacheId, connectionSource);
 
 			if (calcSampleCache != null) {

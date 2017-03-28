@@ -91,6 +91,10 @@ public class InputCache extends AbstractCache {
 		return saveObject(projectPlugin, listener, project);
 	}
 
+	public synchronized int projectDelete(int projectId, CacheListener listener) {
+		return deleteObject(projectPlugin, listener, projectId);
+	}
+
 	public synchronized int sampleListGet(CacheListener listener, int sampleId) {
 		return getObject(sampleListPlugin, listener, sampleId);
 	}
@@ -101,6 +105,10 @@ public class InputCache extends AbstractCache {
 
 	public synchronized int sampleSave(CacheListener listener, Sample sample) {
 		return saveObject(samplePlugin, listener, sample);
+	}
+
+	public synchronized int sampleDelete(int sampleId, CacheListener listener) {
+		return deleteObject(samplePlugin, listener, sampleId);
 	}
 
 	public synchronized int replicateListGet(CacheListener listener, boolean getSamples, int sampleId, int massSpecId, int userId) {

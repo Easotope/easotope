@@ -35,7 +35,7 @@ import org.easotope.client.core.adaptors.LoggingSelectionAdaptor;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.dbcore.tables.User;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.core.cache.logininfo.logininfo.LoginInfoCacheLoginInfoGetListener;
 import org.easotope.shared.core.tables.Permissions;
@@ -176,7 +176,7 @@ public class VDateTime extends Composite implements LoginInfoCacheLoginInfoGetLi
 
 					} catch (Exception e) {
 						Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-						UnexpectedException.reportErrorToUser(VDateTime.this.getDisplay(), e);
+						PotentialGraphicsMethodsShared.reportErrorToUser(VDateTime.this.getDisplay(), e);
 					}
 				}
 			});

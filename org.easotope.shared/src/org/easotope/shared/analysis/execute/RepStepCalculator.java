@@ -27,12 +27,14 @@
 
 package org.easotope.shared.analysis.execute;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.easotope.shared.analysis.execute.calculator.AnalysisConstants;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
 import org.easotope.shared.analysis.tables.RepStep;
+import org.easotope.shared.analysis.tables.RepStepParams;
 import org.easotope.shared.core.exception.EasotopeStepException;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
 import org.easotope.shared.core.scratchpad.ReplicatePad.ReplicateType;
@@ -102,6 +104,31 @@ public abstract class RepStepCalculator extends StepCalculator {
 		}
 
 		return resultReplicates;
+	}
+
+	public static void removeStandardIds(RepStepParams repStepParams, HashSet<Integer> standardIds) {
+		int[] oldStdIds = (int[]) repStepParams.getParameters().get(PARAMETER_STANDARD_IDS);
+
+		if (oldStdIds == null) {
+			return;
+		}
+
+		ArrayList<Integer> newStdIds = new ArrayList<Integer>();
+
+		for (int id : oldStdIds) {
+			if (standardIds.contains(id)) {
+				newStdIds.add(id);
+			}
+		}
+
+		int count = 0;
+		int[] result = new int[newStdIds.size()];
+
+		for (int id : newStdIds) {
+			result[count++] = id;
+		}
+
+		repStepParams.getParameters().put(PARAMETER_STANDARD_IDS, result);
 	}
 
 	public abstract class StandardVerifier {

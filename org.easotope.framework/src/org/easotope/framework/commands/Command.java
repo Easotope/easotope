@@ -132,7 +132,6 @@ public abstract class Command implements Serializable {
 //		try {
 //			Thread.sleep(3000);
 //		} catch (InterruptedException e1) {
-//			// TODO Auto-generated catch block
 //			e1.printStackTrace();
 //		}
 	}

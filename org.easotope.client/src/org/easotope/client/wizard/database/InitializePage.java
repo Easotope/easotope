@@ -38,7 +38,7 @@ import org.easotope.framework.dbcore.cmdprocessors.CommandListener;
 import org.easotope.framework.dbcore.cmdprocessors.Processor;
 import org.easotope.framework.dbcore.tables.User;
 import org.easotope.shared.commands.InitializeWithPermsPrefs;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.easotope.shared.core.tables.Permissions;
 import org.easotope.shared.core.tables.Preferences;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -206,7 +206,7 @@ public class InitializePage extends WizardPage implements CommandListener {
 
 					} catch (Exception e) {
 						Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-						UnexpectedException.reportErrorToUser(Display.getDefault(), e);
+						PotentialGraphicsMethodsShared.reportErrorToUser(Display.getDefault(), e);
 					}
 		    		}
 		    	});

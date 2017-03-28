@@ -44,11 +44,12 @@ public class Calculator extends RepStepCalculator {
 	public static final String INPUT_LABEL_STANDARD_δ47 = "Standard δ47";
 	public static final String INPUT_LABEL_STANDARD_Δ47 = "Standard Δ47";
 	public static final String OUTPUT_LABEL_Δ47_δ47_SLOPE = "Δ47 Nonlinearity Slope";
+	public static final String OUTPUT_LABEL_Δ47_δ47_INTERCEPTS = "Δ47 Nonlinearity Intercepts";
 	public static final String OUTPUT_LABEL_Δ47 = "Δ47 Nonlinearity Corrected";
 
 	public static final int DEFAULT_WINDOW_TYPE = WindowType.Window.ordinal();
 	public static final int DEFAULT_MIN_NUM_STANDARDS_BEFORE_AFTER = 10;
-	public static final HashMap<Integer,Integer> DEFAULT_STANDARD_IDS = new HashMap<Integer,Integer>();
+	//public static final HashMap<Integer,Integer> DEFAULT_STANDARD_IDS = new HashMap<Integer,Integer>();
 
 	public static String getVolatileDataNonlinearityPointsKey() {
 		return Calculator.class.getName() + "VOLATILE_DATA_NONLINEARITY_POINTS";
@@ -161,6 +162,25 @@ public class Calculator extends RepStepCalculator {
 			replicatePads[targetPadNumber].setVolatileData(getVolatileDataNonlinearityCorrectionKey(), correction);
 
 			replicatePads[targetPadNumber].setValue(labelToColumnName(OUTPUT_LABEL_Δ47_δ47_SLOPE), regression.getSlope());
+
+			String regressionIntercepts = "";
+			HashMap<Integer,Double> intercepts = regression.getIntercepts();
+
+			if (intercepts != null) {
+				for (int key : intercepts.keySet()) {
+					Double value = intercepts.get(key);
+
+					if (!regressionIntercepts.isEmpty()) {
+						regressionIntercepts += ",";
+					}
+
+					regressionIntercepts += key + "=" + value;
+				}
+			}
+
+			if (!regressionIntercepts.isEmpty()) {
+				replicatePads[targetPadNumber].setValue(labelToColumnName(OUTPUT_LABEL_Δ47_δ47_INTERCEPTS), regressionIntercepts);
+			}
 		}
 
 		nonlinearityPoints.add(new NonlinearityPoint(null, replicatePads[targetPadNumber].getDate(), δ47, Δ47, -1, -1, false));		

@@ -33,4 +33,7 @@ import org.easotope.shared.rawdata.tables.Project;
 public interface InputCacheProjectSaveListener extends CacheListener {
 	public void projectSaveCompleted(int commandId, Project project);
 	public void projectSaveError(int commandId, String message);
+	
+	public void projectDeleteCompleted(int commandId);
+	public void projectDeleteError(int commandId, String message);
 }

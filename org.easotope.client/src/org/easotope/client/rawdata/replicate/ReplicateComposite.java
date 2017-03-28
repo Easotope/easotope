@@ -1533,6 +1533,11 @@ public class ReplicateComposite extends EditorComposite
 	}
 
 	@Override
+	public void sampleListDeleted(int projectId) {
+		// TODO how to handle this?
+	}
+
+	@Override
 	public void standardGetCompleted(final int commandId, final Standard standard) {
 		if (commandIdForKey(WAITING_FOR_STANDARD) == commandId) {
 			int sampleTypeId = standard.getSampleTypeId();
@@ -1584,6 +1589,11 @@ public class ReplicateComposite extends EditorComposite
 		if (commandIdForKey(WAITING_FOR_SAMPLE) == commandId) {
 			raiseGetError(WAITING_FOR_SAMPLE, message);
 		}
+	}
+
+	@Override
+	public void sampleDeleted(int sampleId) {
+		// TODO how to handle this???
 	}
 
 	@Override

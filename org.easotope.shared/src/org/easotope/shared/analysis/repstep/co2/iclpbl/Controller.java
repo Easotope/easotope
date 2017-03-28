@@ -27,14 +27,17 @@
 
 package org.easotope.shared.analysis.repstep.co2.iclpbl;
 
+import java.util.HashSet;
+
 import org.easotope.shared.Messages;
 import org.easotope.shared.analysis.repstep.RepInputDescription;
 import org.easotope.shared.analysis.repstep.RepOutputDescription;
 import org.easotope.shared.analysis.step.InputDescription;
 import org.easotope.shared.analysis.step.OutputDescription;
-import org.easotope.shared.analysis.step.StepController;
+import org.easotope.shared.analysis.step.RepStepController;
+import org.easotope.shared.analysis.tables.RepStepParams;
 
-public class Controller extends StepController {
+public class Controller extends RepStepController {
 	@Override
 	public String getStepName() {
 		return Messages.repStepCO2ClumpPbl_name;
@@ -118,5 +121,10 @@ public class Controller extends StepController {
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_V49_REF_PBL, null, null, null),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_V49_SAMPLE_PBL, null, null, null)
 		};
+	}
+
+	@Override
+	public void removeStandardIds(RepStepParams repStepParams, HashSet<Integer> standardIds) {
+
 	}
 }

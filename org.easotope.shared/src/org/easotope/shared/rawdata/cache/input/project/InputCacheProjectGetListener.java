@@ -34,4 +34,5 @@ public interface InputCacheProjectGetListener extends CacheListener {
 	public void projectGetCompleted(int commandId, Project project);
 	public void projectUpdated(int commandId, Project project);
 	public void projectGetError(int commandId, String message);
+	public void projectDeleted(int projectId);
 }

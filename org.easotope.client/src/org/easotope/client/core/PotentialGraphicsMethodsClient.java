@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Widget;
 // directly but rather via reflection. If the reflection fails, we must be in
 // server mode and no graphics call is made.
 
-public class PotentialGraphicsMethods {
+public class PotentialGraphicsMethodsClient {
 	public void reportErrorToUser(Object displaySource, Throwable t) {
 		Display display = null;
 

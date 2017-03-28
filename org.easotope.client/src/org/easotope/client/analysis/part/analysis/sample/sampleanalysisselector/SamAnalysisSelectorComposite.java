@@ -244,4 +244,9 @@ public class SamAnalysisSelectorComposite extends ChainedComposite implements In
 			getChainedPart().raiseError(message);
 		}
 	}
+
+	@Override
+	public void sampleDeleted(int sampleId) {
+		//TODO how to handle??
+	}
 }

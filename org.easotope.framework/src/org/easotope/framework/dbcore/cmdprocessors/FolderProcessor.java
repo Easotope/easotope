@@ -28,6 +28,7 @@
 package org.easotope.framework.dbcore.cmdprocessors;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -71,6 +72,10 @@ public class FolderProcessor extends ThreadProcessor {
 		return source;
 	}
 
+	public String getJdbcUrl() {
+		return jdbcUrl;
+	}
+
 	@Override
 	protected boolean openConnection(boolean notReopeningAfterBackup) {
 		Version version = null;
@@ -93,7 +98,7 @@ public class FolderProcessor extends ThreadProcessor {
 			}
 
 		} catch (Exception e) {
-			Log.getInstance().log(Level.INFO, this, "Error while opening " + jdbcUrl, e);
+			Log.getInstance().log(isServerMode ? Level.TERMINAL : Level.INFO, this, "Error while opening " + jdbcUrl, e);
 			closeConnection();
 			return false;
 		}
@@ -107,6 +112,10 @@ public class FolderProcessor extends ThreadProcessor {
 		}
 
 		return true;
+	}
+
+	public static ConnectionSource createConnectionSource(String jdbcUrl) throws SQLException {
+		return new JdbcConnectionSource(jdbcUrl);
 	}
 
 	@Override

@@ -44,6 +44,8 @@ import org.easotope.shared.rawdata.tables.Sample;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 public class DisabledStatusUpdate extends Command {
@@ -126,12 +128,34 @@ public class DisabledStatusUpdate extends Command {
 			addEvent(corrIntervalsNeedRecalc);
 		}
 
-		ReplicateUpdated replicateUpdated = new ReplicateUpdated(replicate);
-		
-		if (sample != null) {
-			replicateUpdated.setSampleId(sample.getId());
-			replicateUpdated.setSampleName(sample.getName());
+		int oldSampleId = DatabaseConstants.EMPTY_DB_ID;
+		boolean oldSampleHasChildren = false;
+		int newSampleId = DatabaseConstants.EMPTY_DB_ID;
+		String newSampleName = null;
+		int oldProjectId = DatabaseConstants.EMPTY_DB_ID;
+		int newProjectId = DatabaseConstants.EMPTY_DB_ID;
+
+		if (replicate != null && replicate.getSampleId() != DatabaseConstants.EMPTY_DB_ID) {
+			oldSampleId = replicate.getSampleId();
+
+			Dao<Sample,Integer> sampleDao = DaoManager.createDao(connectionSource, Sample.class);
+			Sample oldSample = sampleDao.queryForId(oldSampleId);
+			oldProjectId = oldSample.getProjectId();
+
+			QueryBuilder<ReplicateV1,Integer> queryBuilder = replicateDao.queryBuilder();
+			Where<ReplicateV1,Integer> where = queryBuilder.where();
+			where = where.eq(ReplicateV1.SAMPLEID_FIELD_NAME, oldSampleId);
+
+			oldSampleHasChildren = replicateDao.queryForFirst(queryBuilder.prepare()) != null;
 		}
+
+		if (sample != null) {
+			newSampleId = sample.getId();
+			newSampleName = sample.getName();
+			newProjectId = sample.getProjectId();
+		}
+
+		ReplicateUpdated replicateUpdated = new ReplicateUpdated(replicate, oldSampleId, oldSampleHasChildren, newSampleId, newSampleName, oldProjectId, newProjectId);
 		
 		addEvent(replicateUpdated);
 	}

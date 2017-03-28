@@ -27,6 +27,7 @@
 
 package org.easotope.shared.rawdata.events;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import org.easotope.framework.dbcore.cmdprocessors.Event;
@@ -40,6 +41,10 @@ public class SampleUpdated extends Event {
 
 	private Sample sample;
 	private boolean hasChildren;
+	private int oldProjectId;
+	private boolean oldProjectHasChildren;
+	private int oldUserId;
+	private ArrayList<Integer> reassignedReplicateIds;
 
 	@Override
 	public boolean isAuthorized(Hashtable<String, Object> authenticationObjects) {
@@ -48,16 +53,36 @@ public class SampleUpdated extends Event {
 		return user.id == sample.getUserId() || user.getIsAdmin() || permissions.isCanEditAllReplicates();
 	}
 
-	public SampleUpdated(Sample sample, boolean hasChildren) {
+	public SampleUpdated(Sample sample, boolean hasChildren, int oldProjectId, boolean oldProjectHasChildren, int oldUserId, ArrayList<Integer> reassignedReplicateIds) {
 		this.sample = sample;
 		this.hasChildren = hasChildren;
+		this.oldProjectId = oldProjectId;
+		this.oldProjectHasChildren = oldProjectHasChildren;
+		this.oldUserId = oldUserId;
+		this.reassignedReplicateIds = reassignedReplicateIds;
 	}
 
 	public Sample getSample() {
 		return sample;
 	}
 
+	public int getOldProjectId() {
+		return oldProjectId;
+	}
+
+	public boolean getOldProjectHasChildren() {
+		return oldProjectHasChildren;
+	}
+
 	public boolean isHasChildren() {
 		return hasChildren;
+	}
+
+	public int getOldUserId() {
+		return oldUserId;
+	}
+
+	public ArrayList<Integer> getReassignedReplicateIds() {
+		return reassignedReplicateIds;
 	}
 }

@@ -27,6 +27,7 @@
 
 package org.easotope.shared.commands;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import org.easotope.framework.commands.Command;
@@ -39,6 +40,7 @@ import org.easotope.shared.core.events.UserNameUpdated;
 import org.easotope.shared.core.tables.Permissions;
 import org.easotope.shared.rawdata.events.ProjectUpdated;
 import org.easotope.shared.rawdata.tables.Project;
+import org.easotope.shared.rawdata.tables.ReplicateV1;
 import org.easotope.shared.rawdata.tables.Sample;
 
 import com.j256.ormlite.dao.Dao;
@@ -50,7 +52,7 @@ import com.j256.ormlite.support.ConnectionSource;
 public class ProjectUpdate extends Command {
 	private static final long serialVersionUID = 1L;
 
-	protected Project project;
+	private Project project;
 
 	@Override
 	public String getName() {
@@ -67,28 +69,60 @@ public class ProjectUpdate extends Command {
 	@Override
 	public void execute(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception {
 		Dao<Project,Integer> projectDao = DaoManager.createDao(connectionSource, Project.class);
+		Dao<Sample,Integer> sampleDao = DaoManager.createDao(connectionSource, Sample.class);
+		Dao<ReplicateV1,Integer> replicateDao = DaoManager.createDao(connectionSource, ReplicateV1.class);
+
+		int oldUserId = DatabaseConstants.EMPTY_DB_ID;
+		boolean oldUserHasChildren = false;
+		ArrayList<Integer> reassignedSampleIds = new ArrayList<Integer>();
+		ArrayList<Integer> reassignedReplicateIds = new ArrayList<Integer>();
 
 		if (project.getId() == DatabaseConstants.EMPTY_DB_ID) {
 			projectDao.create(project);
 
 		} else {
-			if (projectDao.queryForId(project.getId()) == null) {
+			Project oldProject = projectDao.queryForId(project.getId());
+
+			if (oldProject == null) {
 				setStatus(Command.Status.EXECUTION_ERROR, Messages.projectUpdate_doesNotExist, new Object[] { project.getId() } );
 				return;
 			}
 
 			projectDao.update(project);
-		}
 
-		Dao<Sample,Integer> sampleDao = DaoManager.createDao(connectionSource, Sample.class);
+			oldUserId = oldProject.getUserId();
+
+			QueryBuilder<Project,Integer> queryBuilder = projectDao.queryBuilder();
+			Where<Project,Integer> where = queryBuilder.where();
+			where = where.eq(Project.USER_ID_FIELD_NAME, oldUserId);
+
+			Project projects = projectDao.queryForFirst(queryBuilder.prepare());
+			oldUserHasChildren = projects != null;
+
+			if (oldUserId != project.getUserId()) {
+				for (Sample sample : sampleDao.queryForEq(Sample.PROJECT_ID_FIELD_NAME, project.getId())) {
+					reassignedSampleIds.add(sample.getId());
+					sample.setUserId(project.getUserId());
+					sampleDao.update(sample);
+
+					for (ReplicateV1 replicate : replicateDao.queryForEq(ReplicateV1.SAMPLEID_FIELD_NAME, sample.getId())) {
+						reassignedReplicateIds.add(replicate.getId());
+
+						replicate.setUserId(project.getUserId());
+						replicateDao.update(replicate);
+					}
+				}
+			}
+		}
 
 		QueryBuilder<Sample,Integer> queryBuilder = sampleDao.queryBuilder();
 		Where<Sample,Integer> where = queryBuilder.where();
 		where = where.eq(Sample.PROJECT_ID_FIELD_NAME, project.getId());
 
 		Sample samples = sampleDao.queryForFirst(queryBuilder.prepare());
+		boolean hasChildren = samples != null;
 
-		addEvent(new ProjectUpdated(project, samples != null));
+		addEvent(new ProjectUpdated(project, hasChildren, oldUserId, oldUserHasChildren, reassignedSampleIds, reassignedReplicateIds));
 
 		Dao<User,Integer> userDao = DaoManager.createDao(connectionSource, User.class);
 		User user = userDao.queryForId(project.getUserId());

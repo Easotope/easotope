@@ -40,7 +40,7 @@ import org.easotope.framework.core.logging.LogListener;
 import org.easotope.framework.dbcore.cmdprocessors.Processor;
 import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
 import org.easotope.framework.dbcore.cmdprocessors.ProcessorManagerListener;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
@@ -221,7 +221,7 @@ public class Monitor implements LogListener, ProcessorManagerListener {
 
 				} catch (Exception e) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-					UnexpectedException.reportErrorToUser(display, e);
+					PotentialGraphicsMethodsShared.reportErrorToUser(display, e);
 				}
 			}
 		});
@@ -242,7 +242,7 @@ public class Monitor implements LogListener, ProcessorManagerListener {
 
 				} catch (Exception e) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-					UnexpectedException.reportErrorToUser(display, e);
+					PotentialGraphicsMethodsShared.reportErrorToUser(display, e);
 				}
 			}
 		});
@@ -273,7 +273,7 @@ public class Monitor implements LogListener, ProcessorManagerListener {
 
 				} catch (Exception e) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-					UnexpectedException.reportErrorToUser(display, e);
+					PotentialGraphicsMethodsShared.reportErrorToUser(display, e);
 				}
 			}
 		});

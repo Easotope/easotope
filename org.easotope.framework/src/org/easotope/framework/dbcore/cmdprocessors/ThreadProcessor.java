@@ -193,46 +193,51 @@ public abstract class ThreadProcessor extends Processor implements Runnable {
 	private CommandPacket getCommandPacket() {
 		Log.getInstance().log(Level.DEBUG, this, Messages.processor_lookingForCommand);
 
-		synchronized (commandQueue) {
-			while (true) {
+		while (true) {
+			if (isStopping()) {
+				return null;
+			}
+
+			if (isPausing()) {
+				closeConnection();
+
+				Log.getInstance().log(Level.INFO, this, Messages.processor_paused);
+
+				setConnected(false);
+				setPausing(false);
+				setPaused(true);
+				notifyStatusChanged();
+
+				pausedLatch.countDown();
+
+				try {
+					resumeLatch.await();
+				} catch (InterruptedException e) {
+					// do nothing
+				}
+
+				setPaused(false);
+
 				if (isStopping()) {
 					return null;
 				}
 
-				if (isPausing()) {
-					closeConnection();
+				Log.getInstance().log(Level.INFO, this, Messages.processor_resuming);
 
-					Log.getInstance().log(Level.INFO, this, Messages.processor_paused);
-
-					setConnected(false);
-					setPausing(false);
-					setPaused(true);
-					notifyStatusChanged();
-
-					pausedLatch.countDown();
-
-					try {
-						resumeLatch.await();
-					} catch (InterruptedException e) {
-						// do nothing
-					}
-
-					Log.getInstance().log(Level.INFO, this, Messages.processor_resuming);
-
-					if (!openConnection(false)) {
-						Log.getInstance().log(Level.TERMINAL, this, Messages.processor_unableToReconnect);
-					}
-
-					setConnected(true);
-					setPaused(false);
-					notifyStatusChanged();
+				if (!openConnection(false)) {
+					Log.getInstance().log(Level.TERMINAL, this, Messages.processor_unableToReconnect);
 				}
 
+				setConnected(true);
+				notifyStatusChanged();
+			}
+
+			synchronized (commandQueue) {
 				if (commandQueue.size() != 0) {
 					Log.getInstance().log(Level.DEBUG, this, Messages.processor_returningCommand);
 					return commandQueue.remove(0);
 				}
-				
+
 				try {
 					Log.getInstance().log(Level.DEBUG, this, Messages.processor_waitingForCommand);
 					commandQueue.wait();

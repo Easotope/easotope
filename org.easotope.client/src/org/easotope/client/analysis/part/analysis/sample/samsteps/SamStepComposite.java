@@ -52,7 +52,7 @@ import org.easotope.shared.analysis.execute.AnalysisCompiled;
 import org.easotope.shared.analysis.step.StepController;
 import org.easotope.shared.analysis.tables.SamAnalysis;
 import org.easotope.shared.analysis.tables.SamStep;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -236,42 +236,42 @@ public class SamStepComposite extends ChainedComposite implements AnalysisCacheS
 			documentationComposite.setUrl(controller.getDocumentationPath());
 		} catch (Exception e) {
 			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.samStepComposite_errorDocumentation, samStep.getId()), e);
-			UnexpectedException.reportErrorToUser(getDisplay(), e);
+			PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 		}
 
 		try {
 			ioComposite.setInputs(samStep, controller);
 		} catch (Exception e) {
 			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.samStepComposite_errorIO, samStep.getId()), e);
-			UnexpectedException.reportErrorToUser(getDisplay(), e);
+			PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 		}
 
 		try {
 			parameterComposite.setCompositeClass(controller.getParameterComposite());
 		} catch (Exception e) {
 			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.samStepComposite_errorParameters, samStep.getId()), e);
-			UnexpectedException.reportErrorToUser(getDisplay(), e);
+			PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 		}
 
 		try {
 			graphicsComposite.setCompositeClass(controller.getGraphicComposite());
 		} catch (Exception e) {
 			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.samStepComposite_errorGraphicsComposite, samStep.getId()), e);
-			UnexpectedException.reportErrorToUser(getDisplay(), e);
+			PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 		}
 
 		try {
 			dependenciesComposite.updateData(calculatedSample, currentSamStepPosition);
 		} catch (Exception e) {
 			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.samStepComposite_errorDependencies, samStep.getId()), e);
-			UnexpectedException.reportErrorToUser(getDisplay(), e);
+			PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 		}
 
 		try {
 			resultsComposite.updateData(calculatedSample, samStep);
 		} catch (Exception e) {
 			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.samStepComposite_errorResults, samStep.getId()), e);
-			UnexpectedException.reportErrorToUser(getDisplay(), e);
+			PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 		}
 	}
 

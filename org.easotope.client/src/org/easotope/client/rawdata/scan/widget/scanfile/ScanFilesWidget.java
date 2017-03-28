@@ -243,8 +243,9 @@ public class ScanFilesWidget extends EasotopeComposite {
 
 		if (!scanFiles.isEmpty() && !scanFile.isCompatibleWith(scanFiles.first())) {
 			String error = MessageFormat.format(Messages.scanFilesWidget_dataMismatchReplicateText, new Object[] { new File(filename).getName() });
-			MessageDialog.openError(getParent().getShell(), Messages.scanFilesWidget_fileAddErrorTitle, error);
-			return;
+			if (!MessageDialog.openQuestion(getParent().getShell(), Messages.scanFilesWidget_fileAddErrorTitle, error)) {
+				return;
+			}
 		}
 
 		scanFiles.add(scanFile);

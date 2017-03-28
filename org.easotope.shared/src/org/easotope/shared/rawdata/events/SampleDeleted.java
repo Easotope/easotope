@@ -25,17 +25,52 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.framework.server;
+package org.easotope.shared.rawdata.events;
 
-public class Shutdown extends Thread {
-	private Server server;
+import java.util.HashSet;
+import java.util.Hashtable;
 
-	public Shutdown(Server server) {
-		this.server = server;
-	}
+import org.easotope.framework.dbcore.cmdprocessors.Event;
+
+public class SampleDeleted extends Event {
+	private static final long serialVersionUID = 1L;
+
+	private int sampleId;
+	private int projectId;
+	private boolean projectHasChildren;
+	private int userId;
+	private HashSet<Integer> deletedReplicateIds;
 
 	@Override
-	public void run() {
-		server.shutdown();
+	public boolean isAuthorized(Hashtable<String, Object> authenticationObjects) {
+		return true;
+	}
+
+	public SampleDeleted(int sampleId, int projectId, boolean projectHasChildren, int userId, HashSet<Integer> deletedReplicateIds) {
+		this.sampleId = sampleId;
+		this.projectId = projectId;
+		this.projectHasChildren = projectHasChildren;
+		this.userId = userId;
+		this.deletedReplicateIds = deletedReplicateIds;
+	}
+
+	public int getSampleId() {
+		return sampleId;
+	}
+
+	public int getProjectId() {
+		return projectId;
+	}
+
+	public boolean getProjectHasChildren() {
+		return projectHasChildren;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public HashSet<Integer> getDeletedReplicateIds() {
+		return deletedReplicateIds;
 	}
 }

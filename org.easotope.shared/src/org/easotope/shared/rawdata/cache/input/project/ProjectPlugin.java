@@ -33,12 +33,14 @@ import org.easotope.framework.commands.Command;
 import org.easotope.framework.dbcore.cmdprocessors.Event;
 import org.easotope.framework.dbcore.cmdprocessors.Processor;
 import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
+import org.easotope.shared.commands.ProjectDelete;
 import org.easotope.shared.commands.ProjectUpdate;
 import org.easotope.shared.core.cache.AbstractCache;
 import org.easotope.shared.core.cache.CacheHashMap;
 import org.easotope.shared.core.cache.CacheKey;
 import org.easotope.shared.core.cache.CachePlugin;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
+import org.easotope.shared.rawdata.events.ProjectDeleted;
 import org.easotope.shared.rawdata.events.ProjectUpdated;
 import org.easotope.shared.rawdata.tables.Project;
 
@@ -75,7 +77,19 @@ public class ProjectPlugin extends CachePlugin {
 
 	@Override
 	public HashSet<CacheKey> getCacheKeysThatShouldBeDeletedBasedOnEvent(Event event, CacheHashMap cache) {
-		return null;
+		HashSet<CacheKey> result = new HashSet<CacheKey>();
+
+		if (event instanceof ProjectDeleted) {
+			ProjectDeleted projectDeleted = (ProjectDeleted) event;
+			ProjectCacheKey projectCacheKey = new ProjectCacheKey(projectDeleted.getProjectId());
+
+			if (cache.containsKey(projectCacheKey)) {
+				CacheKey oldCacheKey = cache.getKey(projectCacheKey);
+				result.add(oldCacheKey);
+			}
+		}
+
+		return result;
 	}
 
 	@Override
@@ -114,7 +128,10 @@ public class ProjectPlugin extends CachePlugin {
 
 	@Override
 	public void callbackDeleted(Object listener, CacheKey cacheKey) {
-		
+		if (listener instanceof InputCacheProjectGetListener) {
+			int projectId = ((ProjectCacheKey) cacheKey).getProjectId();
+			((InputCacheProjectGetListener) listener).projectDeleted(projectId);
+		}
 	}
 
 	@Override
@@ -149,20 +166,30 @@ public class ProjectPlugin extends CachePlugin {
 	public void callbackVerifyAndResend(Object listener, int commandId, String message) {
 		assert(false);
 	}
-	
+
 	@Override
 	public int deleteData(AbstractCache abstractCache, Object[] parameters) {
-		assert(false);
-		return 0;
+		ProjectDelete projectDelete = new ProjectDelete();
+
+		projectDelete.setProjectId((Integer) parameters[0]);
+
+		Processor processor = ProcessorManager.getInstance().getProcessor();
+		processor.process(projectDelete, LoginInfoCache.getInstance().getAuthenticationObjects(), abstractCache);
+
+		return projectDelete.getClientUniqueId();
 	}
 
 	@Override
 	public void callbackDeleteCompleted(Object listener, Command command) {
-		assert(false);
+		if (listener instanceof InputCacheProjectSaveListener) {
+			((InputCacheProjectSaveListener) listener).projectDeleteCompleted(command.getClientUniqueId());
+		}
 	}
 
 	@Override
 	public void callbackDeleteError(Object listener, int commandId, String message) {
-		assert(false);
+		if (listener instanceof InputCacheProjectSaveListener) {
+			((InputCacheProjectSaveListener) listener).projectDeleteError(commandId, message);
+		}
 	}
 }

@@ -59,7 +59,7 @@ import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
 import org.easotope.framework.dbcore.cmdprocessors.ServerProcessor;
 import org.easotope.framework.dbcore.tables.User;
 import org.easotope.shared.core.AuthenticationKeys;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.core.cache.logininfo.logininfo.LoginInfoCacheLoginInfoGetListener;
 import org.easotope.shared.core.tables.Permissions;
@@ -97,7 +97,7 @@ public class LifeCycleManager implements ProcessorListener, LoginInfoCacheLoginI
 	private EPartService partService;
 	@Inject
 	@Optional
-	private Shell shell;
+	public Shell shell;
 	@Inject
 	@Optional
 	private IWorkbench workbench;
@@ -237,7 +237,7 @@ public class LifeCycleManager implements ProcessorListener, LoginInfoCacheLoginI
 
 				} catch (Exception e) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-					UnexpectedException.reportErrorToUser(shell.getDisplay(), e);
+					PotentialGraphicsMethodsShared.reportErrorToUser(shell.getDisplay(), e);
 				}
 			}
 		});
@@ -260,7 +260,7 @@ public class LifeCycleManager implements ProcessorListener, LoginInfoCacheLoginI
 
 				} catch (Exception e) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-					UnexpectedException.reportErrorToUser(shell.getDisplay(), e);
+					PotentialGraphicsMethodsShared.reportErrorToUser(shell.getDisplay(), e);
 				}
 			}
 		});
@@ -421,7 +421,7 @@ public class LifeCycleManager implements ProcessorListener, LoginInfoCacheLoginI
 
 				} catch (Exception e) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-					UnexpectedException.reportErrorToUser(Display.getDefault(), e);
+					PotentialGraphicsMethodsShared.reportErrorToUser(Display.getDefault(), e);
 				}
 			}
 		});
@@ -449,7 +449,7 @@ public class LifeCycleManager implements ProcessorListener, LoginInfoCacheLoginI
 
 				} catch (Exception e) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-					UnexpectedException.reportErrorToUser(shell.getDisplay(), e);
+					PotentialGraphicsMethodsShared.reportErrorToUser(shell.getDisplay(), e);
 				}
 			}
 		});		

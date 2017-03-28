@@ -28,6 +28,7 @@
 package org.easotope.shared.rawdata.cache.input.replicate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import org.easotope.framework.commands.Command;
@@ -44,8 +45,12 @@ import org.easotope.shared.core.cache.CacheKey;
 import org.easotope.shared.core.cache.CachePlugin;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.rawdata.Acquisition;
+import org.easotope.shared.rawdata.events.ProjectDeleted;
+import org.easotope.shared.rawdata.events.ProjectUpdated;
 import org.easotope.shared.rawdata.events.ReplicateDeleted;
 import org.easotope.shared.rawdata.events.ReplicateUpdated;
+import org.easotope.shared.rawdata.events.SampleDeleted;
+import org.easotope.shared.rawdata.events.SampleUpdated;
 import org.easotope.shared.rawdata.tables.ReplicateV1;
 
 public class ReplicatePlugin extends CachePlugin {
@@ -103,13 +108,37 @@ public class ReplicatePlugin extends CachePlugin {
 		if (event instanceof ReplicateDeleted) {
 			ReplicateDeleted replicateDeleted = (ReplicateDeleted) event;
 			ReplicateCacheKey replicateCacheKey = new ReplicateCacheKey(replicateDeleted.getReplicateId());
-			CacheKey oldCacheKey = cache.getKey(replicateCacheKey);
 
-			if (oldCacheKey != null) {
+			if (cache.containsKey(replicateCacheKey)) {
+				CacheKey oldCacheKey = cache.getKey(replicateCacheKey);
 				result.add(oldCacheKey);
 			}
+
+		} if (event instanceof SampleDeleted) {
+			SampleDeleted sampleDeleted = (SampleDeleted) event;
+
+			for (int replicateId : sampleDeleted.getDeletedReplicateIds()) {
+				ReplicateCacheKey replicateCacheKey = new ReplicateCacheKey(replicateId);
+
+				if (cache.containsKey(replicateCacheKey)) {
+					CacheKey oldCacheKey = cache.getKey(replicateCacheKey);
+					result.add(oldCacheKey);
+				}
+			}
+
+		} if (event instanceof ProjectDeleted) {
+			ProjectDeleted projectDeleted = (ProjectDeleted) event;
+
+			for (int replicateId : projectDeleted.getDeletedReplicateIds()) {
+				ReplicateCacheKey replicateCacheKey = new ReplicateCacheKey(replicateId);
+
+				if (cache.containsKey(replicateCacheKey)) {
+					CacheKey oldCacheKey = cache.getKey(replicateCacheKey);
+					result.add(oldCacheKey);
+				}
+			}
 		}
-		
+
 		return result;
 	}
 
@@ -120,9 +149,9 @@ public class ReplicatePlugin extends CachePlugin {
 		if (event instanceof ReplicateUpdated) {
 			ReplicateUpdated replicateUpdated = (ReplicateUpdated) event;
 			ReplicateCacheKey replicateCacheKey = new ReplicateCacheKey(replicateUpdated.getReplicate().getId());
-			CacheKey oldCacheKey = cache.getKey(replicateCacheKey);
 
-			if (oldCacheKey != null) {
+			if (cache.containsKey(replicateCacheKey)) {
+				CacheKey oldCacheKey = cache.getKey(replicateCacheKey);
 				result.add(oldCacheKey);
 			}
 		}
@@ -132,8 +161,54 @@ public class ReplicatePlugin extends CachePlugin {
 
 	@Override
 	public HashSet<CacheKey> updateCacheBasedOnEvent(Event event, CacheHashMap cache) {
-		//TODO update projectId and sampleType if they change independent of the replicate
-		return null;
+		HashSet<CacheKey> result = new HashSet<CacheKey>();
+
+		if (event instanceof SampleUpdated) {
+			SampleUpdated sampleUpdated = (SampleUpdated) event;
+			int newUserId = sampleUpdated.getSample().getUserId();
+			int newSampleId = sampleUpdated.getSample().getId();
+			int newProjectId = sampleUpdated.getSample().getProjectId();
+
+			for (int replicateId : sampleUpdated.getReassignedReplicateIds()) {
+				ReplicateCacheKey replicateCacheKey = new ReplicateCacheKey(replicateId);
+
+				if (cache.containsKey(replicateCacheKey)) {
+					Object[] oldArray = (Object[]) cache.get(replicateCacheKey);
+					Object[] newArray = Arrays.copyOf(oldArray, oldArray.length);
+
+					ReplicateV1 replicateCopy = new ReplicateV1((ReplicateV1) oldArray[0]);
+					replicateCopy.setUserId(newUserId);
+					replicateCopy.setSampleId(newSampleId);
+					newArray[0] = replicateCopy;
+					newArray[2] = newProjectId;
+
+					CacheKey oldCacheKey = cache.update(replicateCacheKey, newArray);
+					result.add(oldCacheKey);
+				}
+			}
+
+		} if (event instanceof ProjectUpdated) {
+			ProjectUpdated projectUpdated = (ProjectUpdated) event;
+			int newUserId = projectUpdated.getProject().getUserId();
+
+			for (int replicateId : projectUpdated.getReassignedReplicateIds()) {
+				ReplicateCacheKey replicateCacheKey = new ReplicateCacheKey(replicateId);
+
+				if (cache.containsKey(replicateCacheKey)) {
+					Object[] oldArray = (Object[]) cache.get(replicateCacheKey);
+					Object[] newArray = Arrays.copyOf(oldArray, oldArray.length);
+
+					ReplicateV1 replicateCopy = new ReplicateV1((ReplicateV1) oldArray[0]);
+					replicateCopy.setUserId(newUserId);
+					newArray[0] = replicateCopy;
+
+					CacheKey oldCacheKey = cache.update(replicateCacheKey, newArray);
+					result.add(oldCacheKey);
+				}
+			}
+		}
+
+		return result;
 	}
 
 	@Override

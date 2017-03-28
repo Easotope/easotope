@@ -47,9 +47,8 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
 public class Server implements IApplication, ProcessorListener, LogTerminateListener {
-	private static final int SEND_BUFFER_SIZE = 2 * 1024 * 1024;
+	private final int SEND_BUFFER_SIZE = 2 * 1024 * 1024;
 
-	private volatile boolean shuttingDown = false;
 	private ServerSocket serverSocket = null;
 	private FolderProcessor processor = null;
 	private BackupManager backupManager = null;
@@ -78,10 +77,9 @@ public class Server implements IApplication, ProcessorListener, LogTerminateList
 			Log.getInstance().openLogFile(pathToTopDir);
 		}
 
-		Log.getInstance().log(Level.INFO, "Java version " + System.getProperty("java.version"));
-
 		Log.getInstance().setServerMode(true);
 		Log.getInstance().addLogTerminateListener(this);
+		Log.getInstance().log(Level.INFO, "Java version " + System.getProperty("java.version"));
 
 		String[] appArgs = (String[]) context.getArguments().get("application.args");
 
@@ -95,6 +93,23 @@ public class Server implements IApplication, ProcessorListener, LogTerminateList
 			return EXIT_OK;
 		}
 
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				if (shutdownComplete.getCount() != 0) {
+					Log.getInstance().log(Level.INFO, Server.class, Messages.shutdown_requestingStop);
+					
+					Server.this.shutdown();
+
+					try {
+						shutdownComplete.await();
+					} catch (InterruptedException e) {
+						// do nothing
+					}
+				}
+			}
+		});
+
 		if (serverArgs.isDebug()) {
 			Log.getInstance().setProcessingLevel(Level.DEBUG);
 		}
@@ -103,38 +118,23 @@ public class Server implements IApplication, ProcessorListener, LogTerminateList
 		processor.addListener(this);
 		ProcessorManager.getInstance().installProcessor(processor, false);
 
-		Runtime.getRuntime().addShutdownHook(new Shutdown(this));
-
 		if (serverArgs.getBackupDir() != null && serverArgs.getBackupTimes() != null) {
 			backupManager = new BackupManager(serverArgs.getDbDir(), serverArgs.getBackupDir(), serverArgs.getBackupTimes(), serverArgs.getMaxBackups(), processor);
 		}
 
-		final long delay = 60000;
+		listen(serverArgs, processor);
+		shutdownComplete.countDown();
 
-		while (true) {
-			listen(serverArgs, processor);
+		Log.getInstance().log(Level.INFO, Server.class, Messages.server_exiting);
 
-			if (shuttingDown) {
-				shutdownComplete.countDown();
-				Log.getInstance().log(Level.INFO, Server.class, Messages.server_exiting);
-				return EXIT_OK;
-			}
-
-			Log.getInstance().log(Level.INFO, Server.class, MessageFormat.format(Messages.server_listenFailed, delay/1000));
-
-			try {
-				Thread.sleep(delay);
-			} catch (InterruptedException e) {
-				// do nothing
-			}
-		}
+		return EXIT_OK;
 	}
 
 	private void listen(Arguments tcpServerArgs, FolderProcessor processor) {
 		try {
 			serverSocket = new ServerSocket(tcpServerArgs.getPort());
 		} catch (IOException e) {
-			Log.getInstance().log(Level.INFO, Server.class, MessageFormat.format(Messages.server_socketOpenError, tcpServerArgs.getPort(), e));
+			Log.getInstance().log(Level.INFO, Server.class, MessageFormat.format(Messages.server_socketOpenError, tcpServerArgs.getPort()), e);
 			return;
 		}
 
@@ -144,8 +144,13 @@ public class Server implements IApplication, ProcessorListener, LogTerminateList
 			try {
 				socket = serverSocket.accept();
 				socket.setSendBufferSize(SEND_BUFFER_SIZE);
-			} catch (IOException e) {
-				Log.getInstance().log(Level.INFO, Server.class, MessageFormat.format(Messages.server_acceptError, tcpServerArgs.getPort(), e));
+
+			} catch (Exception e) {
+				if (serverSocket == null) {
+					Log.getInstance().log(Level.INFO, Server.class, Messages.server_socketClosed);
+				} else {
+					Log.getInstance().log(Level.INFO, Server.class, MessageFormat.format(Messages.server_acceptError, tcpServerArgs.getPort()), e);
+				}
 				return;
 			}
 
@@ -153,20 +158,19 @@ public class Server implements IApplication, ProcessorListener, LogTerminateList
 		}
 	}
 
-	@Override
-	public void stop() {
-		shutdown();
-	}
-
 	public void shutdown() {
-		Log.getInstance().log(Level.INFO, Server.class, Messages.server_requestingStop);
-
-		shuttingDown = true;
 		processor.requestStop();
 
 		if (backupManager != null) {
 			backupManager.requestStop();
 		}
+	}
+
+	@Override
+	public void stop() {
+		Log.getInstance().log(Level.INFO, Server.class, Messages.server_requestingStop);
+
+		shutdown();
 
 		try {
 			shutdownComplete.await();
@@ -177,13 +181,18 @@ public class Server implements IApplication, ProcessorListener, LogTerminateList
 
 	@Override
 	public void processorStatusChanged(Processor processor) {
-		if (!processor.isConnected()) {
+		if (!processor.isConnected() && !processor.isPaused()) {
 			Log.getInstance().log(Level.INFO, Server.class, Messages.server_processorStopped);
-
-			try {
-				serverSocket.close();
-			} catch (IOException e) {
-				Log.getInstance().log(Level.TERMINAL, Server.class, Messages.server_errorClosingSocket, e);
+	
+			if (serverSocket != null) {
+				Log.getInstance().log(Level.INFO, Server.class, Messages.server_closingSocket);
+	
+				try {
+					serverSocket.close();
+					serverSocket = null;
+				} catch (IOException e) {
+					Log.getInstance().log(Level.INFO, Server.class, Messages.server_errorClosingSocket, e);
+				}
 			}
 		}
 	}
@@ -200,6 +209,7 @@ public class Server implements IApplication, ProcessorListener, LogTerminateList
 
 	@Override
 	public void logTerminate(String timestamp, String source, String message, String stackTrace) {
+		// nothing should be printed to the log during this call since the log is blocked by "synchronized"
 		shutdown();
 	}
 }

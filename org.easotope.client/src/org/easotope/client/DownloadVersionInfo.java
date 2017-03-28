@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.core.util.SystemProperty;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -91,7 +91,7 @@ public class DownloadVersionInfo extends Thread {
 
 					} catch (Exception e) {
 						Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-						UnexpectedException.reportErrorToUser(display, e);
+						PotentialGraphicsMethodsShared.reportErrorToUser(display, e);
 					}
 				}
 			});
@@ -132,7 +132,7 @@ public class DownloadVersionInfo extends Thread {
 
 							} catch (Exception e) {
 								Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-								UnexpectedException.reportErrorToUser(display, e);
+								PotentialGraphicsMethodsShared.reportErrorToUser(display, e);
 							}
 						}
 					});
@@ -151,7 +151,7 @@ public class DownloadVersionInfo extends Thread {
 
 							} catch (Exception e) {
 								Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-								UnexpectedException.reportErrorToUser(display, e);
+								PotentialGraphicsMethodsShared.reportErrorToUser(display, e);
 							}
 						}
 					});

@@ -35,7 +35,7 @@ import org.easotope.client.core.BlockUntilNoOnePersisting;
 import org.easotope.client.core.adaptors.LoggingAdaptor;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Point;
@@ -155,7 +155,7 @@ public class BlockWhileSavingDialog extends Dialog {
 
 								} catch (Exception e) {
 									Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-									UnexpectedException.reportErrorToUser(shell.getDisplay(), e);
+									PotentialGraphicsMethodsShared.reportErrorToUser(shell.getDisplay(), e);
 								}
 							}
 						});
@@ -171,7 +171,7 @@ public class BlockWhileSavingDialog extends Dialog {
 
 								} catch (Exception e) {
 									Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-									UnexpectedException.reportErrorToUser(shell.getDisplay(), e);
+									PotentialGraphicsMethodsShared.reportErrorToUser(shell.getDisplay(), e);
 								}
 							}
 						});

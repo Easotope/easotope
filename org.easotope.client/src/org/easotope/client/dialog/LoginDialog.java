@@ -51,7 +51,7 @@ import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
 import org.easotope.framework.dbcore.tables.User;
 import org.easotope.shared.commands.LoginWithPermsPrefs;
 import org.easotope.shared.core.Browse;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.core.tables.Permissions;
 import org.easotope.shared.core.tables.Preferences;
@@ -393,7 +393,7 @@ public class LoginDialog extends Dialog implements ProcessorListener, CommandLis
 
 					} catch (Exception e) {
 						Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-						UnexpectedException.reportErrorToUser(shell.getDisplay(), e);
+						PotentialGraphicsMethodsShared.reportErrorToUser(shell.getDisplay(), e);
 					}
 				}
 			});
@@ -421,7 +421,7 @@ public class LoginDialog extends Dialog implements ProcessorListener, CommandLis
 	
 					} catch (Exception e) {
 						Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-						UnexpectedException.reportErrorToUser(shell.getDisplay(), e);
+						PotentialGraphicsMethodsShared.reportErrorToUser(shell.getDisplay(), e);
 					}
 		    		}
 			});
@@ -448,7 +448,7 @@ public class LoginDialog extends Dialog implements ProcessorListener, CommandLis
 
 				} catch (Exception e) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-					UnexpectedException.reportErrorToUser(shell.getDisplay(), e);
+					PotentialGraphicsMethodsShared.reportErrorToUser(shell.getDisplay(), e);
 				}
 	    		}
 		});
@@ -477,7 +477,7 @@ public class LoginDialog extends Dialog implements ProcessorListener, CommandLis
 
 				} catch (Exception e) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-					UnexpectedException.reportErrorToUser(shell.getDisplay(), e);
+					PotentialGraphicsMethodsShared.reportErrorToUser(shell.getDisplay(), e);
 				}
 	    		}
 		});
@@ -500,7 +500,7 @@ public class LoginDialog extends Dialog implements ProcessorListener, CommandLis
 
 				} catch (Exception e) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-					UnexpectedException.reportErrorToUser(shell.getDisplay(), e);
+					PotentialGraphicsMethodsShared.reportErrorToUser(shell.getDisplay(), e);
 				}
 			}
 		});

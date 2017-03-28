@@ -330,6 +330,7 @@ public class SampleSelectorComposite extends ChainedComposite implements UserCac
 				treeElementLookup.put(PROJECT_PREFIX + projectId, project);
 			}
 
+            project.setParent(user);
 			ProjectListItem projectListItem = projectList.get(projectId);
 			project.setNameDateAndHasChildren(projectListItem.getProject().getName(), 0, projectListItem.hasChildren());
 			children.add(project);
@@ -337,7 +338,10 @@ public class SampleSelectorComposite extends ChainedComposite implements UserCac
 
 		user.setChildren(children);
 
-		treeViewer.refresh(user, true);
+		if (!treeViewer.isBusy()) {
+			treeViewer.refresh(user, true);
+		}
+
 		removeWaitingReminder(commandId);
 	}
 
@@ -349,22 +353,63 @@ public class SampleSelectorComposite extends ChainedComposite implements UserCac
 
 		TreeElement userElement = treeElementLookup.get(USER_PREFIX + projectList.getUserId());
 
+		if (userElement == null) {
+			return;
+		}
+
+		if (userElement.getChildren(this) == null) {
+			userElement.setHasChildren(projectList.size() != 0);
+
+			if (!treeViewer.isBusy()) {
+				treeViewer.refresh(userElement, true);
+			}
+
+			return;
+		}
+
+		HashSet<TreeElement> refreshTreeElements = new HashSet<TreeElement>();
+		refreshTreeElements.add(userElement);
+
+		ArrayList<ProjectElement> toBeRemoved = new ArrayList<ProjectElement>();
+
+		for (TreeElement treeElement : userElement.getChildren(this)) {
+			ProjectElement projectElement = (ProjectElement) treeElement;
+
+			if (!projectList.containsKey(projectElement.getId())) {
+				toBeRemoved.add(projectElement);
+			}
+		}
+
+		for (ProjectElement projectElement : toBeRemoved) {
+			userElement.removeChild(projectElement);
+			refreshTreeElements.add(userElement);
+
+			if (projectElement.getParent() == userElement) {
+				projectElement.setParent(null);
+			}
+		}
+
 		for (Integer projectId: projectList.keySet()) {
 			ProjectListItem projectListItem = projectList.get(projectId);
+
 			TreeElement projectElement = treeElementLookup.get(PROJECT_PREFIX + projectId);
 
 			if (projectElement == null) {
 				projectElement = new ProjectElement(projectId, (UserElement) userElement);
-
 				userElement.setHasChildren(true);
-				userElement.addChildIfChildrenAreLoaded(projectElement);
 			}
 
+			projectElement.setParent(userElement);
+			userElement.addChildIfChildrenAreLoaded(projectElement);
 			projectElement.setNameDateAndHasChildren(projectListItem.getProject().getName(), 0, projectListItem.hasChildren());
 			treeElementLookup.put(PROJECT_PREFIX + projectId, projectElement);
 		}
 
-		treeViewer.refresh(userElement, true);
+		if (!treeViewer.isBusy()) {
+			for (TreeElement treeElement : refreshTreeElements) {
+				treeViewer.refresh(treeElement, true);
+			}
+		}
 	}
 
 	@Override
@@ -386,6 +431,7 @@ public class SampleSelectorComposite extends ChainedComposite implements UserCac
 				treeElementLookup.put(SAMPLE_PREFIX + sampleId, sample);
 			}
 
+            sample.setParent(project);
             SampleListItem sampleListItem = sampleList.get(sampleId);
             sample.setNameDateAndHasChildren(sampleListItem.getSample().getName(), 0, false);
 
@@ -394,14 +440,17 @@ public class SampleSelectorComposite extends ChainedComposite implements UserCac
 
 		project.setChildren(children);
 
-		treeViewer.refresh(project, true);
+		if (!treeViewer.isBusy()) {
+			treeViewer.refresh(project, true);
+		}
+
 		removeWaitingReminder(commandId);
 	}
 
 	@Override
 	public void sampleListUpdated(int commandId, SampleList sampleList) {
 		if (waitingOnTreeElements.contains(PROJECT_PREFIX + sampleList.getProjectId())) {
-        		return;
+			return;
 		}
 
 		TreeElement projectElement = treeElementLookup.get(PROJECT_PREFIX + sampleList.getProjectId());
@@ -410,28 +459,70 @@ public class SampleSelectorComposite extends ChainedComposite implements UserCac
 			return;
 		}
 
-        for (Integer sampleId: sampleList.keySet()) {
-        		SampleListItem sampleListItem = sampleList.get(sampleId);
-        		TreeElement sampleElement = treeElementLookup.get(SAMPLE_PREFIX + sampleId);
+		if (projectElement.getChildren(this) == null) {
+			projectElement.setHasChildren(sampleList.size() != 0);
 
-        		if (sampleElement == null) {
-        			sampleElement = new SampleElement(sampleId, (ProjectElement) projectElement);
+			if (!treeViewer.isBusy()) {
+				treeViewer.refresh(projectElement, true);
+			}
 
-        			projectElement.setHasChildren(true);
-        			projectElement.addChildIfChildrenAreLoaded(sampleElement);
-        		}
+			return;
+		}
 
-        		sampleElement.setNameDateAndHasChildren(sampleListItem.getSample().getName(), 0, false);
-        		treeElementLookup.put(SAMPLE_PREFIX + sampleId, sampleElement);
-        }
+		HashSet<TreeElement> refreshTreeElements = new HashSet<TreeElement>();
+		refreshTreeElements.add(projectElement);
 
-        treeViewer.refresh(projectElement, true);
+		ArrayList<SampleElement> toBeRemoved = new ArrayList<SampleElement>();
+
+		for (TreeElement treeElement : projectElement.getChildren(this)) {
+			SampleElement sampleElement = (SampleElement) treeElement;
+
+			if (!sampleList.containsKey(sampleElement.getId())) {
+				toBeRemoved.add(sampleElement);
+			}
+		}
+
+		for (SampleElement sampleElement : toBeRemoved) {
+			projectElement.removeChild(sampleElement);
+			refreshTreeElements.add(projectElement);
+
+			if (sampleElement.getParent() == projectElement) {
+				sampleElement.setParent(null);
+			}
+		}
+
+		for (Integer sampleId: sampleList.keySet()) {
+			SampleListItem sampleListItem = sampleList.get(sampleId);
+
+			TreeElement sampleElement = treeElementLookup.get(SAMPLE_PREFIX + sampleId);
+
+			if (sampleElement == null) {
+				sampleElement = new SampleElement(sampleId, (ProjectElement) projectElement);
+				projectElement.setHasChildren(true);
+			}
+
+			sampleElement.setParent(projectElement);
+			projectElement.addChildIfChildrenAreLoaded(sampleElement);
+			sampleElement.setNameDateAndHasChildren(sampleListItem.getSample().getName(), 0, false);
+			treeElementLookup.put(SAMPLE_PREFIX + sampleId, sampleElement);
+		}
+
+		if (!treeViewer.isBusy()) {
+			for (TreeElement treeElement : refreshTreeElements) {
+				treeViewer.refresh(treeElement, true);
+			}
+		}
 	}
 
 	@Override
 	public void sampleListGetError(int commandId, String message) {
 		getChainedPart().raiseError(message);
 		removeWaitingReminder(commandId);
+	}
+
+	@Override
+	public void sampleListDeleted(int projectId) {
+		//TODO how to handle this?
 	}
 
 	@Override

@@ -87,20 +87,24 @@ public class BackupManager {
 	}
 
     private void scheduleNext() {
-    		long nextMillisUntil = Long.MAX_VALUE;
+    	if (timer == null) {
+    		return;
+    	}
 
-    		for (HoursMinutes time : times) {
-    			long millisUntil = time.millisUntil();
+		long nextMillisUntil = Long.MAX_VALUE;
 
-    			if (nextMillisUntil > millisUntil) {
-    				nextMillisUntil = millisUntil;
-    			}
-    		}
+		for (HoursMinutes time : times) {
+			long millisUntil = time.millisUntil();
 
-    		if (nextMillisUntil != Long.MAX_VALUE) {
-    			mostRecentBackupTask = new BackupTask(dbFolderPath, backupDir, maxBackups);
-    			timer.schedule(mostRecentBackupTask, nextMillisUntil);
-    		}
+			if (nextMillisUntil > millisUntil) {
+				nextMillisUntil = millisUntil;
+			}
+		}
+
+		if (nextMillisUntil != Long.MAX_VALUE) {
+			mostRecentBackupTask = new BackupTask(dbFolderPath, backupDir, maxBackups);
+			timer.schedule(mostRecentBackupTask, nextMillisUntil);
+		}
 	}
 
     class HoursMinutes {
@@ -149,6 +153,7 @@ public class BackupManager {
 
 	public void requestStop() {
 		timer.cancel();
+		timer = null;
 		mostRecentBackupTask.requestStop();
 	}
 }

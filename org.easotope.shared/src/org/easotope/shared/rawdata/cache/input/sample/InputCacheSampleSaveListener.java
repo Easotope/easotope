@@ -33,4 +33,7 @@ import org.easotope.shared.rawdata.tables.Sample;
 public interface InputCacheSampleSaveListener extends CacheListener {
 	public void sampleSaveCompleted(int commandId, Sample sample);
 	public void sampleSaveError(int commandId, String message);
+
+	public void sampleDeleteCompleted(int commandId);
+	public void sampleDeleteError(int commandId, String message);
 }

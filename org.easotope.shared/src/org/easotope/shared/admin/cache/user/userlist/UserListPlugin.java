@@ -30,6 +30,7 @@ package org.easotope.shared.admin.cache.user.userlist;
 import java.util.HashSet;
 
 import org.easotope.framework.commands.Command;
+import org.easotope.framework.dbcore.DatabaseConstants;
 import org.easotope.framework.dbcore.cmdprocessors.Event;
 import org.easotope.framework.dbcore.cmdprocessors.Processor;
 import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
@@ -40,6 +41,9 @@ import org.easotope.shared.core.cache.CacheKey;
 import org.easotope.shared.core.cache.CachePlugin;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.core.events.UserNameUpdated;
+import org.easotope.shared.rawdata.events.ProjectDeleted;
+import org.easotope.shared.rawdata.events.ProjectUpdated;
+import org.easotope.shared.rawdata.tables.Project;
 
 public class UserListPlugin extends CachePlugin {
 	@Override
@@ -94,22 +98,85 @@ public class UserListPlugin extends CachePlugin {
 		if (event instanceof UserNameUpdated) {
 			UserNameUpdated userNameUpdated = (UserNameUpdated) event;
 
+			int id = userNameUpdated.getUserId();
+			String name = userNameUpdated.getUsername();
+			boolean hasChildren = userNameUpdated.hasChildren();
+
 			CacheKey cacheKey = new UserListCacheKey();
 
 			if (cache.containsKey(cacheKey)) {
 				UserList userList = (UserList) cache.get(cacheKey);
 
-				int id = userNameUpdated.getUserId();
-				String name = userNameUpdated.getUsername();
-				boolean hasChildren = userNameUpdated.hasChildren();
-
 				UserList userListCopy = new UserList();
 				userListCopy.putAll(userList);
-
 				userListCopy.put(id, new UserListItem(name, hasChildren));
 
 				CacheKey oldCacheKey = cache.update(cacheKey, userListCopy);
 				result.add(oldCacheKey);
+			}
+
+		} if (event instanceof ProjectUpdated) {
+			ProjectUpdated projectUpdated = (ProjectUpdated) event;
+
+			Project project = projectUpdated.getProject();
+			int oldUserId = projectUpdated.getOldUserId();
+			boolean oldUserIdHasChildren = projectUpdated.getOldUserHasChildren();
+			int newUserId = project.getUserId();
+
+			CacheKey cacheKey = new UserListCacheKey();
+
+			if (cache.containsKey(cacheKey)) {
+				UserList oldUserList = (UserList) cache.get(cacheKey);
+				UserList newUserList = null;
+
+				if (oldUserId != DatabaseConstants.EMPTY_DB_ID && oldUserId != newUserId) {
+					if (oldUserList.containsKey(oldUserId)) {
+						String oldUserName = oldUserList.get(oldUserId).getName();
+
+						newUserList = new UserList();
+						newUserList.putAll(oldUserList);
+						newUserList.put(oldUserId, new UserListItem(oldUserName, oldUserIdHasChildren));
+					}
+				}
+
+				if (oldUserList.containsKey(newUserId)) {
+					String oldUserName = oldUserList.get(newUserId).getName();
+
+					if (newUserList == null) {
+						newUserList = new UserList();
+						newUserList.putAll(oldUserList);
+					}
+
+					newUserList.put(project.getUserId(), new UserListItem(oldUserName, true));
+				}
+
+				if (newUserList != null) {
+					CacheKey oldCacheKey = cache.update(cacheKey, newUserList);
+					result.add(oldCacheKey);
+				}
+			}
+
+		} if (event instanceof ProjectDeleted) {
+			ProjectDeleted projectDeleted = (ProjectDeleted) event;
+
+			int oldUserId = projectDeleted.getUserId();
+			boolean oldUserHasChildren = projectDeleted.getUserHasChildren();
+
+			CacheKey cacheKey = new UserListCacheKey();
+
+			if (cache.containsKey(cacheKey)) {
+				UserList oldUserList = (UserList) cache.get(cacheKey);
+
+				if (oldUserList.containsKey(oldUserId)) {
+					String oldUserName = oldUserList.get(oldUserId).getName();
+
+					UserList newUserList = new UserList();
+					newUserList.putAll(oldUserList);
+					newUserList.put(oldUserId, new UserListItem(oldUserName, oldUserHasChildren));
+
+					CacheKey oldCacheKey = cache.update(cacheKey, newUserList);
+					result.add(oldCacheKey);
+				}
 			}
 		}
 

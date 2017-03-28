@@ -55,8 +55,8 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_HFMzIKKKEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.handledmenuitem.0" label="%sampleAnalysisMenuItem" command="_Yj57IKKJEea--pdW5aFKrA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_Ms0i8KKKEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.handledmenuitem.1" label="%tableOverviewMenuItem" command="_bbQiwKKJEea--pdW5aFKrA"/>
       </children>
-      <children xsi:type="menu:Menu" xmi:id="_hGy9cL4NEea4h7iswIQV5Q" elementId="org.easotope.client.menu.specialmenu" toBeRendered="false" visible="false" label="%commandsMenu">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_OzNu4LhbEeap39TQzuUalg" elementId="" label="%batchImportMenuItem" command="_rvq3ILhbEeap39TQzuUalg"/>
+      <children xsi:type="menu:Menu" xmi:id="_hGy9cL4NEea4h7iswIQV5Q" elementId="org.easotope.client.menu.specialmenu" label="%commandsMenu">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_OzNu4LhbEeap39TQzuUalg" elementId="" toBeRendered="false" visible="false" label="%batchImportMenuItem" command="_rvq3ILhbEeap39TQzuUalg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_4l8vgL4NEea4h7iswIQV5Q" elementId="org.easotope.client.handledmenuitem.trimdatabasemenuitem" label="%trimDatabaseMenuItem" command="_Hs9x8L4OEea4h7iswIQV5Q"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_UwYopVAEEeKcQrcP49hWoA" label="Help">

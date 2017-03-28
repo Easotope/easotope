@@ -27,11 +27,20 @@
 
 package org.easotope.shared.analysis.repstep.superclass.drift;
 
-import org.easotope.shared.analysis.step.StepController;
+import java.util.HashSet;
 
-public abstract class Controller extends StepController {
+import org.easotope.shared.analysis.execute.RepStepCalculator;
+import org.easotope.shared.analysis.step.RepStepController;
+import org.easotope.shared.analysis.tables.RepStepParams;
+
+public abstract class Controller extends RepStepController {
 	@Override
 	public final String getParameterComposite() {
 		return "org.easotope.client.analysis.repstep.superclass.drift.ParameterComposite";
+	}
+
+	@Override
+	public void removeStandardIds(RepStepParams repStepParams, HashSet<Integer> standardIds) {
+		RepStepCalculator.removeStandardIds(repStepParams, standardIds);
 	}
 }

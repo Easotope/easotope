@@ -36,7 +36,11 @@ import org.easotope.client.core.adaptors.LoggingAdaptor;
 import org.easotope.client.core.adaptors.LoggingPaintAdaptor;
 import org.easotope.client.core.part.ChainedPart;
 import org.easotope.client.core.part.EditorComposite;
+import org.easotope.client.core.widgets.SortedCombo;
 import org.easotope.client.core.widgets.VText;
+import org.easotope.shared.admin.cache.user.UserCache;
+import org.easotope.shared.admin.cache.user.userlist.UserCacheUserListGetListener;
+import org.easotope.shared.admin.cache.user.userlist.UserList;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.rawdata.cache.input.InputCache;
 import org.easotope.shared.rawdata.cache.input.project.InputCacheProjectGetListener;
@@ -52,14 +56,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 
-public class ProjectComposite extends EditorComposite implements InputCacheProjectGetListener, InputCacheProjectSaveListener {
+public class ProjectComposite extends EditorComposite implements UserCacheUserListGetListener, InputCacheProjectGetListener, InputCacheProjectSaveListener {
+	private final String USERLIST_COMMAND_ID = "USERLIST_COMMAND_ID";
 	private final String PROJECT_COMMAND_ID = "PROJECT_COMMAND_ID";
 	private final String PROJECT_SAVE_COMMAND_ID = "PROJECT_SAVE_COMMAND_ID";
+	private final String WAITING_FOR_PROJECT_DELETE = "WAITING_FOR_PROJECT_DELETE";
 
 	private Integer currentUserId = null;
 	private Integer currentProjectId = null;
 
 	private Label id;
+	private SortedCombo user;
+	private Canvas userError;
 	private VText name;
 	private Canvas nameError;
 	private VText description;
@@ -78,18 +86,42 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 
 		id = new Label(this, SWT.NONE);
 
-		Label massSpecNameLabel = new Label(this, SWT.NONE);
-		massSpecNameLabel.setText(Messages.projectComposite_nameLabel);
+		Label nameLabel = new Label(this, SWT.NONE);
+		nameLabel.setText(Messages.projectComposite_nameLabel);
 
-		Composite standardNameComposite = new Composite(this, SWT.NONE);
+		Composite projectNameComposite = new Composite(this, SWT.NONE);
 		gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
+		gridLayout.numColumns = 4;
 		gridLayout.marginHeight = 0;
 		gridLayout.marginWidth = 0;
-		standardNameComposite.setLayout(gridLayout);
+		projectNameComposite.setLayout(gridLayout);
 
-		name = new VText(standardNameComposite, SWT.BORDER);
+		user = new SortedCombo(projectNameComposite, SWT.BORDER | SWT.READ_ONLY);
 		GridData gridData = new GridData();
+		gridData.widthHint = GuiConstants.MEDIUM_COMBO_INPUT_WIDTH;
+		user.setLayoutData(gridData);
+		user.addListener(SWT.Selection, new LoggingAdaptor() {
+			@Override
+			public void loggingHandleEvent(Event event) {
+				widgetStatusChanged();
+			}
+		});
+
+		userError = new Canvas(projectNameComposite, SWT.NONE);
+		gridData = new GridData();
+		gridData.widthHint = errorImage.getImageData().width;
+		gridData.heightHint = errorImage.getImageData().height;
+		userError.setLayoutData(gridData);
+		userError.setVisible(false);
+		userError.addPaintListener(new LoggingPaintAdaptor() {
+			public void loggingPaintControl(PaintEvent e) {
+				e.gc.setAntialias(SWT.ON);
+				e.gc.drawImage(errorImage, 0, 0);
+			}
+		});
+
+		name = new VText(projectNameComposite, SWT.BORDER);
+		gridData = new GridData();
 		gridData.widthHint = GuiConstants.SHORT_TEXT_INPUT_WIDTH;
 		name.setLayoutData(gridData);
 		name.setTextLimit(GuiConstants.LONG_TEXT_INPUT_LIMIT);
@@ -113,7 +145,7 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 			}
 		});
 
-		nameError = new Canvas(standardNameComposite, SWT.NONE);
+		nameError = new Canvas(projectNameComposite, SWT.NONE);
 		gridData = new GridData();
 		gridData.widthHint = errorImage.getImageData().width;
 		gridData.heightHint = errorImage.getImageData().height;
@@ -145,6 +177,17 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 				widgetStatusChanged();
 			}
 		});
+
+		UserCache.getInstance().addListener(this);
+		
+		int commandId = UserCache.getInstance().userListGet(this);
+		waitingFor(USERLIST_COMMAND_ID, commandId);
+	}
+
+	@Override
+	public void handleDispose() {
+		UserCache.getInstance().removeListener(this);
+		super.handleDispose();
 	}
 
 	private Project getCurrentProject() {
@@ -156,8 +199,9 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 		Project currentProject = getCurrentProject();
 
 		getChainedPart().getPart().setLabel(Messages.projectComposite_labelPrefix + currentProject.getName());
-		
+
 		id.setText(String.valueOf(currentProject.getId()));
+		user.selectInteger(currentProject.getUserId());
 		name.setText(currentProject.getName());
 		description.setText(currentProject.getDescription());
 	}
@@ -167,6 +211,7 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 		getChainedPart().getPart().setLabel(Messages.editor_projectTab);
 
 		id.setText(Messages.projectComposite_newId);
+		user.selectInteger((Integer) getSelection().get(ProjectPart.SELECTION_USER_ID));
 		name.setText("");
 		description.setText("");
 
@@ -179,6 +224,12 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 
 		boolean hasPermission = (currentProject == null) || currentProject.getUserId() == LoginInfoCache.getInstance().getUser().getId();
 		hasPermission = hasPermission || LoginInfoCache.getInstance().getPermissions().isCanEditAllReplicates();
+
+		user.setEnabled(hasPermission);
+
+		if (!hasPermission) {
+			user.revert();
+		}
 
 		name.setEnabled(hasPermission);
 
@@ -195,6 +246,7 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 
 	@Override
 	public void disableWidgets() {
+		user.setEnabled(false);
 		name.setEnabled(false);
 		description.setEnabled(false);
 	}
@@ -203,6 +255,7 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 	protected boolean isDirty() {
 		boolean fieldsContainNewData = false;
 
+		fieldsContainNewData = fieldsContainNewData || user.hasChanged();
 		fieldsContainNewData = fieldsContainNewData || name.hasChangedIfTrimmed();
 		fieldsContainNewData = fieldsContainNewData || description.hasChanged();
 
@@ -258,11 +311,9 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 
 		if (currentProject != null) {
 			project.setId(currentProject.getId());
-			project.setUserId(currentProject.getUserId());
-		} else {
-			project.setUserId((Integer) getSelection().get(ProjectPart.SELECTION_USER_ID));
 		}
 
+		project.setUserId(user.getSelectedInteger());
 		project.setName(name.getText().trim());
 		project.setDescription(description.getText());
 
@@ -273,10 +324,37 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 	@Override
 	protected boolean canDelete() {
 		return false;
+
+//		if (getChainedPart().canRevert()) {
+//			return false;
+//		}
+//
+//		Project currentProject = getCurrentProject();
+//
+//		if (currentProject != null) {
+//			if (LoginInfoCache.getInstance().getPermissions().isCanDeleteAll()) {
+//				return true;
+//			}
+//
+//			int currentUserId = LoginInfoCache.getInstance().getUser().getId();
+//			boolean canDeleteOwn = LoginInfoCache.getInstance().getPermissions().isCanDeleteOwn();
+//
+//			if (canDeleteOwn && currentProject.getUserId() == currentUserId) {
+//				return true;
+//			}
+//		}
+//
+//		return false;
 	}
 
 	@Override
 	protected boolean requestDelete() {
+		if (getChainedPart().raiseQuestion(Messages.projectEditor_reallyDelete)) {
+			int commandId = InputCache.getInstance().projectDelete(getCurrentProject().getId(), this);
+			waitingFor(WAITING_FOR_PROJECT_DELETE, commandId);
+			return true;
+		}
+
 		return false;
 	}
 
@@ -291,6 +369,14 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 	public void projectUpdated(int commandId, Project project) {
 		if (getCurrentProject() != null && getCurrentProject().getId() == project.getId()) {
 			updateObject(project, Messages.projectEditor_projectHasBeenUpdated);
+		}
+	}
+
+	@Override
+	public void projectDeleted(int projectId) {
+		if (getCurrentProject() != null && getCurrentProject().getId() == projectId) {
+			getChainedPart().raiseInfo(Messages.projectEditor_projectDeleted);
+			getChainedPart().closePart();
 		}
 	}
 
@@ -311,5 +397,36 @@ public class ProjectComposite extends EditorComposite implements InputCacheProje
 		if (commandIdForKey(PROJECT_SAVE_COMMAND_ID) == commandId) {
 			raiseGetError(PROJECT_SAVE_COMMAND_ID, message);
 		}
+	}
+
+	@Override
+	public void projectDeleteCompleted(int commandId) {
+		if (commandIdForKey(WAITING_FOR_PROJECT_DELETE) == commandId) {
+			deleteComplete(WAITING_FOR_PROJECT_DELETE);
+		}
+	}
+
+	@Override
+	public void projectDeleteError(int commandId, String message) {
+		if (commandIdForKey(WAITING_FOR_PROJECT_DELETE) == commandId) {
+			raiseSaveOrDeleteError(WAITING_FOR_PROJECT_DELETE, message);
+		}
+	}
+
+	@Override
+	public void userListGetCompleted(int commandId, UserList userList) {
+		user.setPossibilities(userList);
+		doneWaitingFor(USERLIST_COMMAND_ID);
+	}
+
+	@Override
+	public void userListUpdated(int commandId, UserList userList) {
+		user.setPossibilities(userList);
+		doneWaitingFor(USERLIST_COMMAND_ID);
+	}
+
+	@Override
+	public void userListGetError(int commandId, String message) {
+		raiseGetError(USERLIST_COMMAND_ID, message);
 	}
 }

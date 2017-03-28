@@ -46,7 +46,7 @@ import org.easotope.shared.analysis.tables.CorrIntervalError;
 import org.easotope.shared.analysis.tables.RepAnalysis;
 import org.easotope.shared.analysis.tables.RepStep;
 import org.easotope.shared.analysis.tables.RepStepParams;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
 import org.easotope.shared.core.scratchpad.ScratchPad;
 import org.eclipse.swt.SWT;
@@ -204,7 +204,7 @@ public class RepStepComposite extends ChainedComposite implements RunCalculatorL
 
 			} catch (Exception e) {
 				Log.getInstance().log(Level.INFO, this, Messages.repStepComposite_errorScratchPad, e);
-				UnexpectedException.reportErrorToUser(getDisplay(), e);
+				PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 				offsetsComposite.setCorrIntervalInfo(null, null);
 			}
 		}
@@ -290,28 +290,28 @@ public class RepStepComposite extends ChainedComposite implements RunCalculatorL
 				documentationComposite.setUrl(controller.getDocumentationPath());
 			} catch (Exception e) {
 				Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.repStepComposite_errorDocumentation, repStep.getId()), e);
-				UnexpectedException.reportErrorToUser(getDisplay(), e);
+				PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 			}
 
 			try {
 				ioComposite.setInputs(repStep, controller);
 			} catch (Exception e) {
 				Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.repStepComposite_errorIO, repStep.getId()), e);
-				UnexpectedException.reportErrorToUser(getDisplay(), e);
+				PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 			}
 
 			try {
 				parameterComposite.setCompositeClass(controller.getParameterComposite());
 			} catch (Exception e) {
 				Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.repStepComposite_errorParameters, repStep.getId()), e);
-				UnexpectedException.reportErrorToUser(getDisplay(), e);
+				PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 			}
 
 			try {
 				graphicsComposite.setCompositeClass(controller.getGraphicComposite());
 			} catch (Exception e) {
 				Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.repStepComposite_errorGraphicsComposite, repStep.getId()), e);
-				UnexpectedException.reportErrorToUser(getDisplay(), e);
+				PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 			}
 
 			needToUpdateData = true;
@@ -322,21 +322,21 @@ public class RepStepComposite extends ChainedComposite implements RunCalculatorL
 				graphicsComposite.updateData();
 			} catch (Exception e) {
 				Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.repStepComposite_errorGraphics, repStep.getId()), e);
-				UnexpectedException.reportErrorToUser(getDisplay(), e);
+				PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 			}
 
 			try {
 				dependenciesComposite.updateData(repStep);
 			} catch (Exception e) {
 				Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.repStepComposite_errorDependencies, repStep.getId()), e);
-				UnexpectedException.reportErrorToUser(getDisplay(), e);
+				PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 			}
 
 			try {
 				resultsComposite.updateData(repStep);
 			} catch (Exception e) {
 				Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.repStepComposite_errorResults, repStep.getId()), e);
-				UnexpectedException.reportErrorToUser(getDisplay(), e);
+				PotentialGraphicsMethodsShared.reportErrorToUser(getDisplay(), e);
 			}
 		}
 

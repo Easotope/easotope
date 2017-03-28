@@ -40,12 +40,12 @@ public class ReplicateUpdated extends Event {
 	private static final long serialVersionUID = 1L;
 
 	private ReplicateV1 replicate;
-	private int sampleId = DatabaseConstants.EMPTY_DB_ID;
-	private String sampleName = null;
-
-	public ReplicateUpdated(ReplicateV1 replicate) {
-		this.replicate = replicate;
-	}
+	private int oldSampleId;
+	private boolean oldSampleHasChildren;
+	private int newSampleId;
+	private String newSampleName;
+	private int oldProjectId;
+	private int newProjectId;
 
 	@Override
 	public boolean isAuthorized(Hashtable<String, Object> authenticationObjects) {
@@ -54,23 +54,41 @@ public class ReplicateUpdated extends Event {
 		return replicate.getStandardId() != DatabaseConstants.EMPTY_DB_ID || user.id == replicate.getUserId() || permissions.isCanEditAllReplicates();
 	}
 
+	public ReplicateUpdated(ReplicateV1 replicate, int oldSampleId, boolean oldSampleHasChildren, int newSampleId, String newSampleName, int oldProjectId, int newProjectId) {
+		this.replicate = replicate;
+		this.oldSampleId = oldSampleId;
+		this.oldSampleHasChildren = oldSampleHasChildren;
+		this.newSampleId = newSampleId;
+		this.newSampleName = newSampleName;
+		this.oldProjectId = oldProjectId;
+		this.newProjectId = newProjectId;
+	}
+
 	public ReplicateV1 getReplicate() {
 		return replicate;
 	}
 	
-	public int getSampleId() {
-		return sampleId;
+	public int getOldSampleId() {
+		return oldSampleId;
 	}
 
-	public void setSampleId(int sampleId) {
-		this.sampleId = sampleId;
+	public boolean getOldSampleHasChildren() {
+		return oldSampleHasChildren;
 	}
 
-	public String getSampleName() {
-		return sampleName;
+	public int getNewSampleId() {
+		return newSampleId;
 	}
 
-	public void setSampleName(String sampleName) {
-		this.sampleName = sampleName;
+	public String getNewSampleName() {
+		return newSampleName;
+	}
+
+	public int getOldProjectId() {
+		return oldProjectId;
+	}
+
+	public int getNewProjectId() {
+		return newProjectId;
 	}
 }

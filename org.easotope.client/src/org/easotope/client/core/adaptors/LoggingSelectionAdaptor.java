@@ -30,7 +30,7 @@ package org.easotope.client.core.adaptors;
 import org.easotope.client.Messages;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 
@@ -44,7 +44,7 @@ public  class LoggingSelectionAdaptor implements SelectionListener {
 			Log.getInstance().log(Level.INFO, this, Messages.adaptor_eventLoopError, e);
 
 			if (event != null) {
-				UnexpectedException.reportErrorToUser(event.widget, e);
+				PotentialGraphicsMethodsShared.reportErrorToUser(event.widget, e);
 			}
 		}
 	}
@@ -58,7 +58,7 @@ public  class LoggingSelectionAdaptor implements SelectionListener {
 			Log.getInstance().log(Level.INFO, this, Messages.adaptor_eventLoopError, e);
 
 			if (event != null) {
-				UnexpectedException.reportErrorToUser(event.widget, e);
+				PotentialGraphicsMethodsShared.reportErrorToUser(event.widget, e);
 			}
 		}
 	}

@@ -32,7 +32,7 @@ import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.dbcore.tables.User;
 import org.easotope.shared.core.DateFormat;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.core.cache.logininfo.logininfo.LoginInfoCacheLoginInfoGetListener;
 import org.easotope.shared.core.tables.Permissions;
@@ -133,7 +133,7 @@ public class DateTimeLabel extends Label implements LoginInfoCacheLoginInfoGetLi
 
 				} catch (Exception e) {
 					Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-					UnexpectedException.reportErrorToUser(DateTimeLabel.this.getDisplay(), e);
+					PotentialGraphicsMethodsShared.reportErrorToUser(DateTimeLabel.this.getDisplay(), e);
 				}
 			}
 		});

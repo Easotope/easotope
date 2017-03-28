@@ -30,6 +30,7 @@ package org.easotope.shared.rawdata.cache.input.samplelist;
 import java.util.HashSet;
 
 import org.easotope.framework.commands.Command;
+import org.easotope.framework.dbcore.DatabaseConstants;
 import org.easotope.framework.dbcore.cmdprocessors.Event;
 import org.easotope.framework.dbcore.cmdprocessors.Processor;
 import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
@@ -40,9 +41,12 @@ import org.easotope.shared.core.cache.CacheKey;
 import org.easotope.shared.core.cache.CachePlugin;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.rawdata.cache.input.sample.SampleCacheKey;
+import org.easotope.shared.rawdata.events.ProjectDeleted;
 import org.easotope.shared.rawdata.events.ReplicateDeleted;
 import org.easotope.shared.rawdata.events.ReplicateUpdated;
+import org.easotope.shared.rawdata.events.SampleDeleted;
 import org.easotope.shared.rawdata.events.SampleUpdated;
+import org.easotope.shared.rawdata.tables.ReplicateV1;
 import org.easotope.shared.rawdata.tables.Sample;
 
 public class SampleListPlugin extends CachePlugin {
@@ -91,30 +95,26 @@ public class SampleListPlugin extends CachePlugin {
 
 	@Override
 	public HashSet<CacheKey> getCacheKeysThatShouldBeDeletedBasedOnEvent(Event event, CacheHashMap cache) {
-		return null;
-	}
-
-	@Override
-	public HashSet<CacheKey> getCacheKeysThatNeedReloadBasedOnEvent(Event event, CacheHashMap cache) {
 		HashSet<CacheKey> result = new HashSet<CacheKey>();
 
-		if (event instanceof ReplicateDeleted) {
-			ReplicateDeleted replicateDeleted = (ReplicateDeleted) event;
+		if (event instanceof ProjectDeleted) {
+			ProjectDeleted projectDeleted = (ProjectDeleted) event;
+			int projectId = projectDeleted.getProjectId();
 
-			for (CacheKey cacheKey : cache.keySet()) {
-				if (!(cacheKey instanceof SampleListCacheKey)) {
-					continue;
-				}
+			SampleListCacheKey sampleListCacheKey = new SampleListCacheKey(projectId);
 
-				SampleList oldSampleList = (SampleList) cache.get(cacheKey);
-
-				if (oldSampleList.containsKey(replicateDeleted.getSampleId())) {
-					result.add(cacheKey);
-				}
+			if (cache.containsKey(sampleListCacheKey)) {
+				CacheKey cacheKey = cache.getKey(sampleListCacheKey);
+				result.add(cacheKey);
 			}
 		}
 
 		return result;
+	}
+
+	@Override
+	public HashSet<CacheKey> getCacheKeysThatNeedReloadBasedOnEvent(Event event, CacheHashMap cache) {
+		return null;
 	}
 
 	@Override
@@ -123,41 +123,118 @@ public class SampleListPlugin extends CachePlugin {
 
 		if (event instanceof SampleUpdated) {
 			SampleUpdated sampleUpdated = (SampleUpdated) event;
-			Sample sample = sampleUpdated.getSample();
 
-			CacheKey cacheKey = new SampleListCacheKey(sample.getProjectId());
+			Sample sample = sampleUpdated.getSample();
+			boolean hasChildren = sampleUpdated.isHasChildren();
+			int oldProjectId = sampleUpdated.getOldProjectId();
+			int newProjectId = sample.getProjectId();
+
+			if (oldProjectId != DatabaseConstants.EMPTY_DB_ID && oldProjectId != newProjectId) {
+				CacheKey cacheKey = new SampleListCacheKey(oldProjectId);
+
+				if (cache.containsKey(cacheKey)) {
+					SampleList sampleList = (SampleList) cache.get(cacheKey);
+
+					SampleList newSampleList = new SampleList(oldProjectId);
+					newSampleList.putAll(sampleList);
+					newSampleList.remove(sample.getId());
+					
+					CacheKey oldCacheKey = cache.update(cacheKey, newSampleList);
+					result.add(oldCacheKey);
+				}
+			}
+
+			CacheKey cacheKey = new SampleListCacheKey(newProjectId);
 
 			if (cache.containsKey(cacheKey)) {
 				SampleList sampleList = (SampleList) cache.get(cacheKey);
-				SampleList newSampleList = new SampleList(sample.getProjectId());
-				newSampleList.putAll(sampleList);
 
-				newSampleList.put(sample.getId(), new SampleListItem(sample, sampleUpdated.isHasChildren()));
+				SampleList newSampleList = new SampleList(newProjectId);
+				newSampleList.putAll(sampleList);
+				newSampleList.put(sample.getId(), new SampleListItem(sample, hasChildren));
 
 				CacheKey oldCacheKey = cache.update(cacheKey, newSampleList);
+				result.add(oldCacheKey);
+			}
+
+		} else if (event instanceof SampleDeleted) {
+			SampleDeleted sampleDeleted = (SampleDeleted) event;
+			int sampleId = sampleDeleted.getSampleId();
+			int projectId = sampleDeleted.getProjectId();
+
+			SampleListCacheKey sampleListCacheKey = new SampleListCacheKey(projectId);
+
+			if (cache.containsKey(sampleListCacheKey)) {
+				SampleList oldSampleList = (SampleList) cache.get(sampleListCacheKey);
+
+				SampleList newSampleList = new SampleList(projectId);
+				newSampleList.putAll(oldSampleList);
+				newSampleList.remove(sampleId);
+
+				CacheKey oldCacheKey = cache.update(sampleListCacheKey, newSampleList);
 				result.add(oldCacheKey);
 			}
 
 		} else if (event instanceof ReplicateUpdated) {
 			ReplicateUpdated replicateUpdated = (ReplicateUpdated) event;
 
-			for (CacheKey cacheKey : cache.keySet()) {
-				if (!(cacheKey instanceof SampleListCacheKey)) {
-					continue;
-				}
+			ReplicateV1 replicate = replicateUpdated.getReplicate();
+			int oldSampleId = replicateUpdated.getOldSampleId();
+			boolean oldSampleHasChildren = replicateUpdated.getOldSampleHasChildren();
+			int newSampleId = replicate.getSampleId();
+			int oldProjectId = replicateUpdated.getOldProjectId();
+			int newProjectId = replicateUpdated.getNewProjectId();
 
-				SampleList oldSampleList = (SampleList) cache.get(cacheKey);
+			SampleListCacheKey sampleListCacheKey;
 
-				if (oldSampleList.containsKey(replicateUpdated.getReplicate().getSampleId())) {
-					Sample oldSample = oldSampleList.get(replicateUpdated.getReplicate().getSampleId()).getSample();
+			if (oldSampleId != DatabaseConstants.EMPTY_DB_ID && oldSampleId != newSampleId) {
+				sampleListCacheKey = new SampleListCacheKey(oldProjectId);
 
-					SampleList newSampleList = new SampleList(oldSampleList.getProjectId());
+				if (cache.containsKey(sampleListCacheKey)) {
+					SampleList oldSampleList = (SampleList) cache.get(sampleListCacheKey);
+					Sample oldSample = oldSampleList.get(oldSampleId).getSample();
+
+					SampleList newSampleList = new SampleList(oldProjectId);
 					newSampleList.putAll(oldSampleList);
-					newSampleList.put(oldSample.getId(), new SampleListItem(oldSample, true));
-
-					CacheKey oldCacheKey = cache.update(cacheKey, newSampleList);
+					newSampleList.put(oldSampleId, new SampleListItem(oldSample, oldSampleHasChildren));
+					
+					CacheKey oldCacheKey = cache.update(sampleListCacheKey, newSampleList);
 					result.add(oldCacheKey);
 				}
+			}
+
+			sampleListCacheKey = new SampleListCacheKey(newProjectId);
+
+			if (cache.containsKey(sampleListCacheKey)) {
+				SampleList oldSampleList = (SampleList) cache.get(sampleListCacheKey);
+				Sample oldSample = oldSampleList.get(newSampleId).getSample();
+
+				SampleList newSampleList = new SampleList(newProjectId);
+				newSampleList.putAll(oldSampleList);
+				newSampleList.put(oldSample.getId(), new SampleListItem(oldSample, true));
+				
+				CacheKey oldCacheKey = cache.update(sampleListCacheKey, newSampleList);
+				result.add(oldCacheKey);
+			}
+
+		} else if (event instanceof ReplicateDeleted) {
+			ReplicateDeleted replicateDeleted = (ReplicateDeleted) event;
+			int oldSampleId = replicateDeleted.getSampleId();
+			boolean oldSampleHasChildren = replicateDeleted.getSampleHasChildren();
+			int oldProjectId = replicateDeleted.getProjectId();
+
+			SampleListCacheKey sampleListCacheKey = new SampleListCacheKey(oldProjectId);
+
+			if (cache.containsKey(sampleListCacheKey)) {
+				SampleList oldSampleList = (SampleList) cache.get(sampleListCacheKey);
+				Sample oldSample = oldSampleList.get(oldSampleId).getSample();
+
+				SampleList newSampleList = new SampleList(oldProjectId);
+				newSampleList.putAll(oldSampleList);
+				newSampleList.put(oldSampleId, new SampleListItem(oldSample, oldSampleHasChildren));
+
+				CacheKey oldCacheKey = cache.update(sampleListCacheKey, newSampleList);
+				result.add(oldCacheKey);
 			}
 		}
 
@@ -173,7 +250,10 @@ public class SampleListPlugin extends CachePlugin {
 
 	@Override
 	public void callbackDeleted(Object listener, CacheKey cacheKey) {
-		
+		if (listener instanceof InputCacheSampleListGetListener) {
+			SampleListCacheKey sampleListCacheKey = (SampleListCacheKey) cacheKey;
+			((InputCacheSampleListGetListener) listener).sampleListDeleted(sampleListCacheKey.getProjectId());
+		}
 	}
 
 	@Override
@@ -191,7 +271,7 @@ public class SampleListPlugin extends CachePlugin {
 	public void callbackSaveError(Object listener, int commandId, String message) {
 		assert(false);
 	}
-	
+
 	@Override
 	public void callbackVerifyAndResend(Object listener, int commandId, String message) {
 		assert(false);

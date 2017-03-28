@@ -34,4 +34,5 @@ public interface InputCacheSampleGetListener extends CacheListener {
 	public void sampleGetCompleted(int commandId, Sample sample);
 	public void sampleUpdated(int commandId, Sample sample);
 	public void sampleGetError(int commandId, String message);
+	public void sampleDeleted(int sampleId);
 }

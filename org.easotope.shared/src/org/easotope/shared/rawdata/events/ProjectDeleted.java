@@ -25,41 +25,52 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.shared.core;
+package org.easotope.shared.rawdata.events;
 
-import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.Hashtable;
 
-import org.easotope.framework.core.logging.Log;
-import org.easotope.framework.core.logging.Log.Level;
-import org.easotope.framework.core.util.Reflection;
-import org.easotope.shared.Messages;
+import org.easotope.framework.dbcore.cmdprocessors.Event;
 
-public class UnexpectedException {
-	private static final String className = "org.easotope.client.core.PotentialGraphicsMethods";
-	private static final String methodName = "reportErrorToUser";
+public class ProjectDeleted extends Event {
+	private static final long serialVersionUID = 1L;
 
-	public static void reportErrorToUser(Object displaySource, Throwable t) {
-		if (displaySource == null || t == null) {
-			return;
-		}
+	private int projectId;
+	private int userId;
+	private boolean userHasChildren;
+	private HashSet<Integer> deletedSampleIds;
+	private HashSet<Integer> deletedReplicateIds;
 
-		Object object = null;
+	@Override
+	public boolean isAuthorized(Hashtable<String, Object> authenticationObjects) {
+		return true;
+	}
 
-		try {
-			object = Reflection.createObject(className);
-		} catch (RuntimeException e) {
-			String message = MessageFormat.format(Messages.unexpectedException_couldNotInstantiateGraphicObject, className);
-			Log.getInstance().log(Level.INFO, UnexpectedException.class, message, t);
-			return;
-		}
+	public ProjectDeleted(int projectId, int userId, boolean userHasChildren, HashSet<Integer> deletedSampleIds, HashSet<Integer> deletedReplicateIds) {
+		this.projectId = projectId;
+		this.userId = userId;
+		this.userHasChildren = userHasChildren;
+		this.deletedSampleIds = deletedSampleIds;
+		this.deletedReplicateIds = deletedReplicateIds;
+	}
 
-		try {
-			Reflection.callMethod(object, methodName, displaySource, t);
-		} catch (RuntimeException e) {
-			e.printStackTrace();
-			String message = MessageFormat.format(Messages.unexpectedException_couldNotCallGraphicObject, methodName, className);
-			Log.getInstance().log(Level.INFO, UnexpectedException.class, message, t);
-			return;
-		}
+	public int getProjectId() {
+		return projectId;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public boolean getUserHasChildren() {
+		return userHasChildren;
+	}
+
+	public HashSet<Integer> getDeletedSampleIds() {
+		return deletedSampleIds;
+	}
+
+	public HashSet<Integer> getDeletedReplicateIds() {
+		return deletedReplicateIds;
 	}
 }

@@ -31,6 +31,6 @@ import org.easotope.shared.core.cache.CacheListener;
 
 public interface InputCacheProjectListGetListener extends CacheListener {
 	public void projectListGetCompleted(int commandId, ProjectList projectList);
-	public void projectListUpdated(int commandId, ProjectList projectList);
 	public void projectListGetError(int commandId, String message);
+	public void projectListUpdated(int commandId, ProjectList projectList);
 }

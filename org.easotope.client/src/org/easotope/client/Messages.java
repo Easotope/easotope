@@ -475,7 +475,9 @@ public class Messages extends NLS {
 	public static String scanComposite_scanDeleted;
 	public static String scanComposite_labelPrefix;
 
+	public static String projectEditor_reallyDelete;
 	public static String projectEditor_projectHasBeenUpdated;
+	public static String projectEditor_projectDeleted;
 
 	public static String projectComposite_idLabel;
 	public static String projectComposite_nameLabel;
@@ -484,17 +486,20 @@ public class Messages extends NLS {
 	public static String projectComposite_nameEmpty;
 	public static String projectComposite_labelPrefix;
 
-	public static String samplePart_sampleHasBeenUpdated;
-
 	public static String sampleComposite_idLabel;
 	public static String sampleComposite_nameLabel;
 	public static String sampleComposite_descriptionLabel;
 	public static String sampleComposite_sampleTypeLabel;
 	public static String sampleComposite_sampleAnalysesLabel;
 	public static String sampleComposite_newId;
+	public static String sampleComposite_userEmpty;
+	public static String sampleComposite_projectEmpty;
 	public static String sampleComposite_nameEmpty;
 	public static String sampleComposite_sampleTypeEmpty;
 	public static String sampleComposite_labelPrefix;
+	public static String sampleComposite_reallyDelete;
+	public static String sampleComposite_sampleHasBeenUpdated;
+	public static String sampleComposite_sampleDeleted;
 
 	public static String resultsCompositeTab_computingMessage;
 	public static String resultsCompositeTab_errorTitle;
@@ -922,6 +927,19 @@ public class Messages extends NLS {
 	public static String batchImportTable_acidTempHeader;
 	public static String batchImportTable_groupHeader;
 
+	public static String trimDialog_title;
+	public static String trimDialog_areYouSure;
+	public static String trimDialog_yes;
+	public static String trimDialog_no;
+	public static String trimDialog_ok;
+	public static String trimDialog_shuttingDown;
+	public static String trimDialog_scanning;
+	public static String trimDialog_trimming;
+	public static String trimDialog_finished;
+	public static String trimDialog_errorBefore;
+	public static String trimDialog_dummyException;
+	public static String trimDialog_errorAfter;
+	
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}

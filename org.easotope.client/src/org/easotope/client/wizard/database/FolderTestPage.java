@@ -37,7 +37,7 @@ import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.dbcore.cmdprocessors.CommandListener;
 import org.easotope.framework.dbcore.cmdprocessors.FolderProcessor;
-import org.easotope.shared.core.UnexpectedException;
+import org.easotope.shared.core.PotentialGraphicsMethodsShared;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -213,7 +213,7 @@ public class FolderTestPage extends WizardPage implements CommandListener {
 
 					} catch (Exception e) {
 						Log.getInstance().log(Level.INFO, this, "unexpected exception", e);
-						UnexpectedException.reportErrorToUser(Display.getDefault(), e);
+						PotentialGraphicsMethodsShared.reportErrorToUser(Display.getDefault(), e);
 					}
 		    		}
 		    	});

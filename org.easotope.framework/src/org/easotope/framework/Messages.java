@@ -126,15 +126,18 @@ public class Messages extends NLS {
 	public static String arguments_cantParseMaxBackups;
 	public static String arguments_paramNotFound;
 	public static String arguments_incompleteBackupParams;
-	
-	public static String server_listenFailed;
+
 	public static String server_socketOpenError;
+	public static String server_socketClosed;
 	public static String server_acceptError;
 	public static String server_requestingStop;
 	public static String server_processorStopped;
+	public static String server_closingSocket;
 	public static String server_errorClosingSocket;
 	public static String server_exiting;
-	
+
+	public static String shutdown_requestingStop;
+
 	public static String bridge_ioException;
 	public static String bridge_terminalError;
 	public static String bridge_receivedObject;

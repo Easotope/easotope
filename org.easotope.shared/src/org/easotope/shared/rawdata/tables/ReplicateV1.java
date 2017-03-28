@@ -27,6 +27,8 @@
 
 package org.easotope.shared.rawdata.tables;
 
+import java.util.Arrays;
+
 import org.easotope.framework.dbcore.DatabaseConstants;
 import org.easotope.framework.dbcore.tables.TableObjectWithIntegerId;
 
@@ -83,11 +85,7 @@ public class ReplicateV1 extends TableObjectWithIntegerId {
 		this.description = replicate.description;
 
 		if (replicate.channelToMzX10 != null) {
-			this.channelToMzX10 = new Integer[replicate.channelToMzX10.length];
-
-			for (int i=0; i<replicate.channelToMzX10.length; i++) {
-				this.channelToMzX10[i] = replicate.channelToMzX10[i];
-			}
+			this.channelToMzX10 = Arrays.copyOf(replicate.channelToMzX10, replicate.channelToMzX10.length);
 		}
 	}
 

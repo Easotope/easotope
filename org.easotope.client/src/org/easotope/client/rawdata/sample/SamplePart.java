@@ -43,9 +43,11 @@ import org.eclipse.swt.layout.FormLayout;
 
 public class SamplePart extends ChainedPart {
 	public static final String ELEMENTID_BASE = "org.easotope.rawdata.gui.sample";
+	public static final String INPUTURI_PARAM_USER = "user";
 	public static final String INPUTURI_PARAM_PROJECT = "project";
 	public static final String INPUTURI_PARAM_SAMPLE = "sample";
 
+	public static final String SELECTION_USER_ID = "SELECTION_USER_ID";
 	public static final String SELECTION_PROJECT_ID = "SELECTION_PROJECT_ID";
 	public static final String SELECTION_SAMPLE_ID = "SELECTION_SAMPLE_ID";
 
@@ -72,6 +74,15 @@ public class SamplePart extends ChainedPart {
 
 		if (persistedState != null) {
 			HashMap<String,Object> selection = new HashMap<String,Object>();
+
+			if (persistedState.containsKey(INPUTURI_PARAM_USER)) {
+				try {
+					int user = Integer.parseInt(persistedState.get(INPUTURI_PARAM_USER));
+					selection.put(SELECTION_USER_ID, user);
+				} catch (NumberFormatException e) {
+					Log.getInstance().log(Level.INFO, this, "could not parse user id " + persistedState.get(INPUTURI_PARAM_USER), e);
+				}
+			}
 
 			if (persistedState.containsKey(INPUTURI_PARAM_PROJECT)) {
 				try {

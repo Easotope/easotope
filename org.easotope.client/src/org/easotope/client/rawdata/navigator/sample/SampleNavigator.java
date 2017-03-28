@@ -102,12 +102,13 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				IStructuredSelection thisSelection = (IStructuredSelection) event.getSelection(); 
-				Object selectedNode = thisSelection.getFirstElement(); 
+				Object selectedNode = thisSelection.getFirstElement();
 
 				if (selectedNode instanceof ProjectElement) {
 					ProjectElement projectElement = (ProjectElement) selectedNode;
 
 					HashMap<String,String> parameters = new HashMap<String,String>();
+					parameters.put(SamplePart.INPUTURI_PARAM_USER, String.valueOf(projectElement.getUserElement().getId()));
 					parameters.put(ProjectPart.INPUTURI_PARAM_PROJECT, String.valueOf(projectElement.getId()));
 
 				    PartManager.openPart(SampleNavigator.this, ProjectPart.ELEMENTID_BASE, ProjectPart.class.getName(), parameters, true);
@@ -116,6 +117,8 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 					SampleElement sampleElement = (SampleElement) selectedNode;
 
 					HashMap<String,String> parameters = new HashMap<String,String>();
+					parameters.put(SamplePart.INPUTURI_PARAM_USER, String.valueOf(sampleElement.getProjectElement().getUserElement().getId()));
+					parameters.put(SamplePart.INPUTURI_PARAM_PROJECT, String.valueOf(sampleElement.getProjectElement().getId()));
 					parameters.put(SamplePart.INPUTURI_PARAM_SAMPLE, String.valueOf(sampleElement.getId()));
 
 					PartManager.openPart(SampleNavigator.this, SamplePart.ELEMENTID_BASE, SamplePart.class.getName(), parameters, true);
@@ -297,6 +300,7 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 		}
 
 		HashMap<String,String> parameters = new HashMap<String,String>();
+		parameters.put(SamplePart.INPUTURI_PARAM_USER, String.valueOf(projectElement.getUserElement().getId()));
 		parameters.put(SamplePart.INPUTURI_PARAM_PROJECT, String.valueOf(projectElement.getId()));
 
 		PartManager.openPart(this, SamplePart.ELEMENTID_BASE, SamplePart.class.getName(), parameters, false);
@@ -311,6 +315,8 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 		}
 
 		HashMap<String,String> parameters = new HashMap<String,String>();
+		parameters.put(SamplePart.INPUTURI_PARAM_USER, String.valueOf(sampleElement.getProjectElement().getUserElement().getId()));
+		parameters.put(SamplePart.INPUTURI_PARAM_PROJECT, String.valueOf(sampleElement.getProjectElement().getId()));
 		parameters.put(SamplePart.INPUTURI_PARAM_SAMPLE, String.valueOf(sampleElement.getId()));
 
 		PartManager.openPart(this, SamplePart.ELEMENTID_BASE, SamplePart.class.getName(), parameters, true);
@@ -324,13 +330,10 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 			return;
 		}
 
-		ProjectElement projectElement = sampleElement.getProjectElement();
-		UserElement userElement = projectElement.getUserElement();
-		
 		HashMap<String,String> parameters = new HashMap<String,String>();
-		parameters.put(SampleReplicatePart.INPUTURI_PARAM_USER, String.valueOf(userElement.getId()));
-		parameters.put(SampleReplicatePart.INPUTURI_PARAM_PROJECT, String.valueOf(projectElement.getId()));
-		parameters.put(SampleReplicatePart.INPUTURI_PARAM_SAMPLE, String.valueOf(sampleElement.getId()));
+		parameters.put(SamplePart.INPUTURI_PARAM_USER, String.valueOf(sampleElement.getProjectElement().getUserElement().getId()));
+		parameters.put(SamplePart.INPUTURI_PARAM_PROJECT, String.valueOf(sampleElement.getProjectElement().getId()));
+		parameters.put(SamplePart.INPUTURI_PARAM_SAMPLE, String.valueOf(sampleElement.getId()));
 
 		PartManager.openPart(this, SampleReplicatePart.ELEMENTID_BASE, SampleReplicatePart.class.getName(), parameters, false);
 	}
@@ -393,7 +396,10 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 
 		root.setChildren(children);
 
-		treeViewer.refresh(root, true);
+		if (!treeViewer.isBusy()) {
+			treeViewer.refresh(root, true);
+		}
+
 		removeWaitingReminder(commandId);
 	}
 
@@ -427,7 +433,9 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 			treeElementLookup.put(USER_PREFIX + userId, userElement);
 		}
 
-		treeViewer.refresh(rootElement, true);
+		if (!treeViewer.isBusy()) {
+			treeViewer.refresh(rootElement, true);
+		}
 	}
 
 	@Override
@@ -449,6 +457,7 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 				treeElementLookup.put(PROJECT_PREFIX + projectId, project);
 			}
 
+            project.setParent(user);
 			ProjectListItem projectListItem = projectList.get(projectId);
 			project.setNameDateAndHasChildren(projectListItem.getProject().getName(), 0, projectListItem.hasChildren());
 			children.add(project);
@@ -456,7 +465,10 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 
 		user.setChildren(children);
 
-		treeViewer.refresh(user, true);
+		if (!treeViewer.isBusy()) {
+			treeViewer.refresh(user, true);
+		}
+
 		removeWaitingReminder(commandId);
 	}
 
@@ -468,22 +480,63 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 
 		TreeElement userElement = treeElementLookup.get(USER_PREFIX + projectList.getUserId());
 
+		if (userElement == null) {
+			return;
+		}
+
+		if (userElement.getChildren(this) == null) {
+			userElement.setHasChildren(projectList.size() != 0);
+
+			if (!treeViewer.isBusy()) {
+				treeViewer.refresh(userElement, true);
+			}
+
+			return;
+		}
+
+		HashSet<TreeElement> refreshTreeElements = new HashSet<TreeElement>();
+		refreshTreeElements.add(userElement);
+		
+		ArrayList<ProjectElement> toBeRemoved = new ArrayList<ProjectElement>();
+
+		for (TreeElement treeElement : userElement.getChildren(this)) {
+			ProjectElement projectElement = (ProjectElement) treeElement;
+
+			if (!projectList.containsKey(projectElement.getId())) {
+				toBeRemoved.add(projectElement);
+			}
+		}
+
+		for (ProjectElement projectElement : toBeRemoved) {
+			userElement.removeChild(projectElement);
+			refreshTreeElements.add(userElement);
+
+			if (projectElement.getParent() == userElement) {
+				projectElement.setParent(null);
+			}
+		}
+
 		for (Integer projectId: projectList.keySet()) {
 			ProjectListItem projectListItem = projectList.get(projectId);
+
 			TreeElement projectElement = treeElementLookup.get(PROJECT_PREFIX + projectId);
 
 			if (projectElement == null) {
 				projectElement = new ProjectElement(projectId, (UserElement) userElement);
-
 				userElement.setHasChildren(true);
-				userElement.addChildIfChildrenAreLoaded(projectElement);
 			}
 
+			projectElement.setParent(userElement);
+			userElement.addChildIfChildrenAreLoaded(projectElement);
 			projectElement.setNameDateAndHasChildren(projectListItem.getProject().getName(), 0, projectListItem.hasChildren());
 			treeElementLookup.put(PROJECT_PREFIX + projectId, projectElement);
 		}
 
-		treeViewer.refresh(userElement, true);
+		if (!treeViewer.isBusy()) {
+			for (TreeElement treeElement : refreshTreeElements) {
+				treeViewer.refresh(treeElement, true);
+			}
+		}
 	}
 
 	@Override
@@ -505,6 +558,7 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 				treeElementLookup.put(SAMPLE_PREFIX + sampleId, sample);
 			}
 
+            sample.setParent(project);
             SampleListItem sampleListItem = sampleList.get(sampleId);
             sample.setNameDateAndHasChildren(sampleListItem.getSample().getName(), 0, sampleListItem.hasChildren());
 
@@ -513,14 +567,17 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 
 		project.setChildren(children);
 
-		treeViewer.refresh(project, true);
+		if (!treeViewer.isBusy()) {
+			treeViewer.refresh(project, true);
+		}
+
 		removeWaitingReminder(commandId);
 	}
 
 	@Override
 	public void sampleListUpdated(int commandId, SampleList sampleList) {
 		if (waitingOnTreeElements.contains(PROJECT_PREFIX + sampleList.getProjectId())) {
-        		return;
+			return;
 		}
 
 		TreeElement projectElement = treeElementLookup.get(PROJECT_PREFIX + sampleList.getProjectId());
@@ -529,28 +586,70 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 			return;
 		}
 
-        for (Integer sampleId: sampleList.keySet()) {
-        		SampleListItem sampleListItem = sampleList.get(sampleId);
-        		TreeElement sampleElement = treeElementLookup.get(SAMPLE_PREFIX + sampleId);
+		if (projectElement.getChildren(this) == null) {
+			projectElement.setHasChildren(sampleList.size() != 0);
 
-        		if (sampleElement == null) {
-        			sampleElement = new SampleElement(sampleId, (ProjectElement) projectElement);
+			if (!treeViewer.isBusy()) {
+				treeViewer.refresh(projectElement, true);
+			}
 
-        			projectElement.setHasChildren(true);
-        			projectElement.addChildIfChildrenAreLoaded(sampleElement);
-        		}
+			return;
+		}
 
-        		sampleElement.setNameDateAndHasChildren(sampleListItem.getSample().getName(), 0, sampleListItem.hasChildren());
-        		treeElementLookup.put(SAMPLE_PREFIX + sampleId, sampleElement);
-        }
+		HashSet<TreeElement> refreshTreeElements = new HashSet<TreeElement>();
+		refreshTreeElements.add(projectElement);
 
-        treeViewer.refresh(projectElement, true);
+		ArrayList<SampleElement> toBeRemoved = new ArrayList<SampleElement>();
+
+		for (TreeElement treeElement : projectElement.getChildren(this)) {
+			SampleElement sampleElement = (SampleElement) treeElement;
+
+			if (!sampleList.containsKey(sampleElement.getId())) {
+				toBeRemoved.add(sampleElement);
+			}
+		}
+
+		for (SampleElement sampleElement : toBeRemoved) {
+			projectElement.removeChild(sampleElement);
+			refreshTreeElements.add(projectElement);
+
+			if (sampleElement.getParent() == projectElement) {
+				sampleElement.setParent(null);
+			}
+		}
+
+		for (Integer sampleId: sampleList.keySet()) {
+			SampleListItem sampleListItem = sampleList.get(sampleId);
+
+			TreeElement sampleElement = treeElementLookup.get(SAMPLE_PREFIX + sampleId);
+
+			if (sampleElement == null) {
+				sampleElement = new SampleElement(sampleId, (ProjectElement) projectElement);
+				projectElement.setHasChildren(true);
+			}
+
+			sampleElement.setParent(projectElement);
+			projectElement.addChildIfChildrenAreLoaded(sampleElement);
+			sampleElement.setNameDateAndHasChildren(sampleListItem.getSample().getName(), 0, sampleListItem.hasChildren());
+			treeElementLookup.put(SAMPLE_PREFIX + sampleId, sampleElement);
+		}
+
+		if (!treeViewer.isBusy()) {
+			for (TreeElement treeElement : refreshTreeElements) {
+				treeViewer.refresh(treeElement, true);
+			}
+		}
 	}
 
 	@Override
 	public void sampleListGetError(int commandId, String message) {
 		raiseError(message);
 		removeWaitingReminder(commandId);
+	}
+
+	@Override
+	public void sampleListDeleted(int projectId) {
+		//TODO how to handle this?
 	}
 
 	@Override
@@ -575,7 +674,10 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 
 		sample.setChildren(children);
 
-		treeViewer.refresh(sample, true);
+		if (!treeViewer.isBusy()) {
+			treeViewer.refresh(sample, true);
+		}
+
 		removeWaitingReminder(commandId);
 	}
 
@@ -597,7 +699,11 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 
 		if (sampleElement.getChildren(this) == null) {
 			sampleElement.setHasChildren(replicateList.size() != 0);
-			treeViewer.refresh(sampleElement, true);
+			
+			if (!treeViewer.isBusy()) {
+				treeViewer.refresh(sampleElement, true);
+			}
+
 			return;
 		}
 
@@ -614,11 +720,11 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
 		for (ReplicateElement replicateElement : toBeRemoved) {
 			sampleElement.removeChild(replicateElement);
 
-			ReplicateElement savedReplicateElement = (ReplicateElement) treeElementLookup.get(REPLICATE_PREFIX + replicateElement.getId());
-
-			if (savedReplicateElement.getSampleElement() == sampleElement) {
-				treeElementLookup.remove(REPLICATE_PREFIX + replicateElement.getId());
-			}
+//			ReplicateElement savedReplicateElement = (ReplicateElement) treeElementLookup.get(REPLICATE_PREFIX + replicateElement.getId());
+//
+//			if (savedReplicateElement.getSampleElement() == sampleElement) {
+//				treeElementLookup.remove(REPLICATE_PREFIX + replicateElement.getId());
+//			}
 		}
 
 		HashSet<Integer> alreadyHasIds = new HashSet<Integer>();
@@ -643,7 +749,9 @@ public class SampleNavigator extends EasotopePart implements UserCacheUserListGe
     			sampleElement.addChildIfChildrenAreLoaded(replicateElement);
         }
 
-		treeViewer.refresh(sampleElement, true);
+		if (!treeViewer.isBusy()) {
+			treeViewer.refresh(sampleElement, true);
+		}
 	}
 
 	@Override

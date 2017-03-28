@@ -40,8 +40,10 @@ import org.easotope.shared.core.cache.CacheHashMap;
 import org.easotope.shared.core.cache.CacheKey;
 import org.easotope.shared.core.cache.CachePlugin;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
+import org.easotope.shared.rawdata.events.ProjectDeleted;
 import org.easotope.shared.rawdata.events.ReplicateDeleted;
 import org.easotope.shared.rawdata.events.ReplicateUpdated;
+import org.easotope.shared.rawdata.events.SampleDeleted;
 import org.easotope.shared.rawdata.events.SampleUpdated;
 import org.easotope.shared.rawdata.tables.ReplicateV1;
 
@@ -91,10 +93,36 @@ public class ReplicateListPlugin extends CachePlugin {
 			((InputCacheReplicateListGetListener) listener).replicateListGetError(commandId, message);
 		}
 	}
-	
+
 	@Override
 	public HashSet<CacheKey> getCacheKeysThatShouldBeDeletedBasedOnEvent(Event event, CacheHashMap cache) {
-		return null;
+		HashSet<CacheKey> result = new HashSet<CacheKey>();
+
+		if (event instanceof SampleDeleted) {
+			SampleDeleted sampleDeleted = (SampleDeleted) event;
+			int sampleId = sampleDeleted.getSampleId();
+
+			ReplicateListCacheKey replicateListCacheKey = new ReplicateListCacheKey(true, sampleId, DatabaseConstants.EMPTY_DB_ID, DatabaseConstants.EMPTY_DB_ID);
+
+			if (cache.containsKey(replicateListCacheKey)) {
+				CacheKey olcCacheKey = cache.getKey(replicateListCacheKey);
+				result.add(olcCacheKey);
+			}
+
+		} if (event instanceof ProjectDeleted) {
+			ProjectDeleted projectDeleted = (ProjectDeleted) event;
+
+			for (Integer sampleId : projectDeleted.getDeletedSampleIds()) {
+				ReplicateListCacheKey replicateListCacheKey = new ReplicateListCacheKey(true, sampleId, DatabaseConstants.EMPTY_DB_ID, DatabaseConstants.EMPTY_DB_ID);
+
+				if (cache.containsKey(replicateListCacheKey)) {
+					CacheKey oldCacheKey = cache.getKey(replicateListCacheKey);
+					result.add(oldCacheKey);
+				}
+			}
+		}
+
+		return result;
 	}
 
 	@Override
@@ -150,7 +178,7 @@ public class ReplicateListPlugin extends CachePlugin {
 		} else if (event instanceof ReplicateUpdated) {
 			ReplicateUpdated replicateUpdated = (ReplicateUpdated) event;
 			ReplicateV1 replicate = replicateUpdated.getReplicate();
-			String replicateSampleName = replicateUpdated.getSampleName();
+			String replicateSampleName = replicateUpdated.getNewSampleName();
 
 			int replicateId = replicate.getId();
 			long replicateDate = replicate.getDate();
@@ -225,27 +253,43 @@ public class ReplicateListPlugin extends CachePlugin {
 
 		} else if (event instanceof ReplicateDeleted) {
 			ReplicateDeleted replicateDeleted = (ReplicateDeleted) event;
+			deleteReplicateById(replicateDeleted.getReplicateId(), cache, result);
 
-			for (CacheKey cacheKey : cache.keySet()) {
-				if (!(cacheKey instanceof ReplicateListCacheKey)) {
-					continue;
-				}
+		} else if (event instanceof SampleDeleted) {
+			SampleDeleted sampleDeleted = (SampleDeleted) event;
 
-				ReplicateList oldReplicateList = (ReplicateList) cache.get(cacheKey);
-				
-				if (oldReplicateList.containsKey(replicateDeleted.getReplicateId())) {
-					ReplicateList newReplicateList = new ReplicateList(oldReplicateList);
-					newReplicateList.putAll(oldReplicateList);
+			for (int replicateId : sampleDeleted.getDeletedReplicateIds()) {
+				deleteReplicateById(replicateId, cache, result);
+			}
 
-					newReplicateList.remove(replicateDeleted.getReplicateId());
+		} else if (event instanceof ProjectDeleted) {
+			ProjectDeleted projectDeleted = (ProjectDeleted) event;
 
-					CacheKey oldCacheKey = cache.update(cacheKey, newReplicateList);
-					result.add(oldCacheKey);
-				}
+			for (int replicateId : projectDeleted.getDeletedReplicateIds()) {
+				deleteReplicateById(replicateId, cache, result);
 			}
 		}
 
 		return result;
+	}
+
+	private void deleteReplicateById(int replicateId, CacheHashMap cache, HashSet<CacheKey> result) {
+		for (CacheKey cacheKey : cache.keySet()) {
+			if (!(cacheKey instanceof ReplicateListCacheKey)) {
+				continue;
+			}
+
+			ReplicateList oldReplicateList = (ReplicateList) cache.get(cacheKey);
+
+			if (oldReplicateList.containsKey(replicateId)) {
+				ReplicateList newReplicateList = new ReplicateList(oldReplicateList);
+				newReplicateList.putAll(oldReplicateList);
+				newReplicateList.remove(replicateId);
+
+				CacheKey oldCacheKey = cache.update(cacheKey, newReplicateList);
+				result.add(oldCacheKey);
+			}
+		}
 	}
 
 	@Override

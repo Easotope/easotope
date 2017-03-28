@@ -30,15 +30,13 @@ package org.easotope.shared.commands;
 import java.util.Hashtable;
 
 import org.easotope.framework.commands.Command;
-import org.easotope.framework.dbcore.tables.RawFile;
 import org.easotope.framework.dbcore.tables.User;
 import org.easotope.framework.dbcore.util.RawFileManager;
 import org.easotope.shared.admin.events.CorrIntervalsNeedRecalcByTime;
 import org.easotope.shared.core.AuthenticationKeys;
 import org.easotope.shared.core.tables.Permissions;
+import org.easotope.shared.rawdata.common.DeleteScan;
 import org.easotope.shared.rawdata.events.ScanDeleted;
-import org.easotope.shared.rawdata.tables.ScanFileInputV0;
-import org.easotope.shared.rawdata.tables.ScanFileParsedV2;
 import org.easotope.shared.rawdata.tables.ScanV2;
 
 import com.j256.ormlite.dao.Dao;
@@ -68,21 +66,7 @@ public class ScanDelete extends Command {
 
 	@Override
 	public void execute(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String, Object> authenticationObjects) throws Exception {
-		Dao<ScanV2,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV2.class);
-		scanDao.deleteById(scanId);
-
-		Dao<ScanFileInputV0,Integer> scanFileInputDao = DaoManager.createDao(connectionSource, ScanFileInputV0.class);
-		Dao<ScanFileParsedV2,Integer> scanFileParsedDao = DaoManager.createDao(connectionSource, ScanFileParsedV2.class);
-		Dao<RawFile,Integer> rawFileDao = DaoManager.createDao(connectionSource, RawFile.class);
-
-		for (ScanFileInputV0 scanFileInput : scanFileInputDao.queryForEq(ScanFileInputV0.SCANID_FIELD_NAME, scanId)) {
-			scanFileParsedDao.deleteById(scanFileInput.getScanFileParsedId());
-			scanFileInputDao.deleteById(scanFileInput.getId());
-
-			RawFile rawFile = rawFileDao.queryForId(scanFileInput.getRawFileId());
-			rawFileManager.deleteRawFile(rawFile.getDatabaseName());
-			rawFileDao.deleteById(rawFile.getId());
-		}
+		DeleteScan.deleteScan(connectionSource, rawFileManager, scan);
 
 		CorrIntervalsNeedRecalcByTime corrIntervalsNeedRecalcByTime = new CorrIntervalsNeedRecalcByTime();
 		corrIntervalsNeedRecalcByTime.addTime(scan.getMassSpecId(), scan.getDate());

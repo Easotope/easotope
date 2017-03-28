@@ -53,6 +53,8 @@ import org.easotope.shared.rawdata.tables.Sample;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 public class ReplicateUpdate extends Command {
@@ -76,30 +78,30 @@ public class ReplicateUpdate extends Command {
 			return false;
 		}
 
-		if (permissions.isCanEditAllReplicates()) {
-			return true;
-		}
-
 		if (replicate.getId() != DatabaseConstants.EMPTY_DB_ID) {
 			Dao<ReplicateV1,Integer> replicateDao = DaoManager.createDao(connectionSource, ReplicateV1.class);
 			oldReplicate = replicateDao.queryForId(replicate.getId());
-
-			if (oldReplicate == null || oldReplicate.getUserId() != user.getId()) {
-				replicate = null;
-				acquisitions = null;
-				return false;
-			}
 		}
 
 		if (replicate.getSampleId() != DatabaseConstants.EMPTY_DB_ID) {
 			Dao<Sample,Integer> sampleDao = DaoManager.createDao(connectionSource, Sample.class);
 			sample = sampleDao.queryForId(replicate.getSampleId());
+		}
 
-			if (sample == null || sample.getUserId() != user.getId()) {
-				replicate = null;
-				acquisitions = null;
-				return false;
-			}
+		if (permissions.isCanEditAllReplicates()) {
+			return true;
+		}
+
+		if (replicate.getId() != DatabaseConstants.EMPTY_DB_ID && (oldReplicate == null || oldReplicate.getUserId() != user.getId())) {
+			replicate = null;
+			acquisitions = null;
+			return false;
+		}
+
+		if (replicate.getSampleId() != DatabaseConstants.EMPTY_DB_ID && (sample == null || sample.getUserId() != user.getId())) {
+			replicate = null;
+			acquisitions = null;
+			return false;
 		}
 
 		return true;
@@ -220,11 +222,13 @@ public class ReplicateUpdate extends Command {
 
 		if (explode) {
 			boolean isFirst = true;
+			boolean disableAll = replicate.isDisabled();
 
 			for (Acquisition acquisition : acquisitions) {
 				if (isFirst) {
 					if (acquisition.getAcquisitionParsed().getDate() != replicate.getDate()) {
 						replicate.setDate(acquisition.getAcquisitionParsed().getDate());
+						replicate.setDisabled(disableAll ? true : acquisition.getAcquisitionInput().isDisabled());
 						replicateDao.update(replicate);
 					}
 
@@ -234,6 +238,7 @@ public class ReplicateUpdate extends Command {
 					ReplicateV1 newReplicate = new ReplicateV1(replicate);
 					newReplicate.setId(DatabaseConstants.EMPTY_DB_ID);
 					newReplicate.setDate(acquisition.getAcquisitionParsed().getDate());
+					newReplicate.setDisabled(disableAll ? true : acquisition.getAcquisitionInput().isDisabled());
 
 					replicateDao.create(newReplicate);
 					replicates.add(newReplicate);
@@ -274,13 +279,34 @@ public class ReplicateUpdate extends Command {
 		// create replicate update event
 
 		for (ReplicateV1 replicate : replicates) {
-			ReplicateUpdated replicateUpdated = new ReplicateUpdated(replicate);
+			int oldSampleId = DatabaseConstants.EMPTY_DB_ID;
+			boolean oldSampleHasChildren = false;
+			int newSampleId = DatabaseConstants.EMPTY_DB_ID;
+			String newSampleName = null;
+			int oldProjectId = DatabaseConstants.EMPTY_DB_ID;
+			int newProjectId = DatabaseConstants.EMPTY_DB_ID;
 
-			if (sample != null) {
-				replicateUpdated.setSampleId(sample.getId());
-				replicateUpdated.setSampleName(sample.getName());
+			if (oldReplicate != null && oldReplicate.getSampleId() != DatabaseConstants.EMPTY_DB_ID) {
+				oldSampleId = oldReplicate.getSampleId();
+
+				Dao<Sample,Integer> sampleDao = DaoManager.createDao(connectionSource, Sample.class);
+				Sample oldSample = sampleDao.queryForId(oldSampleId);
+				oldProjectId = oldSample.getProjectId();
+
+				QueryBuilder<ReplicateV1,Integer> queryBuilder = replicateDao.queryBuilder();
+				Where<ReplicateV1,Integer> where = queryBuilder.where();
+				where = where.eq(ReplicateV1.SAMPLEID_FIELD_NAME, oldSampleId);
+
+				oldSampleHasChildren = replicateDao.queryForFirst(queryBuilder.prepare()) != null;
 			}
 
+			if (sample != null) {
+				newSampleId = sample.getId();
+				newSampleName = sample.getName();
+				newProjectId = sample.getProjectId();
+			}
+
+			ReplicateUpdated replicateUpdated = new ReplicateUpdated(replicate, oldSampleId, oldSampleHasChildren, newSampleId, newSampleName, oldProjectId, newProjectId);
 			addEvent(replicateUpdated);
 			
 			if (replicate.getStandardId() != DatabaseConstants.EMPTY_DB_ID) {

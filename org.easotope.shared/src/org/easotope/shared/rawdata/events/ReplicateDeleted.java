@@ -36,22 +36,34 @@ public class ReplicateDeleted extends Event {
 
 	private int replicateId;
 	private int sampleId;
+	private boolean sampleHasChildren;
+	private int projectId;
 
 	@Override
 	public boolean isAuthorized(Hashtable<String, Object> authenticationObjects) {
 		return true;
 	}
 
-	public ReplicateDeleted(int replicateId, int sampleId) {
+	public ReplicateDeleted(int replicateId, int sampleId, boolean sampleHasChildren, int projectId) {
 		this.replicateId = replicateId;
 		this.sampleId = sampleId;
+		this.sampleHasChildren = sampleHasChildren;
+		this.projectId = projectId;
 	}
 
 	public int getReplicateId() {
 		return replicateId;
 	}
-	
+
 	public int getSampleId() {
 		return sampleId;
+	}
+
+	public boolean getSampleHasChildren() {
+		return sampleHasChildren;
+	}
+
+	public int getProjectId() {
+		return projectId;
 	}
 }

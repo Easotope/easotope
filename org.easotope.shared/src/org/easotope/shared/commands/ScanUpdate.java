@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -47,7 +47,7 @@ import org.easotope.shared.rawdata.compute.ComputeScanFileParsed;
 import org.easotope.shared.rawdata.events.ScanUpdated;
 import org.easotope.shared.rawdata.tables.ScanFileInputV0;
 import org.easotope.shared.rawdata.tables.ScanFileParsedV2;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -56,7 +56,7 @@ import com.j256.ormlite.support.ConnectionSource;
 public class ScanUpdate extends Command {
 	private static final long serialVersionUID = 1L;
 
-	private ScanV2 scan;
+	private ScanV3 scan;
 	private ArrayList<ScanFile> scanFiles;
 	private String name;
 
@@ -89,7 +89,7 @@ public class ScanUpdate extends Command {
 		int userId = permissions.isCanEditAllReplicates() ? scan.getUserId() : user.id;
 		scan.setUserId(userId);
 
-		Dao<ScanV2,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV2.class);
+		Dao<ScanV3,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV3.class);
 		CorrIntervalsNeedRecalcByTime corrIntervalsNeedRecalc = new CorrIntervalsNeedRecalcByTime();
 		addEvent(corrIntervalsNeedRecalc);
 
@@ -97,7 +97,7 @@ public class ScanUpdate extends Command {
 			scanDao.create(scan);
 
 		} else {
-			ScanV2 oldScan = scanDao.queryForId(scan.getId());
+			ScanV3 oldScan = scanDao.queryForId(scan.getId());
 
 			if (oldScan == null) {
 				setStatus(Command.Status.EXECUTION_ERROR, Messages.scanUpdate_doesNotExist, new Object[] { scan.getId() });
@@ -169,7 +169,7 @@ public class ScanUpdate extends Command {
 		return result;
 	}
 
-	public void setScan(ScanV2 scan) {
+	public void setScan(ScanV3 scan) {
 		this.scan = scan;
 	}
 

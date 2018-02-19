@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -28,6 +28,7 @@
 package org.easotope.shared.analysis.repstep.co2.d48offsetpbl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.easotope.shared.analysis.execute.RepStepCalculator;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
@@ -67,8 +68,24 @@ public class Calculator extends RepStepCalculator {
 	}
 
 	public int[] getStandardIds() {
+		int[] ids = new int[0];
 		Object parameter = (Object) getParameter(PARAMETER_STANDARD_IDS);
-		return parameter == null ? new int[0] : (int[]) parameter;
+
+		if (parameter instanceof int[]) {
+			ids = (int[]) parameter;
+
+		} else if (parameter instanceof HashMap<?,?>) {
+			@SuppressWarnings("unchecked")
+			HashMap<Integer,Integer> hash = (HashMap<Integer,Integer>) parameter;
+			ids = new int[hash.size()];
+			int count = 0;
+
+			for (int key : hash.keySet()) {
+				ids[count++] = key;
+			}
+		}
+
+		return ids;
 	}
 
 	@Override

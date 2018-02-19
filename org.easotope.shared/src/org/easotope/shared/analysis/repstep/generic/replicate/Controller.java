@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -77,13 +77,13 @@ public class Controller extends RepStepController {
 	@Override
 	public OutputDescription[] getOutputDescription() {
 		return new OutputDescription[] {
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_MASS_SPEC, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_SOURCE_NAME, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_SAMPLE_TYPE, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_CORR_INTERVAL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_ACID_TEMP, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_ACQUISITIONS, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_ENABLED_ACQUISITIONS, null, null, null)
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_MASS_SPEC, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_SOURCE_NAME, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_SAMPLE_TYPE, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_CORR_INTERVAL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_ACID_TEMP, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_ACQUISITIONS, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_ENABLED_ACQUISITIONS, null, null, null, false)
 		};
 	}
 

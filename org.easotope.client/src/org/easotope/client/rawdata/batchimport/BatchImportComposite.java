@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -44,10 +44,13 @@ import org.easotope.client.rawdata.batchimport.grouping.Grouping;
 import org.easotope.client.rawdata.batchimport.loader.CorrIntervalListLoader;
 import org.easotope.client.rawdata.batchimport.loader.MassSpecListLoader;
 import org.easotope.client.rawdata.batchimport.loader.SourceListLoader;
+import org.easotope.client.rawdata.batchimport.savedialog.SaveDialog;
 import org.easotope.client.rawdata.batchimport.table.BatchImportTable;
 import org.easotope.framework.dbcore.DatabaseConstants;
 import org.easotope.shared.admin.cache.massspec.massspeclist.MassSpecList;
 import org.easotope.shared.analysis.cache.corrinterval.corrintervallist.CorrIntervalList;
+import org.easotope.shared.rawdata.cache.input.InputCache;
+import org.easotope.shared.rawdata.cache.input.replicate.InputCacheReplicateSaveListener;
 import org.easotope.shared.rawdata.cache.sourcelist.sourcelist.SourceList;
 import org.easotope.shared.rawdata.cache.sourcelist.sourcelist.SourceListItem;
 import org.eclipse.swt.SWT;
@@ -74,7 +77,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
 public class BatchImportComposite extends EditorComposite {
-	private final String PROJECT_SAVE_COMMAND_ID = "PROJECT_SAVE_COMMAND_ID";
+	private final String WAITING_FOR_REPLICATE_SAVE = "WAITING_FOR_REPLICATE_SAVE";
 
 	private MassSpecListLoader massSpecListLoader;
 	private CorrIntervalListLoader corrIntervalListLoader;
@@ -465,21 +468,7 @@ public class BatchImportComposite extends EditorComposite {
 
 	@Override
 	protected void requestSave(boolean isResend) {
-//		Project project = new Project();
-//		Project currentProject = getCurrentProject();
-//
-//		if (currentProject != null) {
-//			project.setId(currentProject.getId());
-//			project.setUserId(currentProject.getUserId());
-//		} else {
-//			//project.setUserId((Integer) getSelection().get(ProjectPart.SELECTION_USER_ID));
-//		}
-//
-//		project.setName(name.getText().trim());
-//		project.setDescription(description.getText());
-//
-//		int commandId = InputCache.getInstance().projectSave(this, project);
-//		waitingFor(PROJECT_SAVE_COMMAND_ID, commandId);
+		new SaveDialog(getShell()).open(importedFiles, true); //TODO fix allowDuplicates 
 	}
 
 	@Override

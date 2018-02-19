@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -34,12 +34,14 @@ import org.easotope.shared.analysis.step.OutputDescription;
 public class RepOutputDescription extends OutputDescription {
 	private StandardParameter comparableStandardParameter;
 	private IsotopicScale isotopicScale;
+	private boolean graphable;
 
-	public RepOutputDescription(String label, String format, StandardParameter comparableStandardParameter, IsotopicScale isotopicScale) {
+	public RepOutputDescription(String label, String format, StandardParameter comparableStandardParameter, IsotopicScale isotopicScale, boolean graphable) {
 		super(label, format);
-		
+
 		this.comparableStandardParameter = comparableStandardParameter;
 		this.isotopicScale = isotopicScale;
+		this.graphable = graphable;
 	}
 
 	public StandardParameter getComparableStandardParameter() {
@@ -48,5 +50,9 @@ public class RepOutputDescription extends OutputDescription {
 
 	public IsotopicScale getIsotopicScale() {
 		return isotopicScale;
+	}
+
+	public boolean isGraphable() {
+		return graphable;
 	}
 }

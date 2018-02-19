@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -45,7 +45,7 @@ import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.easotope.shared.rawdata.ScanFile;
 import org.easotope.shared.rawdata.events.ScanDeleted;
 import org.easotope.shared.rawdata.events.ScanUpdated;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 
 public class ScanPlugin extends CachePlugin {
 	@Override
@@ -68,7 +68,7 @@ public class ScanPlugin extends CachePlugin {
 	public void processData(Command command, CacheHashMap cache, Object[] callParameters) {
 		ScanGet scanGet = (ScanGet) command;
 
-		ScanV2 scan = scanGet.getScan();
+		ScanV3 scan = scanGet.getScan();
 		ArrayList<ScanFile> scanFiles = scanGet.getScanFiles();
 
 		cache.put(new ScanCacheKey(scan.getId()), this, callParameters, new Object[] { scan, scanFiles });
@@ -82,7 +82,7 @@ public class ScanPlugin extends CachePlugin {
 			@SuppressWarnings("unchecked")
 			ArrayList<ScanFile> scanFiles = (ArrayList<ScanFile>) resultArray[1];
 
-			((InputCacheScanGetListener) listener).scanGetCompleted(commandId, (ScanV2) resultArray[0], scanFiles);
+			((InputCacheScanGetListener) listener).scanGetCompleted(commandId, (ScanV3) resultArray[0], scanFiles);
 		}
 	}
 
@@ -140,7 +140,7 @@ public class ScanPlugin extends CachePlugin {
 			@SuppressWarnings("unchecked")
 			ArrayList<ScanFile> scanFileList = (ArrayList<ScanFile>) updatedArray[1];
 
-			((InputCacheScanGetListener) listener).scanUpdated(commandId, (ScanV2) updatedArray[0], scanFileList);
+			((InputCacheScanGetListener) listener).scanUpdated(commandId, (ScanV3) updatedArray[0], scanFileList);
 		}
 	}
 
@@ -156,7 +156,7 @@ public class ScanPlugin extends CachePlugin {
 	public int saveData(AbstractCache abstractCache, Object[] parameters) {
 		ScanUpdate scanUpdate = new ScanUpdate();
 
-		scanUpdate.setScan((ScanV2) parameters[0]);
+		scanUpdate.setScan((ScanV3) parameters[0]);
 
 		@SuppressWarnings("unchecked")
 		ArrayList<ScanFile> scanFiles = (ArrayList<ScanFile>) parameters[1];

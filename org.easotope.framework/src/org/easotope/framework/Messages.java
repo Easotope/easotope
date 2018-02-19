@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -150,7 +150,10 @@ public class Messages extends NLS {
 	public static String objSocketManager_ioException;
 	
 	public static String backupMgrInvalidTime;
-	
+
+	public static String folderProcessor_couldNotSaveBatch;
+	public static String folderProcessor_batchItemNumberError;
+
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}

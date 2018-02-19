@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -27,131 +27,204 @@
 
 package org.easotope.framework.dbcore.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class RawFileManager {
-	private final String prefix = "rawfile_";
+	private static final String DIR_NAME = "raw_files";
+	private static final String FILE_PREFIX = "rawfile_";
+	private static final int FILE_COUNTER_LENGTH = 19;
+	private static final String FILE_EXTENSION = ".zip";
 
 	private String dirPath;
 	private long nextRawFile = -1;
-	private Pattern validFilenamePattern = Pattern.compile(prefix + "\\d{19}");
 
-	public RawFileManager(String dirPath) {
-		this.dirPath = dirPath;
+	public RawFileManager(String topDirPath) {
+		this.dirPath = topDirPath + File.separator + DIR_NAME;
 
-		for (String id : getAllIds()) {
-			String idNumber = id.substring(prefix.length());
-			long idValue = Long.parseLong(idNumber);
-			nextRawFile = Math.max(nextRawFile, idValue);
+		for (String filename : getFileNamesWithoutExtension()) {
+			String fileNumber = filename.substring(FILE_PREFIX.length(), FILE_PREFIX.length() + FILE_COUNTER_LENGTH);
+			long fileNumberLong = Long.parseLong(fileNumber);
+			nextRawFile = Math.max(nextRawFile, fileNumberLong);
 		}
 
 		nextRawFile++;
 	}
 
-    public byte[] readRawFile(String filename) {
+    @SuppressWarnings("resource")
+	public byte[] readRawFile(String filename) {
 		String path = dirPath + File.separator + filename;
+		boolean compression = false;
 
-		long length = new File(path).length();
-		byte[] bytes = new byte[(int) length];
+		if (new File(path + FILE_EXTENSION).exists()) {
+			path += FILE_EXTENSION;
+			compression = true;
+		}
 
-		int offset = 0;
-		int numRead = 0;
 		InputStream is = null;
+		FileInputStream fis = null;
+		ZipInputStream zis = null;
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
 		try {
-			is = new FileInputStream(path);
+			int numRead = 0;
+			final int BUF_SIZE = 1024;
+			byte[] bytes = new byte[BUF_SIZE];
+			is = fis = new FileInputStream(path);
 
-			while (offset < bytes.length && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
-				offset += numRead;
+			if (compression) {
+				is = zis = new ZipInputStream(fis);
+				((ZipInputStream) is).getNextEntry();
+			}
+
+			while ((numRead=is.read(bytes, 0, BUF_SIZE)) >= 0) {
+				byteArrayOutputStream.write(bytes, 0, numRead);
 			}
 
 		} catch (Exception e) {
 			return null;
-    	
+
 		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					// do nothing
+			try {
+				if (zis != null) {
+					zis.close();
 				}
+				
+				fis.close();
+			} catch (IOException e) {
+				// do nothing
 			}
 		}
 
-		if (offset < bytes.length) {
-			return null;
-		}
-
-		return bytes;
+		return byteArrayOutputStream.toByteArray();
     }
 
-	public String writeRawFile(byte[] data) {
-		String filename = String.format(prefix + "%019d", nextRawFile);
+    public String writeRawFile(byte[] data) {
+		String filename = String.format(FILE_PREFIX + "%0" + FILE_COUNTER_LENGTH + "d", nextRawFile);
+		String path = dirPath + File.separator + filename + FILE_EXTENSION;
 
-		if (new File(dirPath + File.separator + filename).exists()) {
-			return null;
+		if (writeRawFile(path, filename, data)) {
+			nextRawFile++;
+			return filename;
 		}
 
-		if (!overwriteRawFile(filename, data)) {
-			return null;
+		return null;
+    }
+
+//    private boolean writeRawFile(String path, byte[] data) {
+//		if (new File(path).exists()) {
+//			return false;
+//		}
+//
+//		data = Compression.compress(data);
+//
+//		if (data == null) {
+//			return false;
+//		}
+//
+//		try {
+//			File file = new File(path);
+//			file.delete();
+//
+//			FileOutputStream out = new FileOutputStream(file);
+//			out.write(data);
+//			out.close();
+//
+//		} catch (Exception e) {
+//			new File(path).delete();
+//			return false;
+//		}
+//
+//		return true;
+//    }
+
+    private boolean writeRawFile(String path, String shortName, byte[] data) {
+		if (new File(path).exists()) {
+			return false;
 		}
-
-		nextRawFile++;
-
-		return filename;
-	}
-
-	public boolean overwriteRawFile(String filename, byte[] data) {
-		String path = dirPath + File.separator + filename;
 
 		try {
 			File file = new File(path);
 			file.delete();
 
-			FileOutputStream out = new FileOutputStream(file);
-			out.write(data);
-			out.close();
+			ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(file));
+			zout.putNextEntry(new ZipEntry(shortName));
+			zout.write(data);
+			zout.close();
 
 		} catch (Exception e) {
 			new File(path).delete();
 			return false;
 		}
-		
+
 		return true;
-	}
+    }
 
 	public boolean deleteRawFile(String filename) {
 		String path = dirPath + File.separator + filename;
-		return new File(path).delete();
+
+		if (new File(path + FILE_EXTENSION).delete()) {
+			return true;
+		} else {
+			return new File(path).delete();
+		}
 	}
-	
-	public ArrayList<String> getAllIds() {
+
+	private ArrayList<String> getFileNamesWithoutExtension() {
 		File dir = new File(dirPath);
 
 		if (!dir.isDirectory() && !dir.mkdir()) {
 			throw new RuntimeException("couldn't make directory " + dirPath);
 		}
 
-		String[] list = dir.list();
+		String[] filenameList = dir.list();
 
-		if (list == null) {
+		if (filenameList == null) {
 			throw new RuntimeException("directory listing returned null for " + dirPath);
 		}
 
 		ArrayList<String> allIds = new ArrayList<String>();
 
-		for (String filename : list) {
-			if (validFilenamePattern.matcher(filename).matches()) {
+		for (String filename : filenameList) {
+			if (filename.startsWith(FILE_PREFIX)) {
+				if (filename.endsWith(FILE_EXTENSION)) {
+					filename = filename.substring(0, filename.length() - FILE_EXTENSION.length());
+				}
+
 				allIds.add(filename);
 			}
 		}
 
 		return allIds;
+	}
+
+	public boolean upgrade20170328() {
+		for (String filename : getFileNamesWithoutExtension()) {
+			byte[] bytes = readRawFile(filename);
+
+			if (bytes == null) {
+				return false;
+			}
+
+			String newFilePath = dirPath + File.separator + filename + FILE_EXTENSION;
+			new File(newFilePath).delete();
+
+			if (!writeRawFile(newFilePath, filename, bytes)) {
+				return false;
+			}
+
+			String oldFilePath = dirPath + File.separator + filename;
+			new File(oldFilePath).delete();
+		}
+
+		return true;
 	}
 }

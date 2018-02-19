@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -42,25 +42,19 @@ public class SourceListItem implements Serializable {
 	private int standardId = DatabaseConstants.EMPTY_DB_ID;
 	private String sourceName;
 	private transient String sourceNameToUpper;
-	private int sampleTypeId = DatabaseConstants.EMPTY_DB_ID;
-	private long lastUsed;
 
-	public SourceListItem(int userId, String userName, int projectId, String projectName, int sampleId, String sampleName, int sampleTypeId, long lastUsed) {
+	public SourceListItem(int userId, String userName, int projectId, String projectName, int sampleId, String sampleName) {
 		this.userId = userId;
 		this.userName = userName;
 		this.projectId = projectId;
 		this.projectName = projectName;
 		this.sampleId = sampleId;
 		this.sourceName = sampleName;
-		this.sampleTypeId = sampleTypeId;
-		this.lastUsed = lastUsed;
 	}
 
-	public SourceListItem(int standardId, String standardName, int sampleTypeId, long lastUsed) {
+	public SourceListItem(int standardId, String standardName) {
 		this.standardId = standardId;
 		this.sourceName = standardName;
-		this.sampleTypeId = sampleTypeId;
-		this.lastUsed = lastUsed;
 	}
 
 	public int getUserId() {
@@ -97,14 +91,6 @@ public class SourceListItem implements Serializable {
 		}
 
 		return sourceNameToUpper;
-	}
-
-	public int getSampleTypeId() {
-		return sampleTypeId;
-	}
-
-	public long getLastUsed() {
-		return lastUsed;
 	}
 
 	public boolean isStandard() {

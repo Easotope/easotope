@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -35,6 +35,7 @@ import org.easotope.client.core.PointDesign;
 import org.easotope.client.core.PointStyle;
 import org.easotope.client.core.adaptors.LoggingPaintAdaptor;
 import org.easotope.client.core.adaptors.LoggingSelectionAdaptor;
+import org.easotope.client.rawdata.batchimport.assignmentdialog.AssignmentDialog;
 import org.easotope.shared.admin.cache.standard.StandardCache;
 import org.easotope.shared.admin.cache.standard.standard.StandardCacheStandardGetListener;
 import org.easotope.shared.admin.tables.Standard;
@@ -120,7 +121,17 @@ public class AssignmentComposite extends Composite implements StandardCacheStand
 		button.setLayoutData(gridData);
 		button.addSelectionListener(new LoggingSelectionAdaptor() {
 			public void loggingWidgetSelected(SelectionEvent e) {
+				int index = combo.getSelectionIndex();
+				SourceListItem sourceListItem = indexToSourceListItem.get(index);
 
+				AssignmentDialog assignmentDialog = new AssignmentDialog(getShell());
+				assignmentDialog.open(sourceListItem);
+
+				SourceListItem newSourceListItem = assignmentDialog.getSourceListItem();
+
+				if (newSourceListItem != null) {
+					
+				}
 			}
 		});
 		button.setText("Other");
@@ -188,6 +199,26 @@ public class AssignmentComposite extends Composite implements StandardCacheStand
 		gc.dispose();
 
 		canvas.redraw();
+	}
+
+	private boolean sourceListItemsAreTheSame(SourceListItem sourceListItem1, SourceListItem sourceListItem2) {
+		if (sourceListItem1.getUserId() != sourceListItem2.getUserId()) {
+			return false;
+		}
+
+		if (sourceListItem1.getProjectId() != sourceListItem2.getProjectId()) {
+			return false;
+		}
+
+		if (sourceListItem1.getSampleId() != sourceListItem2.getSampleId()) {
+			return false;
+		}
+
+		if (sourceListItem1.getStandardId() != sourceListItem2.getStandardId()) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -38,6 +38,8 @@ import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.dbcore.DatabaseConstants;
 import org.easotope.shared.Messages;
+import org.easotope.shared.admin.tables.Options;
+import org.easotope.shared.admin.tables.Options.OverviewResolution;
 import org.easotope.shared.analysis.execute.AnalysisWithParameters;
 import org.easotope.shared.analysis.execute.CalculationError;
 import org.easotope.shared.analysis.execute.calculator.AllStandardsCalculator;
@@ -61,7 +63,7 @@ import org.easotope.shared.rawdata.InputParameter;
 import org.easotope.shared.rawdata.InputParameterType;
 import org.easotope.shared.rawdata.RawDataHelper;
 import org.easotope.shared.rawdata.tables.ReplicateV1;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -73,13 +75,17 @@ import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 public class LoadOrCalculateCorrInterval {
+	private static HashMap<Integer,String> mzX10ToAlgorithm = new HashMap<Integer,String>();
 	private static HashMap<Integer,String> mzX10ToX2 = new HashMap<Integer,String>();
 	private static HashMap<Integer,String> mzX10ToSlope = new HashMap<Integer,String>();
 	private static HashMap<Integer,String> mzX10ToIntercept = new HashMap<Integer,String>();
+	private static HashMap<Integer,String> mzX10ToRefMzX10 = new HashMap<Integer,String>();
+	private static HashMap<Integer,String> mzX10ToFactor = new HashMap<Integer,String>();
 
 	private int corrIntervalId;
 	private int replicateAnalysisId;
 	private ConnectionSource connectionSource;
+	private OverviewResolution overviewRes;
 
 	private CorrIntervalScratchPad corrIntervalScratchPad = null;
 	private List<CorrIntervalError> corrIntervalErrors = null;
@@ -88,6 +94,14 @@ public class LoadOrCalculateCorrInterval {
 		this.corrIntervalId = corrIntervalId;
 		this.replicateAnalysisId = replicateAnalysisId;
 		this.connectionSource = connectionSource;
+
+		try {
+			Dao<Options,Integer> optionsDao = DaoManager.createDao(connectionSource, Options.class);
+			overviewRes = optionsDao.queryForId(1).getOverviewResolution();
+
+		} catch (SQLException e) {
+			Log.getInstance().log(Level.INFO, this, Messages.recalculateCorrInterval_errorLoadingOptions, e);
+		}
 
 		try {
 			Dao<CorrIntervalError,Integer> corrIntervalErrorDao = DaoManager.createDao(connectionSource, CorrIntervalError.class);
@@ -280,10 +294,10 @@ public class LoadOrCalculateCorrInterval {
 				if (replicatePad.getVolatileData(AnalysisConstants.VOLATILE_DATA_HAS_ERRORS) != null) {
 					unwanted.add(replicatePad);
 				} else {
-					replicatePad.trimChildren();
+					replicatePad.trimChildrenToLevel(overviewRes.getPadClass());
 				}
 			}
-	
+
 			corrIntervalScratchPad.getScratchPad().removeChildren(unwanted);
 		}
 
@@ -340,23 +354,23 @@ public class LoadOrCalculateCorrInterval {
 
 	private void readScans(CorrIntervalV1 corrInterval, CorrIntervalScratchPad coreIntervalScratchPad) {
 		try {
-			Dao<ScanV2,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV2.class);
-			QueryBuilder<ScanV2,Integer> queryBuilder = scanDao.queryBuilder();
+			Dao<ScanV3,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV3.class);
+			QueryBuilder<ScanV3,Integer> queryBuilder = scanDao.queryBuilder();
 
-			Where<ScanV2,Integer> where = queryBuilder.where();
-			where = where.eq(ScanV2.MASSSPECID_FIELD_NAME, corrInterval.getMassSpecId());
+			Where<ScanV3,Integer> where = queryBuilder.where();
+			where = where.eq(ScanV3.MASSSPECID_FIELD_NAME, corrInterval.getMassSpecId());
 			where = where.and();
-			where = where.ge(ScanV2.DATE_FIELD_NAME, corrInterval.getValidFrom());
+			where = where.ge(ScanV3.DATE_FIELD_NAME, corrInterval.getValidFrom());
 
 			if (corrInterval.getValidUntil() != DatabaseConstants.MAX_DATE) {
 				where = where.and();
 				where = where.lt(ReplicateV1.DATE_FIELD_NAME, corrInterval.getValidUntil());
 			}
 
-			PreparedQuery<ScanV2> preparedQuery = queryBuilder.prepare();
-			List<ScanV2> results = scanDao.query(preparedQuery);
+			PreparedQuery<ScanV3> preparedQuery = queryBuilder.prepare();
+			List<ScanV3> results = scanDao.query(preparedQuery);
 
-			for (ScanV2 scan : results) {
+			for (ScanV3 scan : results) {
 				ReplicatePad replicatePad = new ReplicatePad(coreIntervalScratchPad.getScratchPad(), scan.getDate(), scan.getId(), ReplicateType.SCAN);
 				replicatePad.setVolatileData(AnalysisConstants.VOLATILE_DATA_SCAN, scan);
 				replicatePad.setValue(Pad.DISABLED, scan.isDisabled());
@@ -367,18 +381,39 @@ public class LoadOrCalculateCorrInterval {
 						continue;
 					}
 
-					Double x2 = scan.getX2Coeff()[count];
-					Double slope = scan.getSlope()[count];
-					Double intercept = scan.getIntercept()[count];
-					count++;
+					int algorithm = scan.getAlgorithm()[count];
+					replicatePad.setValue(mzX10ToAlgorithm.get(scan.getChannelToMzX10()[i]), algorithm);
+					int refMzX10;
 
-					if (Double.isNaN(slope) || Double.isNaN(intercept)) {
-						continue;
+					switch (algorithm) {
+						case 1:
+							Integer referenceChannel = scan.getReferenceChannel()[count];
+							refMzX10 = scan.getChannelToMzX10()[referenceChannel];
+							Double x2 = scan.getX2Coeff()[count];
+							Double slope = scan.getSlope()[count];
+							Double intercept = scan.getIntercept()[count];
+
+							if (!Double.isNaN(slope) && !Double.isNaN(intercept)) {
+								replicatePad.setValue(mzX10ToRefMzX10.get(scan.getChannelToMzX10()[i]), refMzX10);
+								replicatePad.setValue(mzX10ToX2.get(scan.getChannelToMzX10()[i]), x2);
+								replicatePad.setValue(mzX10ToSlope.get(scan.getChannelToMzX10()[i]), slope);
+								replicatePad.setValue(mzX10ToIntercept.get(scan.getChannelToMzX10()[i]), intercept);
+							}
+
+							break;
+
+						case 2:
+							Integer referenceChannel2 = scan.getReferenceChannel2()[count];
+							refMzX10 = scan.getChannelToMzX10()[referenceChannel2];
+							Double factor2 = scan.getFactor2()[count];
+
+							replicatePad.setValue(mzX10ToRefMzX10.get(scan.getChannelToMzX10()[i]), refMzX10);
+							replicatePad.setValue(mzX10ToFactor.get(scan.getChannelToMzX10()[i]), factor2);
+
+							break;
 					}
 
-					replicatePad.setValue(mzX10ToX2.get(scan.getChannelToMzX10()[i]), x2);
-					replicatePad.setValue(mzX10ToSlope.get(scan.getChannelToMzX10()[i]), slope);
-					replicatePad.setValue(mzX10ToIntercept.get(scan.getChannelToMzX10()[i]), intercept);
+					count++;
 				}
 			}
 
@@ -424,6 +459,18 @@ public class LoadOrCalculateCorrInterval {
 
 			if (inputParameter.getInputParameterType() == InputParameterType.X0Coeff) {
 				mzX10ToIntercept.put(inputParameter.getMzX10(), inputParameter.toString());
+			}
+
+			if (inputParameter.getInputParameterType() == InputParameterType.Algorithm) {
+				mzX10ToAlgorithm.put(inputParameter.getMzX10(), inputParameter.toString());
+			}
+
+			if (inputParameter.getInputParameterType() == InputParameterType.ReferenceChannel2) {
+				mzX10ToRefMzX10.put(inputParameter.getMzX10(), inputParameter.toString());
+			}
+
+			if (inputParameter.getInputParameterType() == InputParameterType.Factor2) {
+				mzX10ToFactor.put(inputParameter.getMzX10(), inputParameter.toString());
 			}
 		}
 	}

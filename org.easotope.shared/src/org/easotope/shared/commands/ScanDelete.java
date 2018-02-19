@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -37,7 +37,7 @@ import org.easotope.shared.core.AuthenticationKeys;
 import org.easotope.shared.core.tables.Permissions;
 import org.easotope.shared.rawdata.common.DeleteScan;
 import org.easotope.shared.rawdata.events.ScanDeleted;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -47,11 +47,11 @@ public class ScanDelete extends Command {
 	private static final long serialVersionUID = 1L;
 
 	private int scanId;
-	private transient ScanV2 scan;
+	private transient ScanV3 scan;
 
 	@Override
 	public boolean authenticate(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String, Object> authenticationObjects) throws Exception {
-		Dao<ScanV2,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV2.class);
+		Dao<ScanV3,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV3.class);
 		scan = scanDao.queryForId(scanId);
 
 		if (scan == null) {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -33,17 +33,17 @@ import org.easotope.framework.dbcore.tables.RawFile;
 import org.easotope.framework.dbcore.util.RawFileManager;
 import org.easotope.shared.rawdata.tables.ScanFileInputV0;
 import org.easotope.shared.rawdata.tables.ScanFileParsedV2;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 
 public class DeleteScan {
-	public static ScanV2 deleteScan(ConnectionSource connectionSource, RawFileManager rawFileManager, int scanId) throws SQLException {
-		Dao<ScanV2,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV2.class);
+	public static ScanV3 deleteScan(ConnectionSource connectionSource, RawFileManager rawFileManager, int scanId) throws SQLException {
+		Dao<ScanV3,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV3.class);
 
-		ScanV2 scan = scanDao.queryForId(scanId);
+		ScanV3 scan = scanDao.queryForId(scanId);
 
 		if (scan == null) {
 			return null;
@@ -52,8 +52,8 @@ public class DeleteScan {
 		return deleteScan(connectionSource, rawFileManager, scan);
 	}
 
-	public static ScanV2 deleteScan(ConnectionSource connectionSource, RawFileManager rawFileManager, ScanV2 scan) throws SQLException {
-		Dao<ScanV2,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV2.class);
+	public static ScanV3 deleteScan(ConnectionSource connectionSource, RawFileManager rawFileManager, ScanV3 scan) throws SQLException {
+		Dao<ScanV3,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV3.class);
 		scanDao.deleteById(scan.getId());
 
 		Dao<ScanFileInputV0,Integer> scanFileInputDao = DaoManager.createDao(connectionSource, ScanFileInputV0.class);

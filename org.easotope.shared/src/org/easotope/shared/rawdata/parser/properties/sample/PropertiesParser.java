@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -114,7 +114,7 @@ public class PropertiesParser extends Parser {
 
 				InputParameterType inputParameterType = parameter.getInputParameterType();
 
-				if (parameter.getMzX10() != null && (inputParameterType == InputParameterType.Background || inputParameterType == InputParameterType.SampleMeasurements || inputParameterType == InputParameterType.RefMeasurements || inputParameterType == InputParameterType.Scan)) {
+				if (parameter.getMzX10() != null && (inputParameterType == InputParameterType.Background || inputParameterType == InputParameterType.SampleMeasurement || inputParameterType == InputParameterType.RefMeasurement || inputParameterType == InputParameterType.Scan)) {
 					seenMzX10s.add(parameter.getMzX10());
 				}
 			}
@@ -135,11 +135,11 @@ public class PropertiesParser extends Parser {
 	
 					if (channel != null) {
 						switch (inputParameter.getInputParameterType()) {
-							case RefMeasurements:
+							case RefMeasurement:
 								newInputParameter = InputParameter.values()[InputParameter.Channel0_Ref.ordinal() + channel];
 								break;
 	
-							case SampleMeasurements:
+							case SampleMeasurement:
 								newInputParameter = InputParameter.values()[InputParameter.Channel0_Sample.ordinal() + channel];
 								break;
 	

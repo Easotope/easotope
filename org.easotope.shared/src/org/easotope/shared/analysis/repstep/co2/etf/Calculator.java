@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -42,6 +42,7 @@ import org.easotope.shared.analysis.execute.RepStepCalculator;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
 import org.easotope.shared.analysis.repstep.co2.etf.dependencies.Dependencies;
 import org.easotope.shared.analysis.tables.RepStep;
+import org.easotope.shared.core.DoubleTools;
 import org.easotope.shared.core.exception.EasotopeStepException;
 import org.easotope.shared.core.scratchpad.Pad;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
@@ -404,8 +405,6 @@ public class Calculator extends RepStepCalculator {
 	}
 
 	public class EtfStandardVerifier extends SimpleStandardVerifier {
-		private static final double DOUBLE_EPSILON = 0.0001d;
-
 		private double targetReplicateAcidTemperature;
 
 		public EtfStandardVerifier(Set<Integer> acceptableStandardIds, Double targetReplicateAcidTemperature) {
@@ -428,7 +427,7 @@ public class Calculator extends RepStepCalculator {
 				return true;
 			}
 
-			return Math.abs(standardAcidTemp-targetReplicateAcidTemperature) < DOUBLE_EPSILON;
+			return DoubleTools.essentiallyEqual(standardAcidTemp, targetReplicateAcidTemperature);
 		}
 	}
 }

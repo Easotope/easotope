@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -43,12 +43,11 @@ import org.easotope.shared.admin.tables.Standard;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
 import org.easotope.shared.analysis.execute.dependency.DependencyPlugin;
 import org.easotope.shared.analysis.repstep.co2.etf.Calculator;
+import org.easotope.shared.core.DoubleTools;
 import org.easotope.shared.core.NumericValue;
 import org.easotope.shared.core.cache.AbstractCache;
 
 public class AcidTempsPlugin extends DependencyPlugin {
-	private static final double DOUBLE_EPSILON = 0.0001d;
-
 	private int[] standardIds = null;
 	private int currentStandardId = 0;
 	private Standard[] standards = null;
@@ -145,8 +144,8 @@ public class AcidTempsPlugin extends DependencyPlugin {
 
 			for (Integer acidTempId : acidTempList.keySet()) {
 				AcidTempListItem acidTempListItem = acidTempList.get(acidTempId);
-				
-				if (Math.abs(acidTempListItem.getTemperature() - calculator.getAcidTemperature()) < DOUBLE_EPSILON) {
+
+				if (DoubleTools.essentiallyEqual(acidTempListItem.getTemperature(), calculator.getAcidTemperature())) {
 					return SampleTypeCache.getInstance().acidTempGet(acidTempId, dependencyManager);
 				}
 			}

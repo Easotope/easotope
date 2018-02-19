@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -137,6 +137,7 @@ public class Messages {
 	public static String recalculateCorrInterval_errorReadingScanList;
 	public static String recalculateCorrInterval_errorStandardsCalculatorDidNotFinish;
 	public static String recalculateCorrInterval_couldNotFindCorrInterval;
+	public static String recalculateCorrInterval_errorLoadingOptions;
 	public static String recalculateCorrInterval_errorLoadingCorrIntervalError;
 	public static String recalculateCorrInterval_errorLoadingCorrIntervalScratchPad;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -43,6 +43,8 @@ import org.easotope.framework.core.util.SystemProperty;
 import org.easotope.framework.dbcore.Activator;
 import org.easotope.framework.dbcore.events.CoreStartup;
 import org.easotope.framework.dbcore.tables.Version;
+//ADD_FOR_BATCH_IMPORT
+//import org.easotope.framework.dbcore.util.BatchStorageManager;
 import org.easotope.framework.dbcore.util.RawFileManager;
 
 import com.j256.ormlite.dao.Dao;
@@ -56,6 +58,8 @@ public class FolderProcessor extends ThreadProcessor {
 	private String source;
 	private String jdbcUrl;
 	private RawFileManager rawFileManager;
+//ADD_FOR_BATCH_IMPORT
+//	private BatchStorageManager batchStorageManager;
 	private boolean dbInitialized = false;
 	private ConnectionSource connectionSource;
 
@@ -81,7 +85,9 @@ public class FolderProcessor extends ThreadProcessor {
 		Version version = null;
 
 		try {
-			rawFileManager = new RawFileManager(source + File.separator + "raw_files");
+			rawFileManager = new RawFileManager(source);
+//ADD_FOR_BATCH_IMPORT
+//			batchStorageManager = new BatchStorageManager(source);
 			connectionSource = new JdbcConnectionSource(jdbcUrl);
 
 			Dao<Version,Integer> versionDao = DaoManager.createDao(connectionSource, Version.class);
@@ -106,6 +112,8 @@ public class FolderProcessor extends ThreadProcessor {
 		ProcessorManager.getInstance().overrideProcessorForThread(new ImmediateProcessor(connectionSource, rawFileManager));
 
 		if (notReopeningAfterBackup && dbInitialized) {
+//ADD_FOR_BATCH_IMPORT
+//			batchStorageManager.removeAllCommands();
 			ArrayList<Event> events = new ArrayList<Event>();
 			events.add(new CoreStartup(isServerMode, version.getLastServerVersion()));
 			Activator.distributeEventToPlugins(events, rawFileManager, connectionSource);
@@ -117,6 +125,11 @@ public class FolderProcessor extends ThreadProcessor {
 	public static ConnectionSource createConnectionSource(String jdbcUrl) throws SQLException {
 		return new JdbcConnectionSource(jdbcUrl);
 	}
+
+//ADD_FOR_BATCH_IMPORT
+//	public BatchStorageManager getBatchStorageManager() {
+//		return batchStorageManager;
+//	}
 
 	@Override
 	protected Command executeCommand(final Command command, final Hashtable<String,Object> authenticationObjects) {
@@ -154,12 +167,92 @@ public class FolderProcessor extends ThreadProcessor {
 		command.setStatus(Command.Status.OK);
 		command.pauseBeforeExecute();
 
+//ADD_FOR_BATCH_IMPORT
+//		final CommandThatCanBeSentInBatchMode commandThatCanBeSentInBatchMode = (command instanceof CommandThatCanBeSentInBatchMode) ? (CommandThatCanBeSentInBatchMode) command : null;
+//
+//		if (commandThatCanBeSentInBatchMode != null && commandThatCanBeSentInBatchMode.isBatchMode() && !commandThatCanBeSentInBatchMode.isLast()) {
+//			int socketId = commandThatCanBeSentInBatchMode.getSocketId();
+//			int batchId = commandThatCanBeSentInBatchMode.getBatchId();
+//
+//			if (!batchStorageManager.saveCommand(socketId, batchId, commandThatCanBeSentInBatchMode)) {
+//				commandThatCanBeSentInBatchMode.setStatus(Command.Status.EXECUTION_ERROR, Messages.folderProcessor_couldNotSaveBatch);
+//			}
+//
+//			commandThatCanBeSentInBatchMode.removeAllDataForBatchModeReturn();
+//
+//			return command;
+//		}
+
 		try {
 			TransactionManager.callInTransaction(connectionSource, new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
+//ADD_FOR_BATCH_IMPORT
+//					ArrayList<Event> batchEvents = new ArrayList<Event>();
+//
+//					if (commandThatCanBeSentInBatchMode != null && commandThatCanBeSentInBatchMode.isBatchMode() && commandThatCanBeSentInBatchMode.isLast()) {
+//						int expectedBatchItemNumber = 0;
+//
+//						int socketId = commandThatCanBeSentInBatchMode.getSocketId();
+//						int batchId = commandThatCanBeSentInBatchMode.getBatchId();
+//
+//						CommandThatCanBeSentInBatchMode batchCommand = batchStorageManager.getNext(socketId, batchId);
+//
+//						while (batchCommand != null) {
+//							if (batchCommand.getBatchItemNumber() != expectedBatchItemNumber) {
+//								String message = MessageFormat.format(Messages.folderProcessor_batchItemNumberError, batchCommand.getBatchItemNumber(), expectedBatchItemNumber);
+//								Log.getInstance().log(Log.Level.INFO, this, message);
+//
+//								commandThatCanBeSentInBatchMode.setStatus(Command.Status.DB_ERROR, message);
+//								commandThatCanBeSentInBatchMode.setBatchErrorItemNumber(batchCommand.getBatchItemNumber());
+//								commandThatCanBeSentInBatchMode.removeAllDataForBatchModeReturn();
+//
+//								throw new RuntimeException(message);
+//							}
+//
+//							expectedBatchItemNumber++;
+//
+//							try {
+//								batchCommand.execute(connectionSource, rawFileManager, authenticationObjects);
+//								batchEvents.addAll(batchCommand.getAndRemoveEvents());
+//
+//							} catch (Exception e) {
+//								Throwable t = e;
+//
+//								String message = t.getMessage();
+//								Log.getInstance().log(Log.Level.INFO, this, message, t);
+//			
+//								while (t.getCause() != null) {
+//									t = t.getCause();
+//									message += "\n" + t.getMessage();
+//								}
+//
+//								commandThatCanBeSentInBatchMode.setStatus(Command.Status.DB_ERROR, message);
+//								commandThatCanBeSentInBatchMode.setBatchErrorItemNumber(batchCommand.getBatchItemNumber());
+//								commandThatCanBeSentInBatchMode.removeAllDataForBatchModeReturn();
+//
+//								throw e;
+//							}
+//
+//							batchCommand = batchStorageManager.getNext(socketId, batchId);
+//						}
+//
+//						if (commandThatCanBeSentInBatchMode.getBatchItemNumber() != expectedBatchItemNumber) {
+//							String message = MessageFormat.format(Messages.folderProcessor_batchItemNumberError, commandThatCanBeSentInBatchMode.getBatchItemNumber(), expectedBatchItemNumber);
+//							Log.getInstance().log(Log.Level.INFO, this, message);
+//
+//							commandThatCanBeSentInBatchMode.setStatus(Command.Status.DB_ERROR, message);
+//							commandThatCanBeSentInBatchMode.setBatchErrorItemNumber(commandThatCanBeSentInBatchMode.getBatchItemNumber());
+//							commandThatCanBeSentInBatchMode.removeAllDataForBatchModeReturn();
+//
+//							throw new RuntimeException(message);
+//						}
+//					}
+
 					try {
 						command.execute(connectionSource, rawFileManager, authenticationObjects);
+//ADD_FOR_BATCH_IMPORT
+//						command.addEvents(batchEvents);
 
 					} catch (Exception e) {
 						Throwable t = e;
@@ -171,8 +264,15 @@ public class FolderProcessor extends ThreadProcessor {
 							t = t.getCause();
 							message += "\n" + t.getMessage();
 						}
-	
+
 						command.setStatus(Command.Status.DB_ERROR, message);
+
+//ADD_FOR_BATCH_IMPORT
+//						if (commandThatCanBeSentInBatchMode != null) {
+//							commandThatCanBeSentInBatchMode.setBatchErrorItemNumber(commandThatCanBeSentInBatchMode.getBatchItemNumber());
+//							commandThatCanBeSentInBatchMode.removeAllDataForBatchModeReturn();
+//						}
+
 						throw e;
 					}
 

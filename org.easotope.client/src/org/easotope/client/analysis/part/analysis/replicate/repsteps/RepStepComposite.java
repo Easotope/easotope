@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -67,7 +67,7 @@ public class RepStepComposite extends ChainedComposite implements RunCalculatorL
 	private CTabFolder cTabFolder;
 	private int tabToSelect = -1;
 
-	private TabOffsetsComposite offsetsComposite;
+	private TabStandardGraphsComposite offsetsComposite;
 	private TabDocsComposite documentationComposite;
 	private TabIOComposite ioComposite;
 	private TabParametersComposite parameterComposite;
@@ -95,7 +95,7 @@ public class RepStepComposite extends ChainedComposite implements RunCalculatorL
 
  		CTabItem tabItem = new CTabItem(cTabFolder, SWT.NONE);
  		tabItem.setText(Messages.repStepComposite_offsetsLabel);
- 		offsetsComposite = new TabOffsetsComposite(chainedPart, cTabFolder, SWT.NONE);
+ 		offsetsComposite = new TabStandardGraphsComposite(chainedPart, cTabFolder, SWT.NONE);
  		tabItem.setControl(offsetsComposite);
 
  		cTabFolder.setSelection(0);

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -33,6 +33,7 @@ import org.easotope.shared.analysis.execute.SamStepCalculator;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
 import org.easotope.shared.analysis.samstep.co2.clumptemp.dependencies.Dependencies;
 import org.easotope.shared.analysis.tables.SamStep;
+import org.easotope.shared.core.DoubleTools;
 import org.easotope.shared.core.scratchpad.Accumulator;
 import org.easotope.shared.core.scratchpad.AccumulatorStdErr;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
@@ -101,12 +102,11 @@ public class Calculator extends SamStepCalculator {
 		Dependencies dependencies = (Dependencies) dependencyManager;
 
 		boolean atLeastOneConstantChanged = false;
-		final double DOUBLE_EPSILON = 0.0000000001;
-		atLeastOneConstantChanged = atLeastOneConstantChanged || Math.abs(dependencies.getGamma().getValue() - dependencies.getGamma().getEnumeration().getDefaultValue()) > DOUBLE_EPSILON;
-		atLeastOneConstantChanged = atLeastOneConstantChanged || Math.abs(dependencies.getR13VPDB().getValue() - dependencies.getR13VPDB().getEnumeration().getDefaultValue()) > DOUBLE_EPSILON;
-		atLeastOneConstantChanged = atLeastOneConstantChanged || Math.abs(dependencies.getR17VSMOW().getValue() - dependencies.getR17VSMOW().getEnumeration().getDefaultValue()) > DOUBLE_EPSILON;
-		atLeastOneConstantChanged = atLeastOneConstantChanged || Math.abs(dependencies.getR18VSMOW().getValue() - dependencies.getR18VSMOW().getEnumeration().getDefaultValue()) > DOUBLE_EPSILON;
-		atLeastOneConstantChanged = atLeastOneConstantChanged || Math.abs(dependencies.getD18OVPDBVSMOW().getValue() - dependencies.getD18OVPDBVSMOW().getEnumeration().getDefaultValue()) > DOUBLE_EPSILON;
+		atLeastOneConstantChanged = atLeastOneConstantChanged || !DoubleTools.essentiallyEqual(dependencies.getGamma().getValue(), dependencies.getGamma().getEnumeration().getDefaultValue());
+		atLeastOneConstantChanged = atLeastOneConstantChanged || !DoubleTools.essentiallyEqual(dependencies.getR13VPDB().getValue(), dependencies.getR13VPDB().getEnumeration().getDefaultValue());
+		atLeastOneConstantChanged = atLeastOneConstantChanged || !DoubleTools.essentiallyEqual(dependencies.getR17VSMOW().getValue(), dependencies.getR17VSMOW().getEnumeration().getDefaultValue());
+		atLeastOneConstantChanged = atLeastOneConstantChanged || !DoubleTools.essentiallyEqual(dependencies.getR18VSMOW().getValue(), dependencies.getR18VSMOW().getEnumeration().getDefaultValue());
+		atLeastOneConstantChanged = atLeastOneConstantChanged || !DoubleTools.essentiallyEqual(dependencies.getD18OVPDBVSMOW().getValue(), dependencies.getD18OVPDBVSMOW().getEnumeration().getDefaultValue());
 
 		TempCalibrations[] tempCalibrations = { new Kluge(), new Passey(), new Henkes(), new Gosh(), new Dennis(), new Zaruur() };
 

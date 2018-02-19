@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -130,25 +130,30 @@ public class Standard extends TableObjectWithIntegerId {
 
 	public Map<Integer,NumericValue> getValues() {
 		if (valuesAsNumericValues != null) {
-			return (Map<Integer,NumericValue>) Collections.unmodifiableMap(valuesAsNumericValues);
+			return valuesAsNumericValues;
 		}
 
 		if (values == null) {
 			return null;
 		}
 
-		HashMap<Integer,NumericValue> valuesAsNumericValues = new HashMap<Integer,NumericValue>();
+		HashMap<Integer,NumericValue> tempValuesAsNumericValues = new HashMap<Integer,NumericValue>();
 
 		for (Integer key : values.keySet()) {
 			Object[] objects = values.get(key);
-			valuesAsNumericValues.put(key, new NumericValue((Double) objects[0], (Integer) objects[1], (String) objects[2]));
+			
+			if (objects != null) {
+				tempValuesAsNumericValues.put(key, new NumericValue((Double) objects[0], (Integer) objects[1], (String) objects[2]));
+			}
 		}
 
-		return (Map<Integer,NumericValue>) Collections.unmodifiableMap(valuesAsNumericValues);
+		valuesAsNumericValues = Collections.unmodifiableMap(tempValuesAsNumericValues);
+
+		return valuesAsNumericValues;
 	}
 
 	public void setValues(Map<Integer,NumericValue> valuesAsNumericValues) {
-		this.valuesAsNumericValues = valuesAsNumericValues;
+		this.valuesAsNumericValues = null;
 
 		if (valuesAsNumericValues == null) {
 			values = null;
@@ -159,7 +164,10 @@ public class Standard extends TableObjectWithIntegerId {
 
 		for (Integer key : valuesAsNumericValues.keySet()) {
 			NumericValue numericValue = valuesAsNumericValues.get(key);
-			values.put(key, new Object[] { numericValue.getValue(), numericValue.getDescription(), numericValue.getReference() });
+			
+			if (numericValue != null) {
+				values.put(key, new Object[] { numericValue.getValue(), numericValue.getDescription(), numericValue.getReference() });
+			}
 		}
 	}
 }

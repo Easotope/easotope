@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -40,9 +40,9 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 
 public class BatchImportPart extends ChainedPart {
-	public static final String ELEMENTID_BASE = "org.easotope.rawdata.gui.bulkimport";
+	public static final String ELEMENTID_BASE = "org.easotope.rawdata.gui.batchimport";
 
-	private BatchImportComposite bulkImportComposite;
+	private BatchImportComposite batchImportComposite;
 
 	@PostConstruct
 	public void postConstruct() {
@@ -53,20 +53,20 @@ public class BatchImportPart extends ChainedPart {
 		formLayout.marginBottom = GuiConstants.FORM_LAYOUT_MARGIN;
 		getParent().setLayout(formLayout);
 
-		bulkImportComposite = new BatchImportComposite(this, getParent(), SWT.NONE);
+		batchImportComposite = new BatchImportComposite(this, getParent(), SWT.NONE);
 		FormData formData = new FormData();
 		formData.top = new FormAttachment(0);
 		formData.left = new FormAttachment(0);
 		formData.right = new FormAttachment(100);
 		formData.bottom = new FormAttachment(100);
-		bulkImportComposite.setLayoutData(formData);
+		batchImportComposite.setLayoutData(formData);
 
 		Map<String,String> persistedState = getPart().getPersistedState();
 
 		if (persistedState != null) {
 			HashMap<String,Object> selection = new HashMap<String,Object>();
 			setSelection(-1, selection);
-			bulkImportComposite.receiveAddRequest();
+			batchImportComposite.receiveAddRequest();
 		}
 	}
 

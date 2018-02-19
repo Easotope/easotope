@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -25,7 +25,7 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.shared.rawdata.tables;
+package org.easotope.shared.rawdata.tables.old;
 
 import org.easotope.framework.dbcore.DatabaseConstants;
 import org.easotope.framework.dbcore.tables.TableObjectWithIntegerId;

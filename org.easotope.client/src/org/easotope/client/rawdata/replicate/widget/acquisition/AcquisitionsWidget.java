@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -695,7 +695,7 @@ public class AcquisitionsWidget extends EasotopeComposite {
 		for (InputParameter inputParameter : measurements.keySet()) {
 			int channel;
 
-			if (inputParameter.getInputParameterType() == InputParameterType.RefMeasurements) {
+			if (inputParameter.getInputParameterType() == InputParameterType.RefMeasurement) {
 				channel = inputParameter.ordinal() - InputParameter.Channel0_Ref.ordinal();
 			} else {
 				channel = inputParameter.ordinal() - InputParameter.Channel0_Sample.ordinal();
@@ -764,7 +764,7 @@ public class AcquisitionsWidget extends EasotopeComposite {
 	}
 
 	private InputParameter getInputParameter(int mzX10, InputParameterType inputParameterType) {
-		if (inputParameterType == InputParameterType.RefMeasurements) {
+		if (inputParameterType == InputParameterType.RefMeasurement) {
 			return mzX10ToRefVoltageInputParameter.get(mzX10);
 		} else {
 			return mzX10ToSampleVoltageInputParameter.get(mzX10);
@@ -1004,11 +1004,11 @@ public class AcquisitionsWidget extends EasotopeComposite {
 	static {
 		for (InputParameter inputParameter : InputParameter.values()) {
 			if (inputParameter.getMzX10() != null) {
-				if (inputParameter.getInputParameterType() == InputParameterType.RefMeasurements) {
+				if (inputParameter.getInputParameterType() == InputParameterType.RefMeasurement) {
 					mzX10ToRefVoltageInputParameter.put(inputParameter.getMzX10(), inputParameter);
 				}
 
-				if (inputParameter.getInputParameterType() == InputParameterType.SampleMeasurements) {
+				if (inputParameter.getInputParameterType() == InputParameterType.SampleMeasurement) {
 					mzX10ToSampleVoltageInputParameter.put(inputParameter.getMzX10(), inputParameter);
 				}
 			}

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -62,7 +62,7 @@ public class SourceListGet extends Command {
 		Dao<Standard,Integer> standardDao = DaoManager.createDao(connectionSource, Standard.class);
 
 		for (Standard standard : standardDao.queryForAll()) {
-			sourceList.add(new SourceListItem(standard.getId(), standard.getName(), standard.getSampleTypeId(), 0));
+			sourceList.add(new SourceListItem(standard.getId(), standard.getName()));
 		}
 
 		Dao<Sample,Integer> sampleDao = DaoManager.createDao(connectionSource, Sample.class);
@@ -98,7 +98,7 @@ public class SourceListGet extends Command {
 				int userId = projectUserId;
 				String userName = userIdToName.get(projectUserId);
 
-				sourceList.add(new SourceListItem(userId, userName, projectId, projectName, sample.getId(), sample.getName(), sample.getSampleTypeId(), 0));
+				sourceList.add(new SourceListItem(userId, userName, projectId, projectName, sample.getId(), sample.getName()));
 			}
 		}
 	}

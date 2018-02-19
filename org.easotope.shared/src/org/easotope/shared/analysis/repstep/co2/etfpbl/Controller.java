@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -84,9 +84,9 @@ public class Controller extends RepStepController {
 	@Override
 	public OutputDescription[] getOutputDescription() {
 		return new OutputDescription[] {
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_ETF_SLOPE, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_ETF_INTERCEPT, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ47, "0.000", StandardParameter.Δ47, IsotopicScale.CDES)
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_ETF_SLOPE, null, null, null, true),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_ETF_INTERCEPT, null, null, null, true),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ47, "0.000", StandardParameter.Δ47, IsotopicScale.CDES, false)
 		};
 	}
 

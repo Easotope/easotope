@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -36,6 +36,8 @@ import java.util.List;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.shared.Messages;
+import org.easotope.shared.admin.tables.Options;
+import org.easotope.shared.admin.tables.Options.OverviewResolution;
 import org.easotope.shared.analysis.execute.AnalysisWithParameters;
 import org.easotope.shared.analysis.execute.CalculationError;
 import org.easotope.shared.analysis.execute.calculator.AnalysisConstants;
@@ -79,7 +81,28 @@ import com.j256.ormlite.support.ConnectionSource;
 public class LoadOrCalculateSample {
 	private static final String CALC_REPLICATE_CACHE_IDS = "CALC_REPLICATE_CACHE_IDS";
 
-	public static CalcSampleCache getCalcSampleCache(ConnectionSource connectionSource, int sampleId, int sampleAnalysisId) {
+	private ConnectionSource connectionSource;
+	private OverviewResolution overviewRes;
+
+	public LoadOrCalculateSample(ConnectionSource connectionSource) {
+		this.connectionSource = connectionSource;
+	}
+
+	private OverviewResolution getOverviewResolution() {
+		if (overviewRes == null) {
+			try {
+				Dao<Options,Integer> optionsDao = DaoManager.createDao(connectionSource, Options.class);
+				overviewRes = optionsDao.queryForId(1).getOverviewResolution();
+
+			} catch (SQLException e) {
+				Log.getInstance().log(Level.INFO, this, Messages.recalculateCorrInterval_errorLoadingOptions, e);
+			}
+		}
+		
+		return overviewRes;
+	}
+
+	public CalcSampleCache getCalcSampleCache(int sampleId, int sampleAnalysisId) {
 		try {
 			Dao<CalcSampleCache,Integer> calcSampleDao = DaoManager.createDao(connectionSource, CalcSampleCache.class);
 
@@ -96,7 +119,7 @@ public class LoadOrCalculateSample {
 			Log.getInstance().log(Level.INFO, LoadOrCalculateSample.class, Messages.loadOrCalculateSample_problemReadingCalcSampleCache, e);
 		}
 
-		CalcSampleCache calcSampleCache = createCalcSampleCache(connectionSource, sampleId, sampleAnalysisId);
+		CalcSampleCache calcSampleCache = createCalcSampleCache(sampleId, sampleAnalysisId);
 
 		try {
 			Dao<CalcSampleCache,Integer> calcSampleCacheDao = DaoManager.createDao(connectionSource, CalcSampleCache.class);
@@ -127,7 +150,7 @@ public class LoadOrCalculateSample {
 		return calcSampleCache;
 	}
 
-	private static CalcSampleCache createCalcSampleCache(ConnectionSource connectionSource, int sampleId, int sampleAnalysisId) {
+	private CalcSampleCache createCalcSampleCache(int sampleId, int sampleAnalysisId) {
 		CalcSampleCache calcSampleCache = new CalcSampleCache();
 		calcSampleCache.setSampleId(sampleId);
 		calcSampleCache.setSampleAnalysisId(sampleAnalysisId);
@@ -243,7 +266,7 @@ public class LoadOrCalculateSample {
 
 				} else if (potentialRepAnalyses.size() == 1) {
 					Integer repAnalysisId = potentialRepAnalyses.toArray(new Integer[1])[0];
-					CalcReplicateCache calcReplicateCache = getCalcReplicateCache(connectionSource, replicate, repAnalysisId, corrInterval);
+					CalcReplicateCache calcReplicateCache = getCalcReplicateCache(replicate, repAnalysisId, corrInterval);
 					calcReplicateCache.getScratchPad().getChild(0).reassignToParent(calcSampleCache.getScratchPad().getChild(0));
 
 					calcReplicateCacheIds.add(calcReplicateCache.getId());
@@ -271,7 +294,7 @@ public class LoadOrCalculateSample {
 
 					if (repAnalysisChoices != null && repAnalysisChoices.size() == 1 && potentialRepAnalyses.contains(repAnalysisChoices.get(0).getRepIdsToRepAnalysisChoice().get(replicate.getId()))) {
 						int userSelectedRepAnalysisId = repAnalysisChoices.get(0).getRepIdsToRepAnalysisChoice().get(replicate.getId());
-						CalcReplicateCache calcReplicateCache = getCalcReplicateCache(connectionSource, replicate, userSelectedRepAnalysisId, corrInterval);
+						CalcReplicateCache calcReplicateCache = getCalcReplicateCache(replicate, userSelectedRepAnalysisId, corrInterval);
 						calcReplicateCache.getScratchPad().getChild(0).reassignToParent(calcSampleCache.getScratchPad().getChild(0));
 
 						calcReplicateCacheIds.add(calcReplicateCache.getId());
@@ -397,7 +420,7 @@ public class LoadOrCalculateSample {
 		return calcSampleCache;
 	}
 
-	private static CalcReplicateCache getCalcReplicateCache(ConnectionSource connectionSource, ReplicateV1 replicate, int replicateAnalysisId, CorrIntervalV1 corrInterval) {
+	private CalcReplicateCache getCalcReplicateCache(ReplicateV1 replicate, int replicateAnalysisId, CorrIntervalV1 corrInterval) {
 		try {
 			Dao<CalcReplicateCache,Integer> calcReplicateDao = DaoManager.createDao(connectionSource, CalcReplicateCache.class);
 
@@ -414,7 +437,7 @@ public class LoadOrCalculateSample {
 			Log.getInstance().log(Level.INFO, LoadOrCalculateSample.class, Messages.loadOrCalculateSample_problemReadingCalcReplicateCache, e);
 		}
 
-		CalcReplicateCache calcReplicateCache = createCalcReplicateCache(connectionSource, replicate, replicateAnalysisId, corrInterval);
+		CalcReplicateCache calcReplicateCache = createCalcReplicateCache(replicate, replicateAnalysisId, corrInterval);
 
 		try {
 			Dao<CalcReplicateCache,Integer> calcReplicateCacheDao = DaoManager.createDao(connectionSource, CalcReplicateCache.class);
@@ -427,7 +450,7 @@ public class LoadOrCalculateSample {
 		return calcReplicateCache;
 	}
 
-	private static CalcReplicateCache createCalcReplicateCache(ConnectionSource connectionSource, ReplicateV1 replicate, int replicateAnalysisId, CorrIntervalV1 corrInterval) {		
+	private CalcReplicateCache createCalcReplicateCache(ReplicateV1 replicate, int replicateAnalysisId, CorrIntervalV1 corrInterval) {		
 		CalcReplicateCache calcReplicateCache = new CalcReplicateCache();
 
 		calcReplicateCache.setReplicateId(replicate.getId());
@@ -497,7 +520,7 @@ public class LoadOrCalculateSample {
 
 				calcReplicateCache.setDependencies(allDependencies);
 
-				replicatePad.trimChildren();
+				replicatePad.trimChildrenToLevel(getOverviewResolution().getPadClass());
 				replicatePad.reassignToParent(calcReplicateCache.getScratchPad());
 
 			} else if (singleRunCalculator.getErrors().size() != 0) {
@@ -530,7 +553,7 @@ public class LoadOrCalculateSample {
 		return calcReplicateCache;
 	}
 
-	public static ArrayList<Integer> getCalcSampleCacheIdsFromCorrIntervalAndReplicateAnalysis(int corrIntervalId, int replicateAnalysisId, ConnectionSource connectionSource) {
+	public ArrayList<Integer> getCalcSampleCacheIdsFromCorrIntervalAndReplicateAnalysis(int corrIntervalId, int replicateAnalysisId) {
 		ArrayList<Integer> results = new ArrayList<Integer>();
 
 		try {
@@ -554,7 +577,7 @@ public class LoadOrCalculateSample {
 		return results;
 	}
 
-	public static ArrayList<Integer> getCalcSampleCacheIdsFromSampleIdAndSampleAnalysisId(int sampleId, int sampleAnalysisId, ConnectionSource connectionSource) {
+	public ArrayList<Integer> getCalcSampleCacheIdsFromSampleIdAndSampleAnalysisId(int sampleId, int sampleAnalysisId) {
 		ArrayList<Integer> results = new ArrayList<Integer>();
 
 		try {
@@ -575,7 +598,7 @@ public class LoadOrCalculateSample {
 		return results;
 	}
 
-	public static ArrayList<Integer> getCalcSampleCacheIdsFromReplicateId(int replicateId, ConnectionSource connectionSource) {
+	public ArrayList<Integer> getCalcSampleCacheIdsFromReplicateId(int replicateId) {
 		ArrayList<Integer> results = new ArrayList<Integer>();
 
 		try {
@@ -595,7 +618,7 @@ public class LoadOrCalculateSample {
 		return results;
 	}
 
-	public static ArrayList<Integer> getCalcSampleCacheIdsFromSampleId(int sampleId, ConnectionSource connectionSource) {
+	public ArrayList<Integer> getCalcSampleCacheIdsFromSampleId(int sampleId) {
 		ArrayList<Integer> results = new ArrayList<Integer>();
 
 		try {
@@ -612,7 +635,7 @@ public class LoadOrCalculateSample {
 		return results;
 	}
 
-	public static CalcSampleCache removeSampleCalculations(int calcSampleCacheId, ConnectionSource connectionSource) {
+	public CalcSampleCache removeSampleCalculations(int calcSampleCacheId) {
 		CalcSampleCache calcSampleCache = null;
 
 		try {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -77,62 +77,80 @@ public class Controller extends RepStepController {
 			new RepInputDescription(Calculator.INPUT_LABEL_V44_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V44_SAMPLE, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V44_BACKGROUND, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V44_ALGORITHM, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V44_X2COEFF, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V44_X1COEFF, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V44_X0COEFF, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V44_REFMZX10, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V44_FACTOR, false, false),
 
 			new RepInputDescription(Calculator.INPUT_LABEL_V45_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V45_SAMPLE, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V45_BACKGROUND, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V45_ALGORITHM, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V45_X2COEFF, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V45_X1COEFF, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V45_X0COEFF, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V45_REFMZX10, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V45_FACTOR, false, false),
 
 			new RepInputDescription(Calculator.INPUT_LABEL_V46_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V46_SAMPLE, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V46_BACKGROUND, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V46_ALGORITHM, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V46_X2COEFF, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V46_X1COEFF, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V46_X0COEFF, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V46_REFMZX10, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V46_FACTOR, false, false),
 
 			new RepInputDescription(Calculator.INPUT_LABEL_V47_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V47_SAMPLE, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V47_BACKGROUND, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V47_ALGORITHM, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V47_X2COEFF, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V47_X1COEFF, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V47_X0COEFF, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V47_REFMZX10, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V47_FACTOR, false, false),
 
 			new RepInputDescription(Calculator.INPUT_LABEL_V48_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V48_SAMPLE, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V48_BACKGROUND, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V48_ALGORITHM, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V48_X2COEFF, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V48_X1COEFF, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V48_X0COEFF, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V48_REFMZX10, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V48_FACTOR, false, false),
 
 			new RepInputDescription(Calculator.INPUT_LABEL_V49_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V49_SAMPLE, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V49_BACKGROUND, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V49_ALGORITHM, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V49_X2COEFF, false, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V49_X1COEFF, false, false),
-			new RepInputDescription(Calculator.INPUT_LABEL_V49_X0COEFF, false, false)
+			new RepInputDescription(Calculator.INPUT_LABEL_V49_X0COEFF, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V49_REFMZX10, false, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V49_FACTOR, false, false)
 		};
 	}
 
 	@Override
 	public OutputDescription[] getOutputDescription() {
 		return new OutputDescription[] {
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V44_REF_PBL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V44_SAMPLE_PBL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V45_REF_PBL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V45_SAMPLE_PBL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V46_REF_PBL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V46_SAMPLE_PBL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V47_REF_PBL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V47_SAMPLE_PBL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V48_REF_PBL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V48_SAMPLE_PBL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V49_REF_PBL, null, null, null),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_V49_SAMPLE_PBL, null, null, null)
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V44_REF_PBL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V44_SAMPLE_PBL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V45_REF_PBL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V45_SAMPLE_PBL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V46_REF_PBL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V46_SAMPLE_PBL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V47_REF_PBL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V47_SAMPLE_PBL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V48_REF_PBL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V48_SAMPLE_PBL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V49_REF_PBL, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_V49_SAMPLE_PBL, null, null, null, false)
 		};
 	}
 

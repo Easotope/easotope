@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -104,15 +104,21 @@ public class Bridge implements CommandListener, ObjSocketListener {
 
 	@Override
 	public void objSocketReceivedObject(ObjSocket objSocket, Object object) {
-		Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.bridge_receivedObject, objSocket.getId()));		
-		processor.process((Command) object, authenticationObjects, this);
-		Log.getInstance().log(Level.DEBUG, this, Messages.bridge_objectGivenToProcessor);		
+		Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.bridge_receivedObject, objSocket.getId()));
+
+		Command command = (Command) object;
+		command.setSocketId(objSocket.getId());
+		processor.process(command, authenticationObjects, this);
+
+		Log.getInstance().log(Level.DEBUG, this, Messages.bridge_objectGivenToProcessor);
 	}
 
 	@Override
 	public void objSocketClosed(ObjSocket objSocket) {
 		Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.bridge_socketClosed, objSocket.getId()));		
 		ObjSocketManager.getInstance().removeObjectSocket(objSocket);
+//ADD_FOR_BATCH_IMPORT
+//		processor.getBatchStorageManager().removeCommands(objSocket.getId());
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -45,6 +45,7 @@ import org.easotope.framework.Messages;
 import com.j256.ormlite.logger.LocalLog;
 
 public class Log {
+	final String EASOTOPE_LOG_DIR_ENV_VAR = "EASOTOPE_LOG_DIR";
 	final String LOG_FILE_NAME_PREFIX = "log_";
 	final String ORM_LOG_FILE_NAME_PREFIX = "orm_log_";
 	final String LOG_FILE_NAME_POSTFIX = ".txt";
@@ -87,13 +88,25 @@ public class Log {
 
 	public synchronized void openLogFile(String pathToTopDir) {
 		try {
-			String logDir = pathToTopDir + File.separator + "logs";
+			String logDir = (pathToTopDir == null) ? null : pathToTopDir + File.separator + "logs"; 
+			String logDirEnvVar = System.getenv().get(EASOTOPE_LOG_DIR_ENV_VAR);
+
+			if (logDirEnvVar != null && logDirEnvVar.trim().length() != 0) {
+				logDir = logDirEnvVar;
+			}
+
+			if (logDir == null) {
+				return;
+			}
+
 			File dir = new File(logDir);
 
 			if (!dir.exists()) {
 				dir.mkdirs();
 			}
 
+			// clean up log files
+			
 			ArrayList<File> logFiles = new ArrayList<File>();
 
 			for (File file : dir.listFiles()) {
@@ -109,6 +122,26 @@ public class Log {
 			while (logFiles.size() > MAX_NUM_LOG_FILES - 1) {
 				logFiles.remove(0).delete();
 			}
+
+			// clean up orm log files
+			
+			ArrayList<File> ormLogFiles = new ArrayList<File>();
+
+			for (File file : dir.listFiles()) {
+				String fileName = file.getName();
+
+				if (fileName.startsWith(ORM_LOG_FILE_NAME_PREFIX) && fileName.endsWith(LOG_FILE_NAME_POSTFIX)) {
+					ormLogFiles.add(file);
+				}
+			}
+
+			Collections.sort(ormLogFiles, new LogFileComparator());
+
+			while (ormLogFiles.size() > MAX_NUM_LOG_FILES - 1) {
+				ormLogFiles.remove(0).delete();
+			}
+
+			// open files
 
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", new Locale(Messages.locale));
 		    String timestamp = formatter.format(new Date());

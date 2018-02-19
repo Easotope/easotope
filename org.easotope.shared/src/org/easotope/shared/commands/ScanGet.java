@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -37,7 +37,7 @@ import org.easotope.framework.dbcore.util.RawFileManager;
 import org.easotope.shared.rawdata.ScanFile;
 import org.easotope.shared.rawdata.tables.ScanFileInputV0;
 import org.easotope.shared.rawdata.tables.ScanFileParsedV2;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -47,7 +47,7 @@ public class ScanGet extends Command {
 	private static final long serialVersionUID = 1L;
 
 	private int scanId;
-	private ScanV2 scan;
+	private ScanV3 scan;
 	private ArrayList<ScanFile> scanFiles;
 
 	@Override
@@ -57,7 +57,7 @@ public class ScanGet extends Command {
 
 	@Override
 	public void execute(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception {
-		Dao<ScanV2,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV2.class);
+		Dao<ScanV3,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV3.class);
 		scan = scanDao.queryForId(scanId);
 
 		if (scan != null) {
@@ -85,7 +85,7 @@ public class ScanGet extends Command {
 		this.scanId = scanId;
 	}
 
-	public ScanV2 getScan() {
+	public ScanV3 getScan() {
 		return scan;
 	}
 

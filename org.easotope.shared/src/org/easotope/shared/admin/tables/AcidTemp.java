@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -106,28 +106,30 @@ public class AcidTemp extends TableObjectWithIntegerId {
 
 	public Map<Integer,NumericValue> getValues() {
 		if (valuesAsNumericValues != null) {
-			return (HashMap<Integer,NumericValue>) Collections.unmodifiableMap(valuesAsNumericValues);
+			return valuesAsNumericValues;
 		}
 
 		if (values == null) {
 			return null;
 		}
 
-		HashMap<Integer,NumericValue> valuesAsNumericValues = new HashMap<Integer,NumericValue>();
+		HashMap<Integer,NumericValue> tempValuesAsNumericValues = new HashMap<Integer,NumericValue>();
 
 		for (Integer key : values.keySet()) {
 			Object[] objects = values.get(key);
 			
 			if (objects != null) {
-				valuesAsNumericValues.put(key, new NumericValue((Double) objects[0], (Integer) objects[1], (String) objects[2]));
+				tempValuesAsNumericValues.put(key, new NumericValue((Double) objects[0], (Integer) objects[1], (String) objects[2]));
 			}
 		}
 
-		return (Map<Integer,NumericValue>) Collections.unmodifiableMap(valuesAsNumericValues);
+		valuesAsNumericValues = Collections.unmodifiableMap(tempValuesAsNumericValues);
+
+		return valuesAsNumericValues;
 	}
 
 	public void setValues(Map<Integer,NumericValue> valuesAsNumericValues) {
-		this.valuesAsNumericValues = valuesAsNumericValues;
+		this.valuesAsNumericValues = null;
 
 		if (valuesAsNumericValues == null) {
 			values = null;

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -393,19 +393,26 @@ public abstract class Pad implements Comparable<Pad> {
 		children.remove(index);
 	}
 
-	public void trimChildren() {
-		for (String key : data.keySet()) {
-			Object value = data.get(key);
+	public void trimChildrenToLevel(Class<?> clazz) {
+		if (this.getClass() == clazz) {
+			for (String key : data.keySet()) {
+				Object value = data.get(key);
+	
+				if (value instanceof Accumulator) {
+					Accumulator oldAccumulator = (Accumulator) value;
+					double[] old = oldAccumulator.getMeanStdDevSampleAndStdError();
+					Accumulator newAccumulator = new Accumulator(old[0], old[1], old[2]);
+					data.put(key, newAccumulator);
+				}
+			}
 
-			if (value instanceof Accumulator) {
-				Accumulator oldAccumulator = (Accumulator) value;
-				double[] old = oldAccumulator.getMeanStdDevSampleAndStdError();
-				Accumulator newAccumulator = new Accumulator(old[0], old[1], old[2]);
-				data.put(key, newAccumulator);
+			children.clear();
+
+		} else {
+			for (Pad pad : children) {
+				pad.trimChildrenToLevel(clazz);
 			}
 		}
-
-		children.clear();
 	}
 
 	public Object getVolatileData(String key) {

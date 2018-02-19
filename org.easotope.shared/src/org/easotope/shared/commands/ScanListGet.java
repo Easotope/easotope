@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -34,7 +34,7 @@ import org.easotope.framework.dbcore.DatabaseConstants;
 import org.easotope.framework.dbcore.util.RawFileManager;
 import org.easotope.shared.rawdata.cache.input.scanlist.ScanList;
 import org.easotope.shared.rawdata.cache.input.scanlist.ScanListItem;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -53,11 +53,11 @@ public class ScanListGet extends Command {
 
 	@Override
 	public void execute(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception {
-		Dao<ScanV2,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV2.class);
+		Dao<ScanV3,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV3.class);
 
 		scanList = new ScanList(massSpecId);
 
-		for (ScanV2 scan : scanDao.queryForEq(ScanV2.MASSSPECID_FIELD_NAME, massSpecId)) {
+		for (ScanV3 scan : scanDao.queryForEq(ScanV3.MASSSPECID_FIELD_NAME, massSpecId)) {
 			scanList.put(scan.getId(), new ScanListItem(scan.getDate(), scan.getUserId(), scan.getId()));
 		}
 	}

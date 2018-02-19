@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -59,6 +59,7 @@ public class ThreadedFileReader implements Runnable {
 	private HashSet<String> acceptableFileExtensions = new HashSet<String>();
 	private HashSet<String> alreadyParsedFiles = new HashSet<String>();
 	private boolean abort = false;
+	private boolean revert = false;
 	private String assumedTimeZone = null;
 	private SourceList globalSourceList = null;
 
@@ -77,35 +78,48 @@ public class ThreadedFileReader implements Runnable {
 		synchronized (fileNameQueue) {
 			while (true) {
 				if (abort || batchImportComposite.isDisposed()) {
+					fileNameQueue.clear();
+					abort = false;
 					return;
+				}
+
+				// TODO revert should prevent any further calls to batchimportcomposite
+				// until another file name is given to this class by batchimportcomposite
+				// current implementation doesn't work
+				if (revert) {
+					fileNameQueue.clear();
+					revert = false;
 				}
 
 				if (fileNameQueue.size() != 0) {
 					String filename = fileNameQueue.remove(0);
 					String message = MessageFormat.format(Messages.threadedFileReader_processingFileName, filename);
 					Log.getInstance().log(Level.DEBUG, this, message);
+
 					processFileOrDirectory(filename);
 				}
 
-				try {
+				if (fileNameQueue.size() == 0) {
 					if (assumedTimeZone != null) {
 						final String tz = assumedTimeZone;
+
 						batchImportComposite.getDisplay().asyncExec(() -> {
 							if (!batchImportComposite.isDisposed()) {
 								Shell shell = batchImportComposite.getParent().getShell();
-								String message = MessageFormat.format(Messages.threadedFileReader_assumedTimeZone, tz);
-								MessageDialog.openError(shell, Messages.threadedFileReader_assumedTimeZoneTitle, message);
+								String message2 = MessageFormat.format(Messages.threadedFileReader_assumedTimeZone, tz);
+								MessageDialog.openError(shell, Messages.threadedFileReader_assumedTimeZoneTitle, message2);
 							}
 						});
 
 						assumedTimeZone = null;
 					}
 
-					Log.getInstance().log(Level.DEBUG, this, Messages.threadedFileReader_waitingForFileName);
-					fileNameQueue.wait();
-
-				} catch (InterruptedException e) {
-					// do nothing
+					try {
+						Log.getInstance().log(Level.DEBUG, this, Messages.threadedFileReader_waitingForFileName);
+						fileNameQueue.wait();
+					} catch (InterruptedException e) {
+						// do nothing
+					}
 				}
 			}
 		}
@@ -128,13 +142,6 @@ public class ThreadedFileReader implements Runnable {
 				fileNameQueue.add(fileName);
 				fileNameQueue.notify();
 			}
-		}
-	}
-
-	public void process(String filename) {
-		synchronized (fileNameQueue) {
-			fileNameQueue.add(filename);
-			fileNameQueue.notify();
 		}
 	}
 
@@ -222,7 +229,7 @@ public class ThreadedFileReader implements Runnable {
 		int acquisitionNumber = 0;
 		for (AcquisitionParsedV2 acquisitionParsed : computeAcquisitionParsed.getMaps()) {
 			ImportedFile importedFile = new ImportedFile();
-			importedFile.setAssumedTime(computeAcquisitionParsed.getAssumedTimeZone() != null);
+			importedFile.setAssumedTimeZone(computeAcquisitionParsed.getAssumedTimeZone() != null);
 			importedFile.setTimestamp(acquisitionParsed.getDate());
 			importedFile.setAcquisitionNumber(acquisitionNumber++);
 			importedFile.setFileName(file.getName());
@@ -230,7 +237,7 @@ public class ThreadedFileReader implements Runnable {
 			String id1 = (String) acquisitionParsed.getMisc().get(InputParameter.Identifier_1);
 			String id2 = (String) acquisitionParsed.getMisc().get(InputParameter.Identifier_2);
 			String sampleName = (String) acquisitionParsed.getMisc().get(InputParameter.Sample_Name);
-			
+
 			if (id1 != null || id2 != null) {
 				importedFile.setIdentifier1(id1);
 				importedFile.setIdentifier2(id2);
@@ -308,7 +315,11 @@ public class ThreadedFileReader implements Runnable {
 				importedFile.setStandardId(DatabaseConstants.EMPTY_DB_ID);
 			}
 
-			batchImportComposite.addImportedFile(importedFile);
+			batchImportComposite.getDisplay().asyncExec(() -> {
+				if (!batchImportComposite.isDisposed()) {
+					batchImportComposite.addImportedFile(importedFile);
+				}
+			});
 		}
 	}
 
@@ -333,9 +344,7 @@ public class ThreadedFileReader implements Runnable {
 				return distanceCompare;
 			}
 
-			int timeCompare = ((Long) this.sourceListItem.getLastUsed()).compareTo(that.sourceListItem.getLastUsed());
-
-			return -timeCompare;
+			return 0;
 		}
 
 		@Override

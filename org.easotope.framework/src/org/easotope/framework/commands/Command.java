@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -50,6 +50,7 @@ public abstract class Command implements Serializable {
 	private volatile Status status = Status.NONE;
 	private volatile String message = null;
 	private ArrayList<Event> events = null;
+	private transient int socketId = 0;
 
 	public Command() {
 		clientUniqueId = generateClientUniqueId();
@@ -100,7 +101,7 @@ public abstract class Command implements Serializable {
 		events.add(event);
 	}
 
-	protected void addEvents(ArrayList<Event> events) {
+	public void addEvents(ArrayList<Event> events) {
 		if (events == null) {
 			events = new ArrayList<Event>();
 		}
@@ -135,7 +136,15 @@ public abstract class Command implements Serializable {
 //			e1.printStackTrace();
 //		}
 	}
-	
+
 	abstract public boolean authenticate(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception;
 	abstract public void execute(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception;
+
+	public int getSocketId() {
+		return socketId;
+	}
+
+	public void setSocketId(int socketId) {
+		this.socketId = socketId;
+	}
 }

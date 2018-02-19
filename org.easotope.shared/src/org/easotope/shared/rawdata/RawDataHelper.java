@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -99,7 +99,7 @@ public class RawDataHelper {
 					InputParameter newInputParameter = null;
 					Integer[] channelToMzX10 = replicate.getChannelToMzX10();
 
-					if (inputParameter.getInputParameterType() == InputParameterType.RefMeasurements) {
+					if (inputParameter.getInputParameterType() == InputParameterType.RefMeasurement) {
 						int channel = inputParameter.ordinal() - InputParameter.Channel0_Ref.ordinal();
 
 						if (channelToMzX10 != null && channelToMzX10.length > channel && channelToMzX10[channel] != null) {
@@ -141,11 +141,11 @@ public class RawDataHelper {
 						mzX10ToBackground.put(inputParameter.getMzX10(), inputParameter);
 						break;
 						
-					case RefMeasurements:
+					case RefMeasurement:
 						mzX10ToReference.put(inputParameter.getMzX10(), inputParameter);
 						break;
 						
-					case SampleMeasurements:
+					case SampleMeasurement:
 						mzX10ToSample.put(inputParameter.getMzX10(), inputParameter);
 						break;
 						

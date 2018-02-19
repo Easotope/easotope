@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -31,7 +31,7 @@ import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.dbcore.util.RawFileManager;
 import org.easotope.shared.core.tables.Preferences;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.old.ScanV2;
 import org.easotope.shared.rawdata.tables.old.ScanV1;
 
 import com.j256.ormlite.dao.Dao;

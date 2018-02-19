@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -50,7 +50,7 @@ import org.easotope.shared.rawdata.cache.input.scanlist.ScanListPlugin;
 import org.easotope.shared.rawdata.tables.Project;
 import org.easotope.shared.rawdata.tables.ReplicateV1;
 import org.easotope.shared.rawdata.tables.Sample;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 
 public class InputCache extends AbstractCache {
 	private ProjectListPlugin projectListPlugin = new ProjectListPlugin();
@@ -146,7 +146,7 @@ public class InputCache extends AbstractCache {
 		return getObject(scanPlugin, listener, scanId);
 	}
 
-	public synchronized int scanSave(ScanV2 scan, ArrayList<ScanFile> scanFiles, CacheListener listener) {
+	public synchronized int scanSave(ScanV3 scan, ArrayList<ScanFile> scanFiles, CacheListener listener) {
 		return saveObject(scanPlugin, listener, scan, scanFiles);
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -69,7 +69,7 @@ import org.easotope.shared.rawdata.common.DeleteScan;
 import org.easotope.shared.rawdata.tables.Project;
 import org.easotope.shared.rawdata.tables.ReplicateV1;
 import org.easotope.shared.rawdata.tables.Sample;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Point;
@@ -414,7 +414,7 @@ public class TrimDialog extends Dialog {
     		}
 
     		try {
-    			rawFileManager = new RawFileManager(source + File.separator + "raw_files");
+    			rawFileManager = new RawFileManager(source);
     			connectionSource = FolderProcessor.createConnectionSource(jdbcUrl);
 
     		} catch (Exception e) {
@@ -592,7 +592,7 @@ public class TrimDialog extends Dialog {
 			Dao<CorrIntervalV1,Integer> corrIntervalDao = DaoManager.createDao(connectionSource, CorrIntervalV1.class);
 			Dao<ReplicateV1,Integer> replicateDao = DaoManager.createDao(connectionSource, ReplicateV1.class);
 			Dao<Standard,Integer> standardDao = DaoManager.createDao(connectionSource, Standard.class);
-			Dao<ScanV2,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV2.class);
+			Dao<ScanV3,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV3.class);
 			Dao<RepStepParams,Integer> repStepParamsDao = DaoManager.createDao(connectionSource, RepStepParams.class);
 			Dao<RefGas,Integer> refGasDao = DaoManager.createDao(connectionSource, RefGas.class);
 
@@ -630,12 +630,12 @@ public class TrimDialog extends Dialog {
 				}
 			}
 
-			QueryBuilder<ScanV2,Integer> queryBuilderScan = scanDao.queryBuilder();
-			Where<ScanV2,Integer> whereScan = queryBuilderScan.where();
+			QueryBuilder<ScanV3,Integer> queryBuilderScan = scanDao.queryBuilder();
+			Where<ScanV3,Integer> whereScan = queryBuilderScan.where();
 			whereScan
-				.eq(ScanV2.MASSSPECID_FIELD_NAME, corrInterval.getMassSpecId())
+				.eq(ScanV3.MASSSPECID_FIELD_NAME, corrInterval.getMassSpecId())
 				.and()
-				.ge(ScanV2.DATE_FIELD_NAME, corrInterval.getValidFrom());
+				.ge(ScanV3.DATE_FIELD_NAME, corrInterval.getValidFrom());
 
 			if (corrInterval.getValidUntil() != DatabaseConstants.MAX_DATE) {
 				whereScan
@@ -643,9 +643,9 @@ public class TrimDialog extends Dialog {
 					.lt(ReplicateV1.DATE_FIELD_NAME, corrInterval.getValidUntil());
 			}
 
-			PreparedQuery<ScanV2> preparedQueryScan = queryBuilderScan.prepare();
+			PreparedQuery<ScanV3> preparedQueryScan = queryBuilderScan.prepare();
 
-			for (ScanV2 scan : scanDao.query(preparedQueryScan)) {
+			for (ScanV3 scan : scanDao.query(preparedQueryScan)) {
 				scanIds.add(scan.getId());
 			}
 
@@ -887,9 +887,9 @@ public class TrimDialog extends Dialog {
 			// SCANFILEPARSED_V2			deleted with scan
 			// SCAN_V2						remove unneeded
 
-			Dao<ScanV2,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV2.class);
+			Dao<ScanV3,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV3.class);
 
-			for (ScanV2 scan : scanDao.queryForAll()) {
+			for (ScanV3 scan : scanDao.queryForAll()) {
 				if (!scanIds.contains(scan.getId())) {
 					DeleteScan.deleteScan(connectionSource, rawFileManager, scan.getId());
 				} else {

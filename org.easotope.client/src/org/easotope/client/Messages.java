@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -516,14 +516,22 @@ public class Messages extends NLS {
 	public static String scanFilesWidget_dataMismatchReplicateText;
 	public static String scanFileWidget_byFileTab;
 
+	public static String byMassWidget_algorithmLabel;
+	public static String byMassWidget_algorithm0;
+	public static String byMassWidget_algorithm1;
+	public static String byMassWidget_algorithm2;
 	public static String byMassWidget_referenceChannelLabel;
 	public static String byMassWidget_degreeOfFitLabel;
 	public static String byMassWidget_degreeOne;
 	public static String byMassWidget_degreeTwo;
 	public static String byMassWidget_showRegression;
+	public static String byMassWidget_referenceChannel2Label;
+	public static String byMassWidget_factor2Label;
 	public static String byMassWidget_verticalLabel;
 	public static String byMassWidget_horizontalLabel;
-	public static String byMassWidget_warningToolTip;
+	public static String byMassWidget_errorToolTipNoRegression;
+	public static String byMassWidget_errorToolTipNoReferenceChannel;
+	public static String byMassWidget_errorToolTipNoMalformedFactor;
 	public static String byMassWidget_toggleLinesMenuItem;
 
 	public static String byFileWidget_fileLabel;
@@ -621,6 +629,7 @@ public class Messages extends NLS {
 	public static String tabOffsetsComposite_horizontalQQLabel;
 	public static String tabOffsetsComposite_horizontalLabel;
 	public static String tabOffsetsComposite_disabled;
+	public static String tabOffsetsComposite_value;
 	public static String tabOffsetsComposite_measured;
 	public static String tabOffsetsComposite_expected;
 	public static String tabOffsetsComposite_difference;
@@ -736,10 +745,10 @@ public class Messages extends NLS {
 	public static String co2EthMonitorComposite_scanFileDate;
 	public static String co2EthMonitorComposite_scanFileTimeBetween;
 	public static String co2EthMonitorComposite_mass;
-	public static String co2EthMonitorComposite_X2Coeff;
-	public static String co2EthMonitorComposite_X1Coeff;
-	public static String co2EthMonitorComposite_X0Coeff;
-	public static String co2EthMonitorComposite_nanWarning;
+	public static String co2EthMonitorComposite_algorithm;
+	public static String co2EthMonitorComposite_param1;
+	public static String co2EthMonitorComposite_param2;
+	public static String co2EthMonitorComposite_param3;
 	public static String co2EthMonitorComposite_timeBetweenFormat;
 
 	public static String driftParameterComposite_windowType;
@@ -939,7 +948,18 @@ public class Messages extends NLS {
 	public static String trimDialog_errorBefore;
 	public static String trimDialog_dummyException;
 	public static String trimDialog_errorAfter;
+
+	public static String saveDialog_title;
+	public static String saveDialog_uploading;
 	
+	public static String assignmentDialog_title;
+	public static String assignmentDialog_sample;
+	public static String assignmentDialog_standard;
+	public static String assignmentDialog_select;
+
+	public static String optionsComposite_overviewResLabel;
+	public static String optionsComposite_optionsHasBeenUpdated;
+
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}

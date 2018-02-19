@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -62,6 +62,7 @@ import org.easotope.shared.admin.tables.Standard;
 import org.easotope.shared.analysis.execute.AnalysisCompiled;
 import org.easotope.shared.analysis.execute.ComparableStandardOutputs;
 import org.easotope.shared.analysis.execute.ComparableStandardOutputs.ComparableStandardOutput;
+import org.easotope.shared.analysis.execute.GraphableOutputs;
 import org.easotope.shared.core.DateFormat;
 import org.easotope.shared.core.DoubleTools;
 import org.easotope.shared.core.NumericValue;
@@ -89,15 +90,17 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
-public class TabOffsetsComposite extends EasotopeComposite implements SciConstantCacheSciConstantGetListener, StandardCacheStandardListGetListener, StandardCacheStandardGetListener {
+public class TabStandardGraphsComposite extends EasotopeComposite implements SciConstantCacheSciConstantGetListener, StandardCacheStandardListGetListener, StandardCacheStandardGetListener {
 	private int RELATIVE_GRAPH = 0;
 	private int ABSOLUTE_GRAPH = 1;
 	private int QQPLOT_GRAPH = 2;
 
 	private StackLayout stackLayout;
 
-	private Combo column;
+	private Combo comparableColumn;
+	private Combo graphableColumn;
 	private Combo graphType;
+	private Integer oldGraphType;
 	private TimeRangeGraph graph;
 	private Label mean;
 	private Label stddev;
@@ -122,7 +125,7 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 	private HashMap<Integer,PointDesign> fadedPointDesigns = new HashMap<Integer,PointDesign>();
 	private HashMap<Integer,PointDesign> unselectedPointDesigns = new HashMap<Integer,PointDesign>();
 
-	TabOffsetsComposite(EasotopePart easotopePart, Composite parent, int style) {
+	TabStandardGraphsComposite(EasotopePart easotopePart, Composite parent, int style) {
 		super(easotopePart, parent, style);
 		
 		stackLayout = new StackLayout();
@@ -162,18 +165,41 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
         formData.right = new FormAttachment(100);
         controls.setLayoutData(formData);
         GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 2;
+        gridLayout.numColumns = 3;
         gridLayout.marginHeight = 0;
         gridLayout.marginWidth = 0;
         controls.setLayout(gridLayout);
 
-        column = new Combo(controls, SWT.READ_ONLY);
+        comparableColumn = new Combo(controls, SWT.READ_ONLY);
         gridData = new GridData();
         gridData.widthHint = GuiConstants.MEDIUM_COMBO_INPUT_WIDTH;
         gridData.verticalAlignment = SWT.CENTER;
-        column.setLayoutData(gridData);
-        column.addListener(SWT.Selection, new LoggingAdaptor() {
+        comparableColumn.setLayoutData(gridData);
+        comparableColumn.addListener(SWT.Selection, new LoggingAdaptor() {
         	public void loggingHandleEvent(Event event) {
+        		graphableColumn.deselectAll();
+
+        		if (oldGraphType != null) {
+        			graphType.select(oldGraphType);
+        			oldGraphType = null;
+        		}
+
+        		graphType.setEnabled(true);
+        		refreshGraph(true);
+        	}
+        });
+
+        graphableColumn = new Combo(controls, SWT.READ_ONLY);
+        gridData = new GridData();
+        gridData.widthHint = GuiConstants.MEDIUM_COMBO_INPUT_WIDTH;
+        gridData.verticalAlignment = SWT.CENTER;
+        graphableColumn.setLayoutData(gridData);
+        graphableColumn.addListener(SWT.Selection, new LoggingAdaptor() {
+        	public void loggingHandleEvent(Event event) {
+        		comparableColumn.deselectAll();
+        		oldGraphType = graphType.getSelectionIndex();
+        		graphType.select(1);
+        		graphType.setEnabled(false);
         		refreshGraph(true);
         	}
         });
@@ -341,16 +367,28 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 
 		HashSet<Integer> alreadyGraphedStandardExpectation = new HashSet<Integer>();
 
+		boolean comparableIsSelected = false;
 		String columnName = null;
 		StandardParameter standardParameter = null;
 		IsotopicScale isotopicScale = null;
 
-		int selectionIndex = column.getSelectionIndex();
+		int selectionIndex = comparableColumn.getSelectionIndex();
 
 		if (selectionIndex != -1) {
+			comparableIsSelected = true;
 			columnName = comparableStandardOutputs.get(selectionIndex).getColumnName();
 			standardParameter = comparableStandardOutputs.get(selectionIndex).getComparableStandardParameter();
 			isotopicScale = comparableStandardOutputs.get(selectionIndex).getIsotopicScale();
+
+		} else {
+			comparableIsSelected = false;
+			selectionIndex = graphableColumn.getSelectionIndex();
+
+			if (selectionIndex != -1) {
+				columnName = graphableColumn.getItem(selectionIndex);
+				standardParameter = null;
+				isotopicScale = null;
+			}
 		}
 
 		Statistics statistics = new Statistics();
@@ -424,21 +462,29 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 					continue;
 				}
 
-				NumericValue numericValue = standard.getValues().get(standardParameter.ordinal());
+				Double expected = null;
 
-				if (numericValue == null || δ18O_VPDB_VSMOW == null) {
-					continue;
+				if (comparableIsSelected) {
+					NumericValue numericValue = standard.getValues().get(standardParameter.ordinal());
+
+					if (numericValue == null || δ18O_VPDB_VSMOW == null) {
+						continue;
+					}
+
+					IsotopicScale currentIsotopicScale = IsotopicScale.values()[numericValue.getDescription()];
+					expected = currentIsotopicScale.convert(numericValue.getValue(), isotopicScale, δ18O_VPDB_VSMOW);
+
+					if (expected == null) {
+						continue;
+					}
+
+					tooltipList.add(Messages.tabOffsetsComposite_measured + doubleValue.toString());
+					tooltipList.add(Messages.tabOffsetsComposite_expected + expected.toString());
+
+				} else {
+					expected = 0.0;
+					tooltipList.add(Messages.tabOffsetsComposite_value + doubleValue.toString());
 				}
-
-				IsotopicScale currentIsotopicScale = IsotopicScale.values()[numericValue.getDescription()];
-				Double expected = currentIsotopicScale.convert(numericValue.getValue(), isotopicScale, δ18O_VPDB_VSMOW);
-
-				if (expected == null) {
-					continue;
-				}
-
-				tooltipList.add(Messages.tabOffsetsComposite_measured + doubleValue.toString());
-				tooltipList.add(Messages.tabOffsetsComposite_expected + expected.toString());
 
 				if (graphType.getSelectionIndex() == RELATIVE_GRAPH) {
 					doubleValue = doubleValue - expected;
@@ -454,14 +500,22 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 					graph.setHorizontalAxisShowValues(false);
 					graph.setXRangeEnabled(true);
 
-					if (!alreadyGraphedStandardExpectation.contains(standard.getId())) {
-						graph.addDrawableObjectFirst(new LineWithoutEnds(0.0d, expected, Double.NaN, expected, ColorCache.getColorFromPalette(getDisplay(), standard.getColorId()), null));
-						alreadyGraphedStandardExpectation.add(standard.getId());					
+					if (comparableIsSelected) {
+						if (!alreadyGraphedStandardExpectation.contains(standard.getId())) {
+							graph.addDrawableObjectFirst(new LineWithoutEnds(0.0d, expected, Double.NaN, expected, ColorCache.getColorFromPalette(getDisplay(), standard.getColorId()), null));
+							alreadyGraphedStandardExpectation.add(standard.getId());					
+						}
+	
+						tooltipList.add(Messages.tabOffsetsComposite_difference + (doubleValue - expected));
 					}
 
-					tooltipList.add(Messages.tabOffsetsComposite_difference + (doubleValue - expected));
 			        graph.setHorizontalAxisLabel(Messages.tabOffsetsComposite_horizontalLabel);
-			        graph.setVerticalAxisLabel(MessageFormat.format(Messages.tabOffsetsComposite_verticalAbsoluteLabel, standardParameter));
+			        
+			        if (standardParameter != null) {
+			        	graph.setVerticalAxisLabel(MessageFormat.format(Messages.tabOffsetsComposite_verticalAbsoluteLabel, standardParameter));
+			        } else {
+			        	graph.setVerticalAxisLabel(columnName);
+			        }
 
 				} else {
 					doubleValue = doubleValue - expected;
@@ -663,27 +717,48 @@ public class TabOffsetsComposite extends EasotopeComposite implements SciConstan
 		}
 
 		if (analysisCompiled != null) {
-			int currentlySelectedIndex = -1;
-			String currentlySelectedColumnName = column.getSelectionIndex() == -1 ? null : column.getItem(column.getSelectionIndex());
 			comparableStandardOutputs.clear();
-			column.removeAll();
 			TreeSet<String> availableColumns = corrIntervalScratchPad.getAllColumns();
 
+			int currentlySelectedComparableColumnIndex = -1;
+			String currentlySelectedComparableColumnName = comparableColumn.getSelectionIndex() == -1 ? null : comparableColumn.getItem(comparableColumn.getSelectionIndex());
+
+			comparableColumn.removeAll();
 			for (ComparableStandardOutput comparableStandardOutput : new ComparableStandardOutputs(analysisCompiled).getComparableStandardOutputs()) {
 				if (availableColumns.contains(comparableStandardOutput.getColumnName())) {					
-					if (comparableStandardOutput.getColumnName().equals(currentlySelectedColumnName)) {
-						currentlySelectedIndex = comparableStandardOutputs.size();
+					if (comparableStandardOutput.getColumnName().equals(currentlySelectedComparableColumnName)) {
+						currentlySelectedComparableColumnIndex = comparableColumn.getItemCount();
 					}
 
-					column.add(comparableStandardOutput.getColumnName());
+					comparableColumn.add(comparableStandardOutput.getColumnName());
 					comparableStandardOutputs.add(comparableStandardOutput);
 				}
 			}
 
-			if (currentlySelectedIndex != -1) {
-				column.select(currentlySelectedIndex);
+			int currentlySelectedGraphableColumnIndex = -1;
+			String currentlySelectedGraphableColumnName = graphableColumn.getSelectionIndex() == -1 ? null : graphableColumn.getItem(graphableColumn.getSelectionIndex());
+
+			graphableColumn.removeAll();
+			for (String graphableOutput : new GraphableOutputs(analysisCompiled).getGraphableOutputs()) {
+				if (graphableOutput.equals(currentlySelectedGraphableColumnName)) {
+					currentlySelectedGraphableColumnIndex = graphableColumn.getItemCount();
+				}
+
+				graphableColumn.add(graphableOutput);
+			}
+
+			if (currentlySelectedComparableColumnIndex == -1 && currentlySelectedGraphableColumnIndex == -1) {
+				comparableColumn.select(0);
+				graphableColumn.deselectAll();
+
 			} else {
-				column.select(0);
+				if (currentlySelectedComparableColumnIndex != -1) {
+					comparableColumn.select(currentlySelectedComparableColumnIndex);
+				}
+
+				if (currentlySelectedGraphableColumnIndex != -1) {
+					graphableColumn.select(currentlySelectedGraphableColumnIndex);
+				}
 			}
 		}
 

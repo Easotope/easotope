@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -484,22 +484,22 @@ public abstract class EditorComposite extends ChainedComposite implements CacheL
 			return false;
 		}
 
-		TableObjectWithIntegerId oldSampleType;
-		TableObjectWithIntegerId newSampleType;
+		TableObjectWithIntegerId oldTableObjectWithIntegerId;
+		TableObjectWithIntegerId newTableObjectWithIntegerId;
 
 		if (oldObject instanceof Object[]) {
 			Object[] oldObjectArray = (Object[]) oldObject;
-			oldSampleType = (TableObjectWithIntegerId) oldObjectArray[0];
+			oldTableObjectWithIntegerId = (TableObjectWithIntegerId) oldObjectArray[0];
 	
 			Object[] newObjectArray = (Object[]) newObject;
-			newSampleType = (TableObjectWithIntegerId) newObjectArray[0];
+			newTableObjectWithIntegerId = (TableObjectWithIntegerId) newObjectArray[0];
 
 		} else {
-			oldSampleType = (TableObjectWithIntegerId) oldObject;
-			newSampleType = (TableObjectWithIntegerId) newObject;
+			oldTableObjectWithIntegerId = (TableObjectWithIntegerId) oldObject;
+			newTableObjectWithIntegerId = (TableObjectWithIntegerId) newObject;
 		}
 
-		return newSampleType.getId() == oldSampleType.getId();
+		return newTableObjectWithIntegerId.getId() == oldTableObjectWithIntegerId.getId();
 	}
 
 	@Override

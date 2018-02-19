@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -112,6 +112,16 @@ public class DoubleTools {
 		}
 
 		return buf.toString();
+	}
+
+	public static boolean essentiallyEqual(double a, double b) {
+		final double DOUBLE_EPSILON = 0.0000000001;
+		// should also handle NaN and infinity here
+		return equalWithin(a, b, DOUBLE_EPSILON);
+	}
+
+	private static boolean equalWithin(double a, double b, double within) {
+		return Math.abs(a-b) < within;
 	}
 
 	static {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -117,6 +117,8 @@ public class CalculatedExportGet extends Command {
 		HashSet<String> alreadyLoadedCorrIntervalRepAnalysis = new HashSet<String>();
 		HashMap<Integer,HashMap<Integer,ArrayList<Integer>>> tree = requestTree.getTree();
 
+		LoadOrCalculateSample loadOrCalculateSample = new LoadOrCalculateSample(connectionSource);
+
 		if (requestTree.hasMultipleUsers()) {
 			ScratchPad<UserPad> userScratchPad = new ScratchPad<UserPad>();
 			requestedScratchPad = userScratchPad;
@@ -138,7 +140,7 @@ public class CalculatedExportGet extends Command {
 
 						if (sample.getSamAnalyses() != null) {
 							for (int sampleAnalysisId : sample.getSamAnalyses()) {
-								CalcSampleCache calcSampleCache = LoadOrCalculateSample.getCalcSampleCache(connectionSource, sampleId, sampleAnalysisId);
+								CalcSampleCache calcSampleCache = loadOrCalculateSample.getCalcSampleCache(sampleId, sampleAnalysisId);
 								ScratchPad<SamplePad> scratchPad = calcSampleCache.getScratchPad();
 								scratchPad.getChild(0).reassignToParent(projectPad);
 
@@ -183,7 +185,7 @@ public class CalculatedExportGet extends Command {
 
 					if (sample.getSamAnalyses() != null) {
 						for (int sampleAnalysisId : sample.getSamAnalyses()) {
-							CalcSampleCache calcSampleCache = LoadOrCalculateSample.getCalcSampleCache(connectionSource, sampleId, sampleAnalysisId);
+							CalcSampleCache calcSampleCache = loadOrCalculateSample.getCalcSampleCache(sampleId, sampleAnalysisId);
 							ScratchPad<SamplePad> scratchPad = calcSampleCache.getScratchPad();
 							scratchPad.getChild(0).reassignToParent(projectPad);
 							
@@ -223,7 +225,7 @@ public class CalculatedExportGet extends Command {
 
 				if (sample.getSamAnalyses() != null) {
 					for (int sampleAnalysisId : sample.getSamAnalyses()) {
-						CalcSampleCache calcSampleCache = LoadOrCalculateSample.getCalcSampleCache(connectionSource, sampleId, sampleAnalysisId);
+						CalcSampleCache calcSampleCache = loadOrCalculateSample.getCalcSampleCache(sampleId, sampleAnalysisId);
 						ScratchPad<SamplePad> scratchPad = calcSampleCache.getScratchPad();
 						scratchPad.getChild(0).reassignToParent(sampleScratchPad);
 

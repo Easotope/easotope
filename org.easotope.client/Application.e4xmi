@@ -5,6 +5,7 @@
       <children xsi:type="advanced:Perspective" xmi:id="_UwYoqFAEEeKcQrcP49hWoA" elementId="org.easotope.client.perspective.configuration">
         <children xsi:type="basic:PartStack" xmi:id="_UwYoqlAEEeKcQrcP49hWoA" elementId="org.easotope.client.configuration.partstack">
           <children xsi:type="basic:Part" xmi:id="_oISdAFm-EeK4EsMBsR6PCQ" elementId="org.easotope.client.configuration.monitor.part" contributionURI="bundleclass://org.easotope.client/org.easotope.client.part.monitor.Monitor" label="%monitorPart"/>
+          <children xsi:type="basic:Part" xmi:id="_ePXJ0ID7EeeEycC1YlvzgA" elementId="org.easotope.client.configuration.options.part" contributionURI="bundleclass://org.easotope.client/org.easotope.client.admin.part.options.OptionsPart" label="%optionsPart"/>
           <children xsi:type="basic:Part" xmi:id="_JsZu8KEWEeaVzfL8XDHNWw" elementId="org.easotope.admin.gui.part.logininfo" contributionURI="bundleclass://org.easotope.client/org.easotope.client.admin.part.logininfo.LoginInfoPart" label="%loginInfoPart"/>
           <children xsi:type="basic:Part" xmi:id="_ZapJcKEWEeaVzfL8XDHNWw" elementId="org.easotope.admin.gui.part.allusers" contributionURI="bundleclass://org.easotope.client/org.easotope.client.admin.part.user.UserPart" label="%userMgmtPart">
             <tags>ISADMIN</tags>
@@ -56,7 +57,7 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_Ms0i8KKKEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.handledmenuitem.1" label="%tableOverviewMenuItem" command="_bbQiwKKJEea--pdW5aFKrA"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_hGy9cL4NEea4h7iswIQV5Q" elementId="org.easotope.client.menu.specialmenu" label="%commandsMenu">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_OzNu4LhbEeap39TQzuUalg" elementId="" toBeRendered="false" visible="false" label="%batchImportMenuItem" command="_rvq3ILhbEeap39TQzuUalg"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_OzNu4LhbEeap39TQzuUalg" elementId="org.easotope.client.handledmenuitem.batchimportmenuitem" toBeRendered="false" visible="false" label="%batchImportMenuItem" command="_rvq3ILhbEeap39TQzuUalg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_4l8vgL4NEea4h7iswIQV5Q" elementId="org.easotope.client.handledmenuitem.trimdatabasemenuitem" label="%trimDatabaseMenuItem" command="_Hs9x8L4OEea4h7iswIQV5Q"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_UwYopVAEEeKcQrcP49hWoA" label="Help">

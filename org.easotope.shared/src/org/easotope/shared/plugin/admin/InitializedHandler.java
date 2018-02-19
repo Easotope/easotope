@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -39,6 +39,8 @@ import org.easotope.shared.admin.AcidTempParameter;
 import org.easotope.shared.admin.SciConstantNames;
 import org.easotope.shared.admin.tables.AcidTemp;
 import org.easotope.shared.admin.tables.MassSpec;
+import org.easotope.shared.admin.tables.Options;
+import org.easotope.shared.admin.tables.Options.OverviewResolution;
 import org.easotope.shared.admin.tables.RefGas;
 import org.easotope.shared.admin.tables.SampleType;
 import org.easotope.shared.admin.tables.SciConstant;
@@ -53,6 +55,13 @@ import com.j256.ormlite.table.TableUtils;
 public class InitializedHandler {
 	public static ArrayList<Event> execute(Initialized event, RawFileManager rawFileManager, ConnectionSource connectionSource) {
 		try {
+			TableUtils.createTable(connectionSource, Options.class);
+			Dao<Options,Integer> optionsDao = DaoManager.createDao(connectionSource, Options.class);
+
+			Options options = new Options();
+			options.setOverviewResolution(OverviewResolution.REPLICATE);
+			optionsDao.create(options);
+
 			TableUtils.createTable(connectionSource, MassSpec.class);
 			TableUtils.createTable(connectionSource, RefGas.class);
 			TableUtils.createTable(connectionSource, Standard.class);

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -34,7 +34,7 @@ import org.easotope.shared.rawdata.cache.sourcelist.sourcelist.SourceListItem;
 
 public class ImportedFile implements Comparable<ImportedFile> {
 	private String warning;
-	private boolean assumedTime;
+	private boolean assumedTimeZone;
 	private String error;
 	private boolean ignore;
 	private long timestamp;
@@ -55,12 +55,12 @@ public class ImportedFile implements Comparable<ImportedFile> {
 		this.warning = warning;
 	}
 
-	public boolean isAssumedTime() {
-		return assumedTime;
+	public boolean isAssumedTimeZone() {
+		return assumedTimeZone;
 	}
 
-	public void setAssumedTime(boolean assumedTime) {
-		this.assumedTime = assumedTime;
+	public void setAssumedTimeZone(boolean assumedTimeZone) {
+		this.assumedTimeZone = assumedTimeZone;
 	}
 
 	public String getError() {

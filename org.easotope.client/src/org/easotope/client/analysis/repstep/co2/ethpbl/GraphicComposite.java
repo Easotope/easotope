@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -92,7 +92,7 @@ public class GraphicComposite extends RepStepGraphicComposite {
 		formData = new FormData();
 		formData.top = new FormAttachment(label2, 5);
 		formData.left = new FormAttachment(0);
-		formData.right = new FormAttachment(0, 600);
+		formData.right = new FormAttachment(0, 700);
 		formData.bottom = new FormAttachment(label2, 300);
 		table.setLayoutData(formData);
 		table.setLinesVisible(true);
@@ -103,23 +103,20 @@ public class GraphicComposite extends RepStepGraphicComposite {
 		column.setText(Messages.co2EthMonitorComposite_mass);
 
 		column = new TableColumn(table, SWT.NONE);
-		column.setWidth(180);
-		column.setText(Messages.co2EthMonitorComposite_X2Coeff);
+		column.setWidth(150);
+		column.setText(Messages.co2EthMonitorComposite_algorithm);
 
 		column = new TableColumn(table, SWT.NONE);
-		column.setWidth(180);
-		column.setText(Messages.co2EthMonitorComposite_X1Coeff);
+		column.setWidth(150);
+		column.setText(Messages.co2EthMonitorComposite_param1);
 
 		column = new TableColumn(table, SWT.NONE);
-		column.setWidth(180);
-		column.setText(Messages.co2EthMonitorComposite_X0Coeff);
+		column.setWidth(150);
+		column.setText(Messages.co2EthMonitorComposite_param2);
 
-		Label label3 = new Label(this, SWT.WRAP);
-		formData = new FormData();
-		formData.top = new FormAttachment(table, 5);
-		formData.left = new FormAttachment(0);
-		label3.setLayoutData(formData);
-		label3.setText(Messages.co2EthMonitorComposite_nanWarning);
+		column = new TableColumn(table, SWT.NONE);
+		column.setWidth(150);
+		column.setText(Messages.co2EthMonitorComposite_param3);
 	}
 
 	@Override
@@ -172,29 +169,63 @@ public class GraphicComposite extends RepStepGraphicComposite {
 		// TODO This is really wrong!!!!! It should dereference the INPUT_LABELs
 
 		String[] labels = { "44", "45", "46", "47", "48", "49" };
+		InputParameter[] algorithm = { InputParameter.V44_Scan_Algorithm, InputParameter.V45_Scan_Algorithm, InputParameter.V46_Scan_Algorithm, InputParameter.V47_Scan_Algorithm, InputParameter.V48_Scan_Algorithm, InputParameter.V49_Scan_Algorithm };
 		InputParameter[] x2Coeff = { InputParameter.V44_Scan_X2Coeff, InputParameter.V45_Scan_X2Coeff, InputParameter.V46_Scan_X2Coeff, InputParameter.V47_Scan_X2Coeff, InputParameter.V48_Scan_X2Coeff, InputParameter.V49_Scan_X2Coeff };
 		InputParameter[] x1Coeff = { InputParameter.V44_Scan_Slope, InputParameter.V45_Scan_Slope, InputParameter.V46_Scan_Slope, InputParameter.V47_Scan_Slope, InputParameter.V48_Scan_Slope, InputParameter.V49_Scan_Slope };
 		InputParameter[] x0Coeff = { InputParameter.V44_Scan_Intercept, InputParameter.V45_Scan_Intercept, InputParameter.V46_Scan_Intercept, InputParameter.V47_Scan_Intercept, InputParameter.V48_Scan_Intercept, InputParameter.V49_Scan_Intercept };
+		InputParameter[] refMzX10 = { InputParameter.V44_Scan_RefMzX10, InputParameter.V45_Scan_RefMzX10, InputParameter.V46_Scan_RefMzX10, InputParameter.V47_Scan_RefMzX10, InputParameter.V48_Scan_RefMzX10, InputParameter.V49_Scan_RefMzX10 };
+		InputParameter[] factor = { InputParameter.V44_Scan_Factor, InputParameter.V45_Scan_Factor, InputParameter.V46_Scan_Factor, InputParameter.V47_Scan_Factor, InputParameter.V48_Scan_Factor, InputParameter.V49_Scan_Factor };
 
 		for (int i=0; i<labels.length; i++) {		
 			TableItem tableItem = new TableItem(table, SWT.NONE);
 			tableItem.setText(0, labels[i]);
-			Double value = (Double) scanFileReplicatePad.getValue(x2Coeff[i].toString());
 
-			if (value != null) {
-				tableItem.setText(1, DoubleFormat.formatWithoutExp(value));
-			}
+			int algorithmValue = (int) scanFileReplicatePad.getValue(algorithm[i].toString());
 
-			value = (Double) scanFileReplicatePad.getValue(x1Coeff[i].toString());
+			switch (algorithmValue) {
+				case 0:
+					tableItem.setText(1, Messages.byMassWidget_algorithm0);
+					break;
 
-			if (value != null) {
-				tableItem.setText(2, DoubleFormat.formatWithoutExp(value));
-			}
+				case 1:
+					tableItem.setText(1, Messages.byMassWidget_algorithm1);
 
-			value = (Double) scanFileReplicatePad.getValue(x0Coeff[i].toString());
-	
-			if (value != null) {
-				tableItem.setText(3, DoubleFormat.formatWithoutExp(value));
+					Double doubleValue = (Double) scanFileReplicatePad.getValue(x2Coeff[i].toString());
+		
+					if (doubleValue != null) {
+						tableItem.setText(2, DoubleFormat.formatWithoutExp(doubleValue));
+					}
+		
+					doubleValue = (Double) scanFileReplicatePad.getValue(x1Coeff[i].toString());
+
+					if (doubleValue != null) {
+						tableItem.setText(3, DoubleFormat.formatWithoutExp(doubleValue));
+					}
+
+					doubleValue = (Double) scanFileReplicatePad.getValue(x0Coeff[i].toString());
+
+					if (doubleValue != null) {
+						tableItem.setText(4, DoubleFormat.formatWithoutExp(doubleValue));
+					}
+
+					break;
+
+				case 2:
+					tableItem.setText(1, Messages.byMassWidget_algorithm2);
+
+					Integer intValue = (Integer) scanFileReplicatePad.getValue(refMzX10[i].toString());
+
+					if (intValue != null) {
+						tableItem.setText(2, DoubleFormat.formatWithoutExp(intValue / 10.0));
+					}
+
+					doubleValue = (Double) scanFileReplicatePad.getValue(factor[i].toString());
+					
+					if (doubleValue != null) {
+						tableItem.setText(3, DoubleFormat.formatWithoutExp(doubleValue));
+					}
+
+					break;
 			}
 		}
 	}

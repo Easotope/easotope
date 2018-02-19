@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -45,12 +45,13 @@ import org.easotope.client.rawdata.util.FileReader;
 import org.easotope.framework.dbcore.tables.RawFile;
 import org.easotope.shared.analysis.cache.corrinterval.corrintervallist.CorrIntervalList;
 import org.easotope.shared.analysis.cache.corrinterval.corrintervallist.CorrIntervalListItem;
+import org.easotope.shared.core.DoubleTools;
 import org.easotope.shared.rawdata.InputParameter;
 import org.easotope.shared.rawdata.ScanFile;
 import org.easotope.shared.rawdata.compute.ComputeScanFileParsed;
 import org.easotope.shared.rawdata.tables.ScanFileInputV0;
 import org.easotope.shared.rawdata.tables.ScanFileParsedV2;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -74,7 +75,7 @@ public class ScanFilesWidget extends EasotopeComposite {
 	private Composite centerComposite;
 	private TabFolder tabFolder;
 
-	private ScanV2 originalScan;
+	private ScanV3 originalScan;
 	private TreeSet<ScanFile> originalScanFiles = new TreeSet<ScanFile>();
 	private CorrIntervalList currentCorrIntervalList = null;
 
@@ -288,8 +289,15 @@ public class ScanFilesWidget extends EasotopeComposite {
 					if (originalChannelToMzX10.length <= channelCount) {
 						return true;
 					}
-	
+
 					if (getInputParameter(originalChannelToMzX10[channelCount]) != byMassWidget.getInputParameter()) {
+						return true;
+					}
+
+					int algorithm = byMassWidget.getAlgorithm();
+					int origAlgorithm = originalScan.getAlgorithm()[tabCount];
+
+					if (algorithm != origAlgorithm) {
 						return true;
 					}
 
@@ -351,7 +359,11 @@ public class ScanFilesWidget extends EasotopeComposite {
 					Integer[] originalReferenceChannels = originalScan.getReferenceChannel();
 					Integer origReferenceChannel = (originalReferenceChannels != null) ? originalReferenceChannels[tabCount] : null;
 
-					if (!referenceChannel.equals(origReferenceChannel)) {
+					if ((referenceChannel == null || origReferenceChannel == null) && referenceChannel != origReferenceChannel) {
+						return true;
+					}
+
+					if (referenceChannel != null && !referenceChannel.equals(origReferenceChannel)) {
 						return true;
 					}
 
@@ -359,6 +371,25 @@ public class ScanFilesWidget extends EasotopeComposite {
 					int origDegreeOfFit = originalScan.getDegreeOfFit()[tabCount];
 
 					if (degreeOfFit != origDegreeOfFit) {
+						return true;
+					}
+
+					Integer referenceChannel2 = byMassWidget.getReferenceChannel2();
+					Integer[] originalReferenceChannels2 = originalScan.getReferenceChannel2();
+					Integer origReferenceChannel2 = (originalReferenceChannels2 != null) ? originalReferenceChannels2[tabCount] : null;
+
+					if ((referenceChannel2 == null || origReferenceChannel2 == null) && referenceChannel2 != origReferenceChannel2) {
+						return true;
+					}
+
+					if (referenceChannel2 != null && !referenceChannel2.equals(origReferenceChannel2)) {
+						return true;
+					}
+
+					double factor2 = byMassWidget.getFactor2();
+					double origFactor2 = originalScan.getFactor2()[tabCount];
+
+					if (!DoubleTools.essentiallyEqual(factor2, origFactor2)) {
 						return true;
 					}
 
@@ -404,8 +435,8 @@ public class ScanFilesWidget extends EasotopeComposite {
 		return false;
 	}
 
-	public void setScanFiles(ScanV2 scan, ArrayList<ScanFile> scanFiles) {
-		originalScan = scan == null ? null : new ScanV2(scan);
+	public void setScanFiles(ScanV3 scan, ArrayList<ScanFile> scanFiles) {
+		originalScan = scan == null ? null : new ScanV3(scan);
 		originalScanFiles = scanFiles == null ? new TreeSet<ScanFile>() : new TreeSet<ScanFile>(scanFiles);
 		revert();
 	}
@@ -508,7 +539,7 @@ public class ScanFilesWidget extends EasotopeComposite {
 			for (TabItem tabItem : tabFolder.getItems()) {
 				if (tabItem.getControl() instanceof ByMassWidget) {
 					ByMassWidget byMassWidget = (ByMassWidget) tabItem.getControl();
-					byMassWidget.setValues(null, -1, Double.NaN, Double.NaN, Double.NaN, Double.NaN);
+					byMassWidget.setValues(ByMassWidget.DEFAULT_ALGORITHM, null, -1, Double.NaN, Double.NaN, Double.NaN, Double.NaN, null, Double.NaN);
 				}
 
 				if (tabItem.getControl() instanceof ByFileWidget) {
@@ -718,9 +749,10 @@ public class ScanFilesWidget extends EasotopeComposite {
 		return InputParameter.values()[InputParameter.Channel0_Scan.ordinal() + channel];
 	}
 	
-	public void fillInScan(ScanV2 scan) {
+	public void fillInScan(ScanV3 scan) {
 		int numMasses = tabFolder.getItems().length - 1;
 
+		int[] algorithm = new int[numMasses];
 		double onPeakX1 = Double.NaN;
 		double onPeakX2 = Double.NaN;
 		Double[] leftBackgroundX1 = new Double[numMasses];
@@ -732,12 +764,16 @@ public class ScanFilesWidget extends EasotopeComposite {
 		Double[] x1Coeff = new Double[numMasses];
 		Double[] x0Coeff = new Double[numMasses];
 		Integer[] referenceChannel = new Integer[numMasses];
+		Integer[] referenceChannel2 = new Integer[numMasses];
+		Double[] factor2 = new Double[numMasses];
 
 		int count = 0;
 		for (TabItem tabItem : tabFolder.getItems()) {
 			if (tabItem.getControl() instanceof ByMassWidget) {
 				ByMassWidget byMassWidget = (ByMassWidget) tabItem.getControl();
 
+				algorithm[count] = byMassWidget.getAlgorithm();
+				
 				leftBackgroundX1[count] = byMassWidget.getBackgroundSelector().getLeftXRangeSelection().getX1();
 				leftBackgroundX2[count] = byMassWidget.getBackgroundSelector().getLeftXRangeSelection().getX2();
 
@@ -762,7 +798,11 @@ public class ScanFilesWidget extends EasotopeComposite {
 
 				referenceChannel[count] = byMassWidget.getReferenceChannel();
 
+				referenceChannel2[count] = byMassWidget.getReferenceChannel2();
+				factor2[count] = byMassWidget.getFactor2();
+
 				count++;
+
 			} else if (tabItem.getControl() instanceof ByFileWidget) {
 				ByFileWidget byFileWidget = (ByFileWidget) tabItem.getControl();
 
@@ -771,6 +811,7 @@ public class ScanFilesWidget extends EasotopeComposite {
 			}
 		}
 
+		scan.setAlgorithm(algorithm);
 		scan.setOnPeakX1(onPeakX1);
 		scan.setOnPeakX2(onPeakX2);
 		scan.setLeftBackgroundX1(leftBackgroundX1);
@@ -783,9 +824,11 @@ public class ScanFilesWidget extends EasotopeComposite {
 		scan.setIntercept(x0Coeff);
 		scan.setReferenceChannel(referenceChannel);
 		scan.setChannelToMzX10(getChannelToMZX10());
+		scan.setReferenceChannel2(referenceChannel2);
+		scan.setFactor2(factor2);
 	}
 
-	public void setScanData(ScanV2 scan) {
+	public void setScanData(ScanV3 scan) {
 		if (scanFiles.size() == 0) {
 			return;
 		}
@@ -796,17 +839,20 @@ public class ScanFilesWidget extends EasotopeComposite {
 				ByMassWidget byMassWidget = (ByMassWidget) tabItem.getControl();
 
 				if (scan == null || scan.getLeftBackgroundX1().length <= count) {
-					byMassWidget.setValues(null, 1, Double.NaN, Double.NaN, Double.NaN, Double.NaN);
+					byMassWidget.setValues(ByMassWidget.DEFAULT_ALGORITHM, null, 1, Double.NaN, Double.NaN, Double.NaN, Double.NaN, null, Double.NaN);
 
 				} else {
+					int algorithm = scan.getAlgorithm()[count];
 					Integer referenceChannel = scan.getReferenceChannel()[count];
 					int degreeOfFit = scan.getDegreeOfFit()[count];
 					double leftX1 = scan.getLeftBackgroundX1()[count];
 					double leftX2 = scan.getLeftBackgroundX2()[count];
 					double rightX1 = scan.getRightBackgroundX1()[count];
 					double rightX2 = scan.getRightBackgroundX2()[count];
-	
-					byMassWidget.setValues(referenceChannel, degreeOfFit, leftX1, leftX2, rightX1, rightX2);
+					Integer referenceChannel2 = scan.getReferenceChannel2()[count];
+					double factor2 = scan.getFactor2()[count];
+
+					byMassWidget.setValues(algorithm, referenceChannel, degreeOfFit, leftX1, leftX2, rightX1, rightX2, referenceChannel2, factor2);
 				}
 
 			} else if (tabItem.getControl() instanceof ByFileWidget) {
@@ -837,6 +883,16 @@ public class ScanFilesWidget extends EasotopeComposite {
 		public int compare(CorrIntervalListItem arg0, CorrIntervalListItem arg1) {
 			return ((Long) arg0.getDate()).compareTo(arg1.getDate());
 		}
+	}
+
+	public boolean hasError() {
+		for (TabItem tabItem : tabFolder.getItems()) {
+			if (tabItem.getData(ByMassWidget.TAB_HAS_ERROR) != null) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	static {

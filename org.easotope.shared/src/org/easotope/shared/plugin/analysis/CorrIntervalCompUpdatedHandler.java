@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -45,8 +45,10 @@ public class CorrIntervalCompUpdatedHandler {
 		CalculatedSampleUpdated calculatedSampleUpdated = new CalculatedSampleUpdated();
 
 		for (int i=0; i<event.size(); i++) {
-			for (Integer calcSampleCacheId : LoadOrCalculateSample.getCalcSampleCacheIdsFromCorrIntervalAndReplicateAnalysis(event.getCorrIntervalId(i), event.getDataAnalysisId(i), connectionSource)) {
-				CalcSampleCache calcSampleCache = LoadOrCalculateSample.removeSampleCalculations(calcSampleCacheId, connectionSource);
+			LoadOrCalculateSample loadOrCalculateSample = new LoadOrCalculateSample(connectionSource);
+			
+			for (Integer calcSampleCacheId : loadOrCalculateSample.getCalcSampleCacheIdsFromCorrIntervalAndReplicateAnalysis(event.getCorrIntervalId(i), event.getDataAnalysisId(i))) {
+				CalcSampleCache calcSampleCache = loadOrCalculateSample.removeSampleCalculations(calcSampleCacheId);
 
 				if (calcSampleCache != null) {
 					calculatedSampleUpdated.add(calcSampleCache.getSampleId(), calcSampleCache.getSampleAnalysisId());

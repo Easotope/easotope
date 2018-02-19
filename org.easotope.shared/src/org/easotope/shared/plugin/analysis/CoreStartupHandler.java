@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -34,17 +34,13 @@ import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.dbcore.cmdprocessors.Event;
 import org.easotope.framework.dbcore.events.CoreStartup;
 import org.easotope.framework.dbcore.util.RawFileManager;
-import org.easotope.shared.analysis.server.LoadOrCalculateCorrInterval;
 import org.easotope.shared.analysis.tables.CalcRepToCalcSamp;
 import org.easotope.shared.analysis.tables.CalcReplicateCache;
 import org.easotope.shared.analysis.tables.CalcSampleCache;
 import org.easotope.shared.analysis.tables.CorrIntervalError;
 import org.easotope.shared.analysis.tables.CorrIntervalScratchPad;
-import org.easotope.shared.analysis.tables.CorrIntervalV1;
 import org.easotope.shared.plugin.analysis.databaseupgradehandler.DatabaseUpgrade;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -68,20 +64,25 @@ public class CoreStartupHandler {
 			TableUtils.dropTable(connectionSource, CorrIntervalError.class, true);
 			TableUtils.createTable(connectionSource, CorrIntervalError.class);
 
-			if (event.getIsServerMode()) { 
-				Log.getInstance().log(Level.INFO, CoreStartupHandler.class, "Rebuilding corr interval tables.");
-	
-				Dao<CorrIntervalV1,Integer> corrIntervalDao = DaoManager.createDao(connectionSource, CorrIntervalV1.class);
-				for (CorrIntervalV1 corrInterval : corrIntervalDao) {
-					for (int replicateAnalysisId : corrInterval.getDataAnalysis()) {
-						new LoadOrCalculateCorrInterval(corrInterval.getId(), replicateAnalysisId, connectionSource);
-					}
-				}
-			}
-
 		} catch (Exception e) {
-			Log.getInstance().log(Level.INFO, CoreStartupHandler.class, "Error while rebuilding corr interval tables.", e);
+			Log.getInstance().log(Level.INFO, CoreStartupHandler.class, "Error while dropping cache tables.", e);
 		}
+
+//		try {
+//			if (event.getIsServerMode()) { 
+//				Log.getInstance().log(Level.INFO, CoreStartupHandler.class, "Rebuilding corr interval tables.");
+//	
+//				Dao<CorrIntervalV1,Integer> corrIntervalDao = DaoManager.createDao(connectionSource, CorrIntervalV1.class);
+//				for (CorrIntervalV1 corrInterval : corrIntervalDao) {
+//					for (int replicateAnalysisId : corrInterval.getDataAnalysis()) {
+//						new LoadOrCalculateCorrInterval(corrInterval.getId(), replicateAnalysisId, connectionSource);
+//					}
+//				}
+//			}
+//
+//		} catch (Exception e) {
+//			Log.getInstance().log(Level.INFO, CoreStartupHandler.class, "Error while rebuilding corr interval tables.", e);
+//		}
 
 		return null;
 	}

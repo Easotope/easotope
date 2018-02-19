@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -71,7 +71,7 @@ import org.easotope.shared.rawdata.cache.input.scan.InputCacheScanSaveListener;
 import org.easotope.shared.rawdata.cache.input.scanlist.InputCacheScanListGetListener;
 import org.easotope.shared.rawdata.cache.input.scanlist.ScanList;
 import org.easotope.shared.rawdata.cache.input.scanlist.ScanListItem;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
@@ -414,9 +414,9 @@ public class ScanComposite extends EditorComposite
 		CorrIntervalCache.getInstance().removeListener(this);
 	}
 
-	private ScanV2 getCurrentScan() {
+	private ScanV3 getCurrentScan() {
 		Object[] currentObject = (Object[]) getCurrentObject();
-		return currentObject != null ? (ScanV2) currentObject[0] : null;
+		return currentObject != null ? (ScanV3) currentObject[0] : null;
 	}
 
 	private ArrayList<ScanFile> getCurrentScanFiles() {
@@ -464,7 +464,7 @@ public class ScanComposite extends EditorComposite
 
 	@Override
 	protected void setCurrentFieldValues() {
-		ScanV2 currentScan = getCurrentScan();
+		ScanV3 currentScan = getCurrentScan();
 
 		String tz = LoginInfoCache.getInstance().getPreferences().getTimeZoneId();
 		String date = DateFormat.format(currentScan.getDate(), tz, false, false);
@@ -593,7 +593,7 @@ public class ScanComposite extends EditorComposite
 			layoutNeeded();
 		}
 
-		boolean hasError = massSpecError.isVisible() || scanFilesWidget.getScanFiles().size() == 0;
+		boolean hasError = massSpecError.isVisible() || scanFilesWidget.getScanFiles().size() == 0 || scanFilesWidget.hasError();
 
 		return hasError;
 	}
@@ -621,7 +621,7 @@ public class ScanComposite extends EditorComposite
 
 	@Override
 	protected void requestSave(boolean isResend) {
-		ScanV2 scan = new ScanV2();
+		ScanV3 scan = new ScanV3();
 
 		if (getCurrentScan() != null) {
 			scan.setId(getCurrentScan().getId());
@@ -654,7 +654,7 @@ public class ScanComposite extends EditorComposite
 
 	@Override
 	protected boolean canDelete() {
-		ScanV2 currentScan = getCurrentScan();
+		ScanV3 currentScan = getCurrentScan();
 
 		if (currentScan != null) {
 			if (LoginInfoCache.getInstance().getPermissions().isCanDeleteAll()) {
@@ -768,7 +768,7 @@ public class ScanComposite extends EditorComposite
 	}
 
 	@Override
-	public void scanGetCompleted(int commandId, ScanV2 scan, ArrayList<ScanFile> scanFiles) {
+	public void scanGetCompleted(int commandId, ScanV3 scan, ArrayList<ScanFile> scanFiles) {
 		if (scan.getId() == precedingScanFileId) {
 			scanFilesWidget.setScanData(scan);
 			cancelWaitingFor(WAITING_FOR_PRECEDING_SCAN);
@@ -780,7 +780,7 @@ public class ScanComposite extends EditorComposite
 	}
 
 	@Override
-	public void scanUpdated(int commandId, ScanV2 scan, ArrayList<ScanFile> scanFiles) {
+	public void scanUpdated(int commandId, ScanV3 scan, ArrayList<ScanFile> scanFiles) {
 		if (getCurrentScan() != null && getCurrentScan().getId() == scan.getId()) {
 			updateObject(new Object[] { scan, scanFiles }, Messages.scanComposite_scanHasBeenUpdated);
 		}
@@ -903,6 +903,7 @@ public class ScanComposite extends EditorComposite
 			doneWaitingFor(WAITING_FOR_CORR_INTERVAL_LIST);
 			this.currentCorrIntervalList = corrIntervalList;
 			setChannelToMZX10IfReady();
+			widgetStatusChanged();
 		}
 	}
 

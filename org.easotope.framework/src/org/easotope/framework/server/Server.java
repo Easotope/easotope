@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -73,13 +73,14 @@ public class Server implements IApplication, ProcessorListener, LogTerminateList
 			// ignore
 		}
 
-		if (pathToTopDir != null) {
-			Log.getInstance().openLogFile(pathToTopDir);
-		}
-
+		Log.getInstance().openLogFile(pathToTopDir);
 		Log.getInstance().setServerMode(true);
 		Log.getInstance().addLogTerminateListener(this);
 		Log.getInstance().log(Level.INFO, "Java version " + System.getProperty("java.version"));
+		Log.getInstance().log(Level.INFO, "Available processors " + Runtime.getRuntime().availableProcessors());
+		Log.getInstance().log(Level.INFO, "Total memory " + Runtime.getRuntime().totalMemory());
+		Log.getInstance().log(Level.INFO, "Max memory " + Runtime.getRuntime().maxMemory());
+		Log.getInstance().log(Level.INFO, "Free memory " + Runtime.getRuntime().freeMemory());
 
 		String[] appArgs = (String[]) context.getArguments().get("application.args");
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -31,11 +31,11 @@ import java.util.ArrayList;
 
 import org.easotope.shared.core.cache.CacheListener;
 import org.easotope.shared.rawdata.ScanFile;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 
 public interface InputCacheScanGetListener extends CacheListener {
-	public void scanGetCompleted(int commandId, ScanV2 scan, ArrayList<ScanFile> scanFiles);
+	public void scanGetCompleted(int commandId, ScanV3 scan, ArrayList<ScanFile> scanFiles);
 	public void scanGetError(int commandId, String message);
-	public void scanUpdated(int commandId, ScanV2 scan, ArrayList<ScanFile> scanFiles);
+	public void scanUpdated(int commandId, ScanV3 scan, ArrayList<ScanFile> scanFiles);
 	public void scanDeleted(int scanId);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -117,7 +117,7 @@ public abstract class ChainedComposite extends EasotopeComposite {
 		getChainedPart().setCanPersist();
 	}
 
-	boolean canPersist() {
+	protected boolean canPersist() {
 		return canPersist;
 	}
 

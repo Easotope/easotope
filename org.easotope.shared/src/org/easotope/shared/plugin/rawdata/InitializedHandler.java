@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -43,7 +43,7 @@ import org.easotope.shared.rawdata.tables.ReplicateV1;
 import org.easotope.shared.rawdata.tables.Sample;
 import org.easotope.shared.rawdata.tables.ScanFileInputV0;
 import org.easotope.shared.rawdata.tables.ScanFileParsedV2;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
@@ -59,7 +59,7 @@ public class InitializedHandler {
 			TableUtils.createTableIfNotExists(connectionSource, AcquisitionInputV0.class);
 			TableUtils.createTableIfNotExists(connectionSource, AcquisitionParsedV2.class);
 
-			TableUtils.createTableIfNotExists(connectionSource, ScanV2.class);
+			TableUtils.createTableIfNotExists(connectionSource, ScanV3.class);
 			TableUtils.createTableIfNotExists(connectionSource, ScanFileInputV0.class);
 			TableUtils.createTableIfNotExists(connectionSource, ScanFileParsedV2.class);
 

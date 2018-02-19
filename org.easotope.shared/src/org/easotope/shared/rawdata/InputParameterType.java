@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -37,14 +37,17 @@ package org.easotope.shared.rawdata;
 public enum InputParameterType {
 	Timestamp,
 	GenericData,
-	RefMeasurements,
-	SampleMeasurements,
+	RefMeasurement,
+	SampleMeasurement,
 	Background,
 	Flag,
 	Scan,
 	Meta,
 	ChannelData,
-	X2Coeff,
-	X1Coeff,
-	X0Coeff
+	Algorithm,						// correction algorithm integer specified in scan files 
+	X2Coeff,						// quadratic factor used by algorithm 1 in scan files
+	X1Coeff,						// slope used by algorithm 1 in scan files
+	X0Coeff,						// intercept used by algorithm 1 in scan files
+	ReferenceChannel2,				// reference channel used by algorithm 2 in scan files
+	Factor2							// multiplicative factor used by algorithm 2 in scan files
 };

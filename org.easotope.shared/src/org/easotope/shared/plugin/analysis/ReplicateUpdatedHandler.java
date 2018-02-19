@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -44,16 +44,18 @@ public class ReplicateUpdatedHandler {
 		ArrayList<Event> results = new ArrayList<Event>();
 		CalculatedSampleUpdated calculatedSampleUpdated = new CalculatedSampleUpdated();
 
-		for (Integer calcSampleCacheId : LoadOrCalculateSample.getCalcSampleCacheIdsFromReplicateId(event.getReplicate().getId(), connectionSource)) {
-			CalcSampleCache calcSampleCache = LoadOrCalculateSample.removeSampleCalculations(calcSampleCacheId, connectionSource);
+		LoadOrCalculateSample loadOrCalculateSample = new LoadOrCalculateSample(connectionSource);
+
+		for (Integer calcSampleCacheId : loadOrCalculateSample.getCalcSampleCacheIdsFromReplicateId(event.getReplicate().getId())) {
+			CalcSampleCache calcSampleCache = loadOrCalculateSample.removeSampleCalculations(calcSampleCacheId);
 
 			if (calcSampleCache != null) {
 				calculatedSampleUpdated.add(calcSampleCache.getSampleId(), calcSampleCache.getSampleAnalysisId());
 			}
 		}
 
-		for (Integer calcSampleCacheId : LoadOrCalculateSample.getCalcSampleCacheIdsFromSampleId(event.getNewSampleId(), connectionSource)) {
-			CalcSampleCache calcSampleCache = LoadOrCalculateSample.removeSampleCalculations(calcSampleCacheId, connectionSource);
+		for (Integer calcSampleCacheId : loadOrCalculateSample.getCalcSampleCacheIdsFromSampleId(event.getNewSampleId())) {
+			CalcSampleCache calcSampleCache = loadOrCalculateSample.removeSampleCalculations(calcSampleCacheId);
 
 			if (calcSampleCache != null) {
 				calculatedSampleUpdated.add(calcSampleCache.getSampleId(), calcSampleCache.getSampleAnalysisId());

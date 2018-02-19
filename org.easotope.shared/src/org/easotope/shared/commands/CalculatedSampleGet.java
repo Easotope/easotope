@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -66,7 +66,7 @@ public class CalculatedSampleGet extends Command {
 
 	@Override
 	public void execute(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception {
-		calcSampleCache = LoadOrCalculateSample.getCalcSampleCache(connectionSource, sampleId, sampleAnalysisId);
+		calcSampleCache = new LoadOrCalculateSample(connectionSource).getCalcSampleCache(sampleId, sampleAnalysisId);
 	}
 
 	public void setSampleId(int sampleId) {

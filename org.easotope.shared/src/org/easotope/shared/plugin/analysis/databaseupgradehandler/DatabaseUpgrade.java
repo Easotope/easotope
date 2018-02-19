@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -44,7 +44,7 @@ import org.easotope.shared.rawdata.tables.AcquisitionParsedV2;
 import org.easotope.shared.rawdata.tables.ReplicateV1;
 import org.easotope.shared.rawdata.tables.ScanFileInputV0;
 import org.easotope.shared.rawdata.tables.ScanFileParsedV2;
-import org.easotope.shared.rawdata.tables.ScanV2;
+import org.easotope.shared.rawdata.tables.ScanV3;
 
 import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.Dao;
@@ -141,15 +141,15 @@ public abstract class DatabaseUpgrade {
 			removeAllOldTables(connectionSource, ScanFileParsedV2.class);
 			TableUtils.createTable(connectionSource, ScanFileParsedV2.class);
 
-			Dao<ScanV2,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV2.class);
+			Dao<ScanV3,Integer> scanDao = DaoManager.createDao(connectionSource, ScanV3.class);
 			Dao<ScanFileInputV0,Integer> scanFileInputDao = DaoManager.createDao(connectionSource, ScanFileInputV0.class);
 			Dao<ScanFileParsedV2,Integer> scanFileParsedDao = DaoManager.createDao(connectionSource, ScanFileParsedV2.class);
 			Dao<RawFile,Integer> rawFileDao = DaoManager.createDao(connectionSource, RawFile.class);
 
-			CloseableIterator<ScanV2> scanIterator = scanDao.iterator();
+			CloseableIterator<ScanV3> scanIterator = scanDao.iterator();
 
 			while (scanIterator.hasNext()) {
-				ScanV2 scan = scanIterator.next();
+				ScanV3 scan = scanIterator.next();
 
 				for (ScanFileInputV0 scanFileInput : scanFileInputDao.queryForEq(ScanFileInputV0.SCANID_FIELD_NAME, scan.getId())) {
 					RawFile rawFile = rawFileDao.queryForId(scanFileInput.getRawFileId());
@@ -233,6 +233,7 @@ public abstract class DatabaseUpgrade {
 		new Upgrade20161129(),
 		new Upgrade20170101(),
 		new Upgrade20170120(),
-		new Upgrade20170222()
+		new Upgrade20170222(),
+		new Upgrade20170328()
 	};
 }

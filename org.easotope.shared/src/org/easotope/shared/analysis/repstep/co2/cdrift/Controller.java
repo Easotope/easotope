@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -71,7 +71,7 @@ public class Controller extends org.easotope.shared.analysis.repstep.superclass.
 	@Override
 	public OutputDescription[] getOutputDescription() {
 		return new OutputDescription[] {
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ13C, "0.00", StandardParameter.δ13C, IsotopicScale.VPDB)
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ13C, "0.00", StandardParameter.δ13C, IsotopicScale.VPDB, false)
 		};
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 by Devon Bowen.
+ * Copyright © 2016-2018 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -55,6 +55,7 @@ public class BackgroundSelector extends Graph {
 	private double originalX2;
 	private double peakX;
 	private boolean widgetIsEnabled = true;
+	private boolean showSelectedRange = true;
 
 	private XRangeSelection leftXRangeSelection = null;
 	private XRangeSelection rightXRangeSelection = null;
@@ -170,7 +171,7 @@ public class BackgroundSelector extends Graph {
 
 	@Override
 	protected void leftMouseDown(MouseEvent e) {
-		if (!widgetIsEnabled) {
+		if (!widgetIsEnabled || !showSelectedRange) {
 			return;
 		}
 
@@ -250,5 +251,28 @@ public class BackgroundSelector extends Graph {
 
 	public void addListener(BackgroundSelectorListener listener) {
 		listeners.add(listener);
+	}
+
+	public void showSelectedRange(boolean showSelectedRange) {
+		this.showSelectedRange = showSelectedRange;
+
+		if (this.showSelectedRange) {			
+			if (leftXRangeSelection != null) {
+				addDrawableObjectFirst(leftXRangeSelection);
+			}
+
+			if (rightXRangeSelection != null) {
+				addDrawableObjectFirst(rightXRangeSelection);
+			}
+
+			if (currentXRangeSelection != null) {
+				addDrawableObjectFirst(currentXRangeSelection);
+			}
+
+		} else {
+			removeDrawableObject(leftXRangeSelection);
+			removeDrawableObject(rightXRangeSelection);
+			removeDrawableObject(currentXRangeSelection);
+		}
 	}
 }

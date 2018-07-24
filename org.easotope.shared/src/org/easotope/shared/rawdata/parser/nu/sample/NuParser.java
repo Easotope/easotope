@@ -191,9 +191,12 @@ public class NuParser extends Parser {
 				state = State.DEFAULT;
 
 			} else if (state == State.LOOKING_FOR_DATA) {
-				final Pattern refPattern = Pattern.compile("^Gas\\s+Ref\\s*$");
-				final Pattern samPattern = Pattern.compile("^Gas\\s+Sam\\s*$");
-				final Pattern endPattern = Pattern.compile("^\\s*Gas\\s*$");
+				final Pattern refPattern1 = Pattern.compile("^Gas\\s+Ref\\s*$");
+				final Pattern refPattern2 = Pattern.compile("^Gas\\s+Ref\\s+Block\\s+\\d+\\s+Cycle\\s+\\d+.*$");
+				final Pattern samPattern1 = Pattern.compile("^Gas\\s+Sam\\s*$");
+				final Pattern samPattern2 = Pattern.compile("^Gas\\s+Sam\\s+Block\\s+\\d+\\s+Cycle\\s+\\d+.*$");
+				final Pattern endPattern1 = Pattern.compile("^\\s*Gas\\s*$");
+				final Pattern endPattern2 = Pattern.compile("^\\s*Gas\\s+Block\\s+\\d+.*$");
 				final String CYCLE_LENGTH = "Cycle_Length";
 				final String ZERO_MEASUREMENT_LENGTH = "Zero_Measurement_Length";
 				final String INDIVIDUAL_DATA = "Individual Data";
@@ -212,7 +215,7 @@ public class NuParser extends Parser {
 						// ignore
 					}
 
-				} else if (refPattern.matcher(line).matches()) {
+				} else if (refPattern1.matcher(line).matches() || refPattern2.matcher(line).matches()) {
 					if (numChannels == 0) {
 						Log.getInstance().log(Level.INFO, NuParser.class, "Data started without numChannels.");
 						mapBuilders = null;
@@ -226,7 +229,7 @@ public class NuParser extends Parser {
 
 					state = State.READ_REF_DATA;
 
-				} else if (samPattern.matcher(line).matches()) {
+				} else if (samPattern1.matcher(line).matches() || samPattern2.matcher(line).matches()) {
 					if (numChannels == 0) {
 						Log.getInstance().log(Level.INFO, NuParser.class, "Data started without numChannels.");
 						mapBuilders = null;
@@ -241,7 +244,7 @@ public class NuParser extends Parser {
 					currentCycle++;
 					state = State.READ_SAM_DATA;
 
-				} else if (endPattern.matcher(line).matches()) {
+				} else if (endPattern1.matcher(line).matches() || endPattern2.matcher(line).matches()) {
 					state = State.DEFAULT;
 
 				} else if (line.startsWith(INDIVIDUAL_DATA)) {

@@ -70,9 +70,11 @@ import org.eclipse.nebula.widgets.nattable.hideshow.command.ShowAllColumnsComman
 import org.eclipse.nebula.widgets.nattable.layer.CompositeLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.nebula.widgets.nattable.layer.event.CellVisualChangeEvent;
 import org.eclipse.nebula.widgets.nattable.layer.event.ILayerEvent;
 import org.eclipse.nebula.widgets.nattable.painter.cell.ComboBoxPainter;
+import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
 import org.eclipse.nebula.widgets.nattable.painter.layer.NatGridLayerPainter;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.nebula.widgets.nattable.style.HorizontalAlignmentEnum;
@@ -81,6 +83,7 @@ import org.eclipse.nebula.widgets.nattable.ui.menu.AbstractHeaderMenuConfigurati
 import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -181,6 +184,7 @@ public class ScratchPadTable extends Composite {
 		if (dataAnalysisIsEditable) {
 			natTable.addConfiguration(new EditorConfiguration());
 		}
+		natTable.addConfiguration(new PainterConfiguration());
 		natTable.registerCommandHandler(new DisplayColumnChooserCommandHandler(
 			bodyLayerStack.getSelectionLayer(),
 			bodyLayerStack.getColumnHideShowLayer(),
@@ -666,6 +670,14 @@ public class ScratchPadTable extends Composite {
 		}
 	}
 
+	class PainterConfiguration extends AbstractRegistryConfiguration {
+		@Override
+		public void configureRegistry(IConfigRegistry configRegistry) {
+			StandardDeviationPainter painter = new StandardDeviationPainter(ScratchPadTable.this);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_PAINTER, painter);
+		}
+	}
+
 	class DataAnalysisListDataProvider implements IComboBoxDataProvider {
 		@Override
 		public List<?> getValues(int columnIndex, int rowIndex) {
@@ -674,6 +686,30 @@ public class ScratchPadTable extends Composite {
 			}
 
 			return repAnalysisChoices.get(rowIndex-1);
+		}
+	}
+
+	class StandardDeviationPainter extends TextPainter {
+		@SuppressWarnings("unused")
+		private ScratchPadTable scratchPadTable;
+
+		StandardDeviationPainter(ScratchPadTable scratchPadTable) {
+			this.scratchPadTable = scratchPadTable;
+		}
+
+		@Override
+		protected Color getBackgroundColour(ILayerCell cell, IConfigRegistry configRegistry) {
+//			int columnIndex = cell.getColumnIndex();
+//			int rowIndex = cell.getRowIndex();
+//
+//			ScratchPadBodyDataProvider dataProvider = scratchPadTable.bodyLayerStack.getBodyDataProvider();
+//			Object o = dataProvider.getDataValue(columnIndex, rowIndex);
+//
+//			if (o instanceof String && ((String) o).equals("0.00")) {
+//				return GUIHelper.getColor(255, 0, 0);
+//			}
+
+			return super.getBackgroundColour(cell, configRegistry);
 		}
 	}
 

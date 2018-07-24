@@ -3,14 +3,13 @@
 
 <product name="Easotope" id="org.easotope.client.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
       <programArgs>-clearPersistedState
       </programArgs>
-      <vmArgs>-Dorg.easotope.version=20180218 -Dorg.easotope.oldestcompatversion=20180218 -Dorg.easotope.databasename=easotope -Dorg.easotope.prefnodename=org.easotope
+      <vmArgs>-Dorg.easotope.version=20180724 -Dorg.easotope.oldestcompatversion=20180724 -Dorg.easotope.databasename=easotope -Dorg.easotope.prefnodename=org.easotope
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -20,7 +19,6 @@
 
    <windowImages/>
 
-
    <launcher name="easotope">
       <solaris/>
       <win useIco="true">
@@ -29,11 +27,9 @@
       </win>
    </launcher>
 
-
    <vm>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</macos>
    </vm>
-
 
    <plugins>
       <plugin id="com.ibm.icu"/>

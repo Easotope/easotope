@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -43,6 +43,7 @@ import org.easotope.client.util.Sleak;
 import org.easotope.client.versioninfo.VersionInfo;
 import org.easotope.client.wizard.database.DatabaseWizard;
 import org.easotope.framework.commands.Command;
+import org.easotope.framework.core.global.OptionsInfo;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.core.logging.LogTerminateListener;
@@ -193,6 +194,8 @@ public class LifeCycleManager implements ProcessorListener, LoginInfoCacheLoginI
 		LoginInfoCache.getInstance().addListener(this);
 		ProcessorManager.getInstance().getProcessor().addListener(this);
 		ProcessorManager.getInstance().getProcessor().addEventListener(this);
+
+		OptionsInfo.getInstance();
 
 		int serverVersion = VersionInfo.getInstance().getServerVersion();
 		int clientVersion = SystemProperty.getVersion();

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -53,7 +53,7 @@ public class AccumulatorStdDevSample {
 			accumulator = (Accumulator) owningPad.getValue(accumulatorColumn);
 		}
 
-		return accumulator.getMeanStdDevSampleAndStdError()[1];
+		return accumulator.getAccumulatedValues()[1];
 	}
 
 	@Override

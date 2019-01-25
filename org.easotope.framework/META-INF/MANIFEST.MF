@@ -20,6 +20,7 @@ Export-Package: com.j256.ormlite.dao,
  com.j256.ormlite.table,
  org.easotope.framework,
  org.easotope.framework.commands,
+ org.easotope.framework.core.global,
  org.easotope.framework.core.logging,
  org.easotope.framework.core.network,
  org.easotope.framework.core.util,
@@ -29,6 +30,7 @@ Export-Package: com.j256.ormlite.dao,
  org.easotope.framework.dbcore.extensionpoint.definition,
  org.easotope.framework.dbcore.tables,
  org.easotope.framework.dbcore.util,
+ org.easotope.framework.events,
  org.h2
 Bundle-Activator: org.easotope.framework.dbcore.Activator
 Bundle-ActivationPolicy: lazy

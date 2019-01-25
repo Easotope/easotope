@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -51,7 +51,7 @@ public abstract class Pad implements Comparable<Pad> {
 
 	public enum Status { NONE, OK, WARNING, ERROR };
 
-	private enum CellType { NULL, BOOLEAN_TRUE, BOOLEAN_FALSE, DOUBLE, INTEGER, STRING, ACCUMULATOR_DYNAMIC, ACCUMULATOR_FROZEN, ACCUMULATOR_STDDEV_SAMPLE, ACCUMULATOR_STDERR, STATUS, DATE };
+	private enum CellType { NULL, BOOLEAN_TRUE, BOOLEAN_FALSE, DOUBLE, INTEGER, STRING, ACCUMULATOR_DYNAMIC, ACCUMULATOR_FROZEN, ACCUMULATOR_STDDEV_SAMPLE, ACCUMULATOR_STDERR, STATUS, DATE, ACCUMULATOR_CI };
 
 	protected Pad parent = null;
 	private Vector<Pad> path = null;
@@ -100,6 +100,10 @@ public abstract class Pad implements Comparable<Pad> {
 			} else if (value instanceof AccumulatorStdErr) {
 				AccumulatorStdErr oldAccumulatorStdErr = (AccumulatorStdErr) value;
 				data.put(property, new AccumulatorStdErr(this, oldAccumulatorStdErr.getAccumulatorColumn()));
+
+			} else if (value instanceof AccumulatorCL) {
+				AccumulatorCL oldAccumulatorCL = (AccumulatorCL) value;
+				data.put(property, new AccumulatorCL(this, oldAccumulatorCL.getAccumulatorColumn()));
 
 			} else {
 				data.put(property, value);
@@ -157,7 +161,8 @@ public abstract class Pad implements Comparable<Pad> {
 					double meanValue = input.readDouble();
 					double stdDevSampleValue = input.readDouble();
 					double stdErrValue = input.readDouble();
-					data.put(property, new Accumulator(meanValue, stdDevSampleValue, stdErrValue));
+					double confidenceInterval = input.readDouble();
+					data.put(property, new Accumulator(meanValue, stdDevSampleValue, stdErrValue, confidenceInterval));
 					break;
 
 				case ACCUMULATOR_STDDEV_SAMPLE:
@@ -168,6 +173,11 @@ public abstract class Pad implements Comparable<Pad> {
 				case ACCUMULATOR_STDERR:
 					propertyIndex = input.readInt();
 					data.put(property, new AccumulatorStdErr(this, allProperties.get(propertyIndex)));
+					break;
+				
+				case ACCUMULATOR_CI:
+					propertyIndex = input.readInt();
+					data.put(property, new AccumulatorCL(this, allProperties.get(propertyIndex)));
 					break;
 
 				case STATUS:
@@ -238,7 +248,7 @@ public abstract class Pad implements Comparable<Pad> {
 		data.put(property, object);
 	}
 
-	public void setAccumulator(String meanProperty, String stdDevSampleProperty, String stdErrProperty, boolean isRecursive) {
+	public void setAccumulator(String meanProperty, String stdDevSampleProperty, String stdErrProperty, String clProperty, boolean isRecursive) {
 		assert(meanProperty != null);
 		assert(!data.containsKey(meanProperty));
 
@@ -251,6 +261,10 @@ public abstract class Pad implements Comparable<Pad> {
 
 		if (stdErrProperty != null) {
 			data.put(stdErrProperty, new AccumulatorStdErr(accumulator));
+		}
+		
+		if (clProperty != null) {
+			data.put(clProperty, new AccumulatorCL(accumulator));
 		}
 	}
 
@@ -346,10 +360,11 @@ public abstract class Pad implements Comparable<Pad> {
 
 				if (accumulator.isFrozen()) {
 					output.writeByte(CellType.ACCUMULATOR_FROZEN.ordinal());
-					double[] values = accumulator.getMeanStdDevSampleAndStdError();
+					double[] values = accumulator.getAccumulatedValues();
 					output.writeDouble(values[0]);
 					output.writeDouble(values[1]);
 					output.writeDouble(values[2]);
+					output.writeDouble(values[3]);
 
 				} else {
 					output.writeByte(CellType.ACCUMULATOR_DYNAMIC.ordinal());
@@ -370,6 +385,14 @@ public abstract class Pad implements Comparable<Pad> {
 			if (object instanceof AccumulatorStdErr) {
 				output.writeByte(CellType.ACCUMULATOR_STDERR.ordinal());
 				String accumulatorColumn = ((AccumulatorStdErr) object).getAccumulatorColumn();
+				output.writeInt(propertyToIndex.get(accumulatorColumn));
+
+				continue;
+			}
+			
+			if (object instanceof AccumulatorCL) {
+				output.writeByte(CellType.ACCUMULATOR_CI.ordinal());
+				String accumulatorColumn = ((AccumulatorCL) object).getAccumulatorColumn();
 				output.writeInt(propertyToIndex.get(accumulatorColumn));
 
 				continue;
@@ -400,8 +423,8 @@ public abstract class Pad implements Comparable<Pad> {
 	
 				if (value instanceof Accumulator) {
 					Accumulator oldAccumulator = (Accumulator) value;
-					double[] old = oldAccumulator.getMeanStdDevSampleAndStdError();
-					Accumulator newAccumulator = new Accumulator(old[0], old[1], old[2]);
+					double[] old = oldAccumulator.getAccumulatedValues();
+					Accumulator newAccumulator = new Accumulator(old[0], old[1], old[2], old[3]);
 					data.put(key, newAccumulator);
 				}
 			}

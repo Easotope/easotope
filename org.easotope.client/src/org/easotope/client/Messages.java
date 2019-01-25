@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -181,10 +181,6 @@ public class Messages extends NLS {
 
 	public static String showReference_title;
 	public static String showReference_message;
-	
-	public static String showBugzilla_url;
-	public static String showBugzilla_noBrowserTitle;
-	public static String showBugzilla_noBrowserMessage;
 
 	public static String modalMessage_genericInfoTitle;
 	public static String modalMessage_genericErrorTitle;
@@ -852,6 +848,10 @@ public class Messages extends NLS {
 	public static String co2EtfPbl_openReplicate;
 	public static String co2EtfPbl_enableReplicate;
 	public static String co2EtfPbl_disableReplicate;
+	
+	public static String co2EthPBL_openScan;
+	public static String co2EthPBL_enableScan;
+	public static String co2EthPBL_disableScan;
 
 	public static String co2D48OffsetParameterComposite_windowType;
 	public static String co2D48OffsetParameterComposite_corrInterval;
@@ -958,7 +958,15 @@ public class Messages extends NLS {
 	public static String assignmentDialog_select;
 
 	public static String optionsComposite_overviewResLabel;
+	public static String optionsComposite_includeStds;
+	public static String optionsComposite_confidenceLevel;
 	public static String optionsComposite_optionsHasBeenUpdated;
+	
+	public static String ETHPBLComposite_CorrectionType;
+	public static String ETHPBLComposite_NbScansWindow;
+	public static String ETHPBLCorrectionType_NearestScan;
+	public static String ETHPBLCorrectionType_Interpolate;
+	public static String ETHPBLCorrectionType_AveragedScans;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

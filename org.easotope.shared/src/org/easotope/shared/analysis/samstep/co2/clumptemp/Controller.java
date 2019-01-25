@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -80,6 +80,7 @@ public class Controller extends StepController {
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_DENNIS, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_DENNIS_SD, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_DENNIS_SE, "0.000"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_DENNIS_CI, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_DENNIS_MINUS_SE, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_DENNIS, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_DENNIS_PLUS_SE, "0"),
@@ -87,6 +88,7 @@ public class Controller extends StepController {
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_GOSH, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_GOSH_SD, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_GOSH_SE, "0.000"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_GOSH_CI, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_GOSH_MINUS_SE, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_GOSH, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_GOSH_PLUS_SE, "0"),
@@ -94,6 +96,7 @@ public class Controller extends StepController {
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_HENKES, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_HENKES_SD, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_HENKES_SE, "0.000"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_HENKES_CI, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_HENKES_MINUS_SE, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_HENKES, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_HENKES_PLUS_SE, "0"),
@@ -101,6 +104,7 @@ public class Controller extends StepController {
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_KLUGE, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_KLUGE_SD, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_KLUGE_SE, "0.000"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_KLUGE_CI, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_KLUGE_MINUS_SE, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_KLUGE, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_KLUGE_PLUS_SE, "0"),
@@ -108,6 +112,7 @@ public class Controller extends StepController {
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_PASSEY, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_PASSEY_SD, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_PASSEY_SE, "0.000"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_PASSEY_CI, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_PASSEY_MINUS_SE, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_PASSEY, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_PASSEY_PLUS_SE, "0"),
@@ -115,6 +120,7 @@ public class Controller extends StepController {
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_ZARUUR, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_ZARUUR_SD, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_ZARUUR_SE, "0.000"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_ZARUUR_CI, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_ZARUUR_MINUS_SE, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_ZARUUR, "0"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_ZARUUR_PLUS_SE, "0")

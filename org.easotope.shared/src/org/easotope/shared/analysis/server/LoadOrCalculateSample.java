@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -33,11 +33,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.easotope.framework.core.global.OptionsInfo;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.shared.Messages;
-import org.easotope.shared.admin.tables.Options;
-import org.easotope.shared.admin.tables.Options.OverviewResolution;
 import org.easotope.shared.analysis.execute.AnalysisWithParameters;
 import org.easotope.shared.analysis.execute.CalculationError;
 import org.easotope.shared.analysis.execute.calculator.AnalysisConstants;
@@ -82,24 +81,9 @@ public class LoadOrCalculateSample {
 	private static final String CALC_REPLICATE_CACHE_IDS = "CALC_REPLICATE_CACHE_IDS";
 
 	private ConnectionSource connectionSource;
-	private OverviewResolution overviewRes;
 
 	public LoadOrCalculateSample(ConnectionSource connectionSource) {
 		this.connectionSource = connectionSource;
-	}
-
-	private OverviewResolution getOverviewResolution() {
-		if (overviewRes == null) {
-			try {
-				Dao<Options,Integer> optionsDao = DaoManager.createDao(connectionSource, Options.class);
-				overviewRes = optionsDao.queryForId(1).getOverviewResolution();
-
-			} catch (SQLException e) {
-				Log.getInstance().log(Level.INFO, this, Messages.recalculateCorrInterval_errorLoadingOptions, e);
-			}
-		}
-		
-		return overviewRes;
 	}
 
 	public CalcSampleCache getCalcSampleCache(int sampleId, int sampleAnalysisId) {
@@ -520,7 +504,7 @@ public class LoadOrCalculateSample {
 
 				calcReplicateCache.setDependencies(allDependencies);
 
-				replicatePad.trimChildrenToLevel(getOverviewResolution().getPadClass());
+				replicatePad.trimChildrenToLevel(OptionsInfo.getInstance().getOptions().getOverviewResolution().getPadClass());
 				replicatePad.reassignToParent(calcReplicateCache.getScratchPad());
 
 			} else if (singleRunCalculator.getErrors().size() != 0) {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -25,28 +25,39 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.shared.admin.events;
+package org.easotope.shared.core.scratchpad;
 
-import java.util.Hashtable;
+public class AccumulatorCL {
+	private Accumulator accumulator;
+	
+	private Pad owningPad;
+	private String accumulatorColumn;
 
-import org.easotope.framework.dbcore.cmdprocessors.Event;
-import org.easotope.shared.admin.tables.Options;
+	AccumulatorCL(Accumulator accumulator) {
+		this.accumulator = accumulator;
+		owningPad = accumulator.getOwningPad();
+		accumulatorColumn = accumulator.getProperty();
+	}
 
-public class OptionsUpdated extends Event {
-	private static final long serialVersionUID = 1L;
+	AccumulatorCL(Pad owningPad, String accumulatorColumn) {
+		this.owningPad = owningPad;
+		this.accumulatorColumn = accumulatorColumn;
+	}
 
-	private Options options;
+	public String getAccumulatorColumn() {
+		return accumulatorColumn;
+	}
+
+	public double getValue() {
+		if (accumulator == null) {
+			accumulator = (Accumulator) owningPad.getValue(accumulatorColumn);
+		}
+
+		return accumulator.getAccumulatedValues()[3];
+	}
 
 	@Override
-	public boolean isAuthorized(Hashtable<String,Object> authenticationObjects) {
-		return true;
-	}
-
-	public OptionsUpdated(Options options) {
-		this.options = options;
-	}
-
-	public Options getOptions() {
-		return options;
+	public String toString() {
+		return String.valueOf(getValue());
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -35,7 +35,6 @@ import org.easotope.shared.analysis.samstep.co2.clumptemp.dependencies.Dependenc
 import org.easotope.shared.analysis.tables.SamStep;
 import org.easotope.shared.core.DoubleTools;
 import org.easotope.shared.core.scratchpad.Accumulator;
-import org.easotope.shared.core.scratchpad.AccumulatorStdErr;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
 import org.easotope.shared.core.scratchpad.SamplePad;
 import org.easotope.shared.math.BrentsMethod;
@@ -48,6 +47,7 @@ public class Calculator extends SamStepCalculator {
 	public static final String OUTPUT_LABEL_Δ47_KLUGE = "Δ47 Adjusted for Kluge";
 	public static final String OUTPUT_LABEL_Δ47_KLUGE_SD = "Δ47 Adjusted for Kluge SD";
 	public static final String OUTPUT_LABEL_Δ47_KLUGE_SE = "Δ47 Adjusted for Kluge SE";
+	public static final String OUTPUT_LABEL_Δ47_KLUGE_CI = "Δ47 Adjusted for Kluge CI";
 	public static final String OUTPUT_LABEL_KLUGE_MINUS_SE = "Kluge (Δ47-SE)";
 	public static final String OUTPUT_LABEL_KLUGE = "Kluge (Δ47)";
 	public static final String OUTPUT_LABEL_KLUGE_PLUS_SE = "Kluge (Δ47+SE)";
@@ -55,6 +55,7 @@ public class Calculator extends SamStepCalculator {
 	public static final String OUTPUT_LABEL_Δ47_PASSEY = "Δ47 Adjusted for Passey";
 	public static final String OUTPUT_LABEL_Δ47_PASSEY_SD = "Δ47 Adjusted for Passey SD";
 	public static final String OUTPUT_LABEL_Δ47_PASSEY_SE = "Δ47 Adjusted for Passey SE";
+	public static final String OUTPUT_LABEL_Δ47_PASSEY_CI = "Δ47 Adjusted for Passey CI";
 	public static final String OUTPUT_LABEL_PASSEY_MINUS_SE = "Passey (Δ47-SE)";
 	public static final String OUTPUT_LABEL_PASSEY = "Passey (Δ47)";
 	public static final String OUTPUT_LABEL_PASSEY_PLUS_SE = "Passey (Δ47+SE)";
@@ -62,6 +63,7 @@ public class Calculator extends SamStepCalculator {
 	public static final String OUTPUT_LABEL_Δ47_HENKES = "Δ47 Adjusted for Henkes";
 	public static final String OUTPUT_LABEL_Δ47_HENKES_SD = "Δ47 Adjusted for Henkes SD";
 	public static final String OUTPUT_LABEL_Δ47_HENKES_SE = "Δ47 Adjusted for Henkes SE";
+	public static final String OUTPUT_LABEL_Δ47_HENKES_CI = "Δ47 Adjusted for Henkes CI";
 	public static final String OUTPUT_LABEL_HENKES_MINUS_SE = "Henkes (Δ47-SE)";
 	public static final String OUTPUT_LABEL_HENKES = "Henkes (Δ47)";
 	public static final String OUTPUT_LABEL_HENKES_PLUS_SE = "Henkes (Δ47+SE)";
@@ -69,6 +71,7 @@ public class Calculator extends SamStepCalculator {
 	public static final String OUTPUT_LABEL_Δ47_GOSH = "Δ47 Adjusted for Gosh";
 	public static final String OUTPUT_LABEL_Δ47_GOSH_SD = "Δ47 Adjusted for Gosh SD";
 	public static final String OUTPUT_LABEL_Δ47_GOSH_SE = "Δ47 Adjusted for Gosh SE";
+	public static final String OUTPUT_LABEL_Δ47_GOSH_CI = "Δ47 Adjusted for Gosh CI";
 	public static final String OUTPUT_LABEL_GOSH_MINUS_SE = "Gosh (Δ47-SE)";
 	public static final String OUTPUT_LABEL_GOSH = "Gosh (Δ47)";
 	public static final String OUTPUT_LABEL_GOSH_PLUS_SE = "Gosh (Δ47+SE)";
@@ -76,6 +79,7 @@ public class Calculator extends SamStepCalculator {
 	public static final String OUTPUT_LABEL_Δ47_DENNIS = "Δ47 Adjusted for Dennis";
 	public static final String OUTPUT_LABEL_Δ47_DENNIS_SD = "Δ47 Adjusted for Dennis SD";
 	public static final String OUTPUT_LABEL_Δ47_DENNIS_SE = "Δ47 Adjusted for Dennis SE";
+	public static final String OUTPUT_LABEL_Δ47_DENNIS_CI = "Δ47 Adjusted for Dennis CI";
 	public static final String OUTPUT_LABEL_DENNIS_MINUS_SE = "Dennis (Δ47-SE)";
 	public static final String OUTPUT_LABEL_DENNIS = "Dennis (Δ47)";
 	public static final String OUTPUT_LABEL_DENNIS_PLUS_SE = "Dennis (Δ47+SE)";
@@ -83,6 +87,7 @@ public class Calculator extends SamStepCalculator {
 	public static final String OUTPUT_LABEL_Δ47_ZARUUR = "Δ47 Adjusted for Zaruur";
 	public static final String OUTPUT_LABEL_Δ47_ZARUUR_SD = "Δ47 Adjusted for Zaruur SD";
 	public static final String OUTPUT_LABEL_Δ47_ZARUUR_SE = "Δ47 Adjusted for Zaruur SE";
+	public static final String OUTPUT_LABEL_Δ47_ZARUUR_CI = "Δ47 Adjusted for Zaruur CI";
 	public static final String OUTPUT_LABEL_ZARUUR_MINUS_SE = "Zaruur (Δ47-SE)";
 	public static final String OUTPUT_LABEL_ZARUUR = "Zaruur (Δ47)";
 	public static final String OUTPUT_LABEL_ZARUUR_PLUS_SE = "Zaruur (Δ47+SE)";
@@ -96,7 +101,6 @@ public class Calculator extends SamStepCalculator {
 		return new Dependencies();
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void calculate(SamplePad samplePad, DependencyManager dependencyManager) {
 		Dependencies dependencies = (Dependencies) dependencyManager;
@@ -142,22 +146,20 @@ public class Calculator extends SamStepCalculator {
 				samplePad.setValue(labelToColumnName(tempCalibration.getD47AdjustedLabel()), "UNDEFINED");
 				samplePad.setValue(labelToColumnName(tempCalibration.getD47AdjustedSDLabel()), "UNDEFINED");
 				samplePad.setValue(labelToColumnName(tempCalibration.getD47AdjustedSELabel()), "UNDEFINED");
+				samplePad.setValue(labelToColumnName(tempCalibration.getD47AdjustedCILabel()), "UNDEFINED");
 				samplePad.setValue(labelToColumnName(tempCalibration.getTempMinusSELabel()), "UNDEFINED");
 				samplePad.setValue(labelToColumnName(tempCalibration.getTempLabel()), "UNDEFINED");
 				samplePad.setValue(labelToColumnName(tempCalibration.getTempPlusSELabel()), "UNDEFINED");
 				continue;
 			}
 
-			samplePad.setAccumulator(labelToColumnName(tempCalibration.getD47AdjustedLabel()), labelToColumnName(tempCalibration.getD47AdjustedSDLabel()), labelToColumnName(tempCalibration.getD47AdjustedSELabel()), false);
+			samplePad.setAccumulator(labelToColumnName(tempCalibration.getD47AdjustedLabel()), labelToColumnName(tempCalibration.getD47AdjustedSDLabel()), labelToColumnName(tempCalibration.getD47AdjustedSELabel()), labelToColumnName(tempCalibration.getD47AdjustedCILabel()), false);
 
 			Accumulator accumulator = (Accumulator) samplePad.getValue(labelToColumnName(tempCalibration.getD47AdjustedLabel()));
-			double[] meanStdDevSampleAndStdError = accumulator.getMeanStdDevSampleAndStdError();
+			double[] meanStdDevSampleAndStdError = accumulator.getAccumulatedValues();
 
 			double mean = meanStdDevSampleAndStdError[0];
 			double stdError = meanStdDevSampleAndStdError[2];
-
-			AccumulatorStdErr accumulatorStdErr = (AccumulatorStdErr) samplePad.getValue(labelToColumnName(tempCalibration.getD47AdjustedSELabel()));
-
 			double answer = Double.NaN;
 
 			if (Double.isNaN(stdError)) {
@@ -204,6 +206,7 @@ public class Calculator extends SamStepCalculator {
 		protected String d47AdjustedLabel = null;
 		protected String d47AdjustedSdLabel = null;
 		protected String d47AdjustedSeLabel = null;
+		protected String d47AdjustedCiLabel = null;
 		protected String tempMinusSeLabel = null;
 		protected String tempLabel = null;
 		protected String tempPlusSeLabel = null;
@@ -228,6 +231,10 @@ public class Calculator extends SamStepCalculator {
 
 		public String getD47AdjustedSELabel() {
 			return d47AdjustedSeLabel;
+		}
+		
+		public String getD47AdjustedCILabel() {
+			return d47AdjustedCiLabel;
 		}
 
 		public String getTempMinusSELabel() {
@@ -273,6 +280,7 @@ public class Calculator extends SamStepCalculator {
 			d47AdjustedLabel = OUTPUT_LABEL_Δ47_KLUGE;
 			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_KLUGE_SD;
 			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_KLUGE_SE;
+			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_KLUGE_CI;
 			tempMinusSeLabel = OUTPUT_LABEL_KLUGE_MINUS_SE;
 			tempLabel = OUTPUT_LABEL_KLUGE;
 			tempPlusSeLabel = OUTPUT_LABEL_KLUGE_PLUS_SE;
@@ -301,6 +309,7 @@ public class Calculator extends SamStepCalculator {
 			d47AdjustedLabel = OUTPUT_LABEL_Δ47_PASSEY;
 			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_PASSEY_SD;
 			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_PASSEY_SE;
+			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_PASSEY_CI;
 			tempMinusSeLabel = OUTPUT_LABEL_PASSEY_MINUS_SE;
 			tempLabel = OUTPUT_LABEL_PASSEY;
 			tempPlusSeLabel = OUTPUT_LABEL_PASSEY_PLUS_SE;
@@ -329,6 +338,7 @@ public class Calculator extends SamStepCalculator {
 			d47AdjustedLabel = OUTPUT_LABEL_Δ47_HENKES;
 			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_HENKES_SD;
 			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_HENKES_SE;
+			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_HENKES_CI;
 			tempMinusSeLabel = OUTPUT_LABEL_HENKES_MINUS_SE;
 			tempLabel = OUTPUT_LABEL_HENKES;
 			tempPlusSeLabel = OUTPUT_LABEL_HENKES_PLUS_SE;
@@ -359,6 +369,7 @@ public class Calculator extends SamStepCalculator {
 			d47AdjustedLabel = OUTPUT_LABEL_Δ47_GOSH;
 			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_GOSH_SD;
 			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_GOSH_SE;
+			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_GOSH_CI;
 			tempMinusSeLabel = OUTPUT_LABEL_GOSH_MINUS_SE;
 			tempLabel = OUTPUT_LABEL_GOSH;
 			tempPlusSeLabel = OUTPUT_LABEL_GOSH_PLUS_SE;
@@ -389,6 +400,7 @@ public class Calculator extends SamStepCalculator {
 			d47AdjustedLabel = OUTPUT_LABEL_Δ47_DENNIS;
 			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_DENNIS_SD;
 			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_DENNIS_SE;
+			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_DENNIS_CI;
 			tempMinusSeLabel = OUTPUT_LABEL_DENNIS_MINUS_SE;
 			tempLabel = OUTPUT_LABEL_DENNIS;
 			tempPlusSeLabel = OUTPUT_LABEL_DENNIS_PLUS_SE;
@@ -418,6 +430,7 @@ public class Calculator extends SamStepCalculator {
 			d47AdjustedLabel = OUTPUT_LABEL_Δ47_ZARUUR;
 			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_ZARUUR_SD;
 			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_ZARUUR_SE;
+			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_ZARUUR_CI;
 			tempMinusSeLabel = OUTPUT_LABEL_ZARUUR_MINUS_SE;
 			tempLabel = OUTPUT_LABEL_ZARUUR;
 			tempPlusSeLabel = OUTPUT_LABEL_ZARUUR_PLUS_SE;

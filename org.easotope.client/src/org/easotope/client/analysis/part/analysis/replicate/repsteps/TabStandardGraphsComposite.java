@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -406,7 +406,7 @@ public class TabStandardGraphsComposite extends EasotopeComposite implements Sci
 				Double statsValue = null;
 
 				if (value instanceof Accumulator) {
-					doubleValue = ((Accumulator) value).getMeanStdDevSampleAndStdError()[0];
+					doubleValue = ((Accumulator) value).getAccumulatedValues()[0];
 
 				} else if (value instanceof Integer) {
 					doubleValue = ((Integer) value).doubleValue();

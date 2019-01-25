@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.easotope.framework.core.global.OptionsInfo;
 import org.easotope.shared.analysis.execute.calculator.AnalysisConstants;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
 import org.easotope.shared.analysis.tables.RepStep;
@@ -73,7 +74,7 @@ public abstract class RepStepCalculator extends StepCalculator {
 				for (int i=0; i<replicatePads.length; i++) {
 					ReplicatePad replicatePad = replicatePads[i];
 
-					if (i == targetPadNumber) {
+					if (!OptionsInfo.getInstance().getOptions().isIncludeStds() && i == targetPadNumber) {
 						continue;
 					}
 

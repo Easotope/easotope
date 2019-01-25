@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -33,12 +33,14 @@ import org.easotope.client.Messages;
 import org.easotope.client.core.adaptors.LoggingAdaptor;
 import org.easotope.client.core.part.ChainedPart;
 import org.easotope.client.core.part.EditorComposite;
+import org.easotope.client.core.widgets.VButton;
 import org.easotope.client.core.widgets.VCombo;
+import org.easotope.client.core.widgets.VSpinner;
+import org.easotope.framework.dbcore.tables.Options;
+import org.easotope.framework.dbcore.tables.Options.OverviewResolution;
 import org.easotope.shared.admin.cache.options.OptionsCache;
 import org.easotope.shared.admin.cache.options.options.OptionsCacheOptionsGetListener;
 import org.easotope.shared.admin.cache.options.options.OptionsCacheOptionsSaveListener;
-import org.easotope.shared.admin.tables.Options;
-import org.easotope.shared.admin.tables.Options.OverviewResolution;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -51,6 +53,8 @@ public class OptionsComposite extends EditorComposite implements OptionsCacheOpt
 	private static final String OPTIONS_SAVE = "OPTIONS_SAVE";
 
 	private VCombo overviewRes;
+	private VButton includeStds;
+	private VSpinner confidenceLevel;
 
 	protected OptionsComposite(ChainedPart chainedPart, Composite parent, int style) {
 		super(chainedPart, parent, style);
@@ -67,6 +71,28 @@ public class OptionsComposite extends EditorComposite implements OptionsCacheOpt
 			overviewRes.add(overviewResolution.getName());
 		}
 		overviewRes.addListener(SWT.Selection, new LoggingAdaptor() {
+			@Override
+			public void loggingHandleEvent(Event event) {
+				widgetStatusChanged();
+			}
+		});
+
+		Label incStdsLabel = new Label(this, SWT.NONE);
+		incStdsLabel.setText(Messages.optionsComposite_includeStds);
+
+		includeStds = new VButton(this, SWT.CHECK);
+		includeStds.addListener(SWT.Selection, new LoggingAdaptor() {
+			@Override
+			public void loggingHandleEvent(Event event) {
+				widgetStatusChanged();
+			}
+		});
+
+		Label confLevelLabel = new Label(this, SWT.NONE);
+		confLevelLabel.setText(Messages.optionsComposite_confidenceLevel);
+
+		confidenceLevel = new VSpinner(this, SWT.BORDER);
+		confidenceLevel.addListener(SWT.Selection, new LoggingAdaptor() {
 			@Override
 			public void loggingHandleEvent(Event event) {
 				widgetStatusChanged();
@@ -90,27 +116,37 @@ public class OptionsComposite extends EditorComposite implements OptionsCacheOpt
 	protected void setCurrentFieldValues() {
 		Options currentConfig = getCurrentOptions();
 		overviewRes.select(currentConfig.getOverviewResolution().ordinal());
+		includeStds.setSelection(currentConfig.isIncludeStds());
+		confidenceLevel.setSelection((int) Math.round(currentConfig.getConfidenceLevel()));
 	}
 
 	@Override
 	protected void setDefaultFieldValues() {
 		overviewRes.select(OverviewResolution.REPLICATE.ordinal());
+		includeStds.setSelection(false);
+		confidenceLevel.setSelection(90);
 	}
 
 	@Override
 	public void enableWidgets() {
 		boolean isAdmin = LoginInfoCache.getInstance().getUser().getIsAdmin();
-		
+
 		overviewRes.setEnabled(isAdmin);
+		includeStds.setEnabled(isAdmin);
+		confidenceLevel.setEnabled(isAdmin);
 
 		if (!isAdmin) {
 			overviewRes.revert();
+			includeStds.revert();
+			confidenceLevel.revert();
 		}
 	}
 
 	@Override
 	public void disableWidgets() {
 		overviewRes.setEnabled(false);
+		includeStds.setEnabled(false);
+		confidenceLevel.setEnabled(false);
 	}
 
 	@Override
@@ -118,6 +154,8 @@ public class OptionsComposite extends EditorComposite implements OptionsCacheOpt
 		boolean isDirty = false;
 
 		isDirty = isDirty || overviewRes.hasChanged();
+		isDirty = isDirty || includeStds.hasChanged();
+		isDirty = isDirty || confidenceLevel.hasChanged();
 
 		return isDirty;
 	}
@@ -149,6 +187,8 @@ public class OptionsComposite extends EditorComposite implements OptionsCacheOpt
 		}
 
 		newConfig.setOverviewResolution(OverviewResolution.values()[overviewRes.getSelectionIndex()]);
+		newConfig.setIncludeStds(includeStds.getSelection());
+		newConfig.setConfidenceLevel(confidenceLevel.getSelection());
 
 		int commandId = OptionsCache.getInstance().optionsSave(newConfig, this);
 		waitingFor(OPTIONS_SAVE, commandId);

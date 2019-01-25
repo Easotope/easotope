@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -80,7 +80,7 @@ public class Controller extends RepStepController {
 	@Override
 	public OutputDescription[] getOutputDescription() {
 		return new OutputDescription[] {
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ48_OFFSET, "0.000", null, null, false)
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ48_OFFSET, "0.000", null, null, true)
 		};
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -30,11 +30,11 @@ package org.easotope.shared.commands;
 import java.util.Hashtable;
 
 import org.easotope.framework.commands.Command;
+import org.easotope.framework.dbcore.tables.Options;
 import org.easotope.framework.dbcore.tables.User;
 import org.easotope.framework.dbcore.util.RawFileManager;
+import org.easotope.framework.events.OptionsUpdated;
 import org.easotope.shared.admin.events.CorrIntervalsNeedRecalcAll;
-import org.easotope.shared.admin.events.OptionsUpdated;
-import org.easotope.shared.admin.tables.Options;
 import org.easotope.shared.core.AuthenticationKeys;
 
 import com.j256.ormlite.dao.Dao;

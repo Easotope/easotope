@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -25,20 +25,34 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.client.handler;
+package org.easotope.framework.commands;
 
-import org.easotope.client.Messages;
-import org.easotope.shared.core.Browse;
-import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Shell;
+import java.util.Hashtable;
 
-public class ShowBugzilla {
-	@Execute
-	public void execute(Shell shell) {
-		if (!Browse.launch(Messages.showBugzilla_url)) {
-			MessageDialog.open(MessageDialog.INFORMATION, shell, Messages.showBugzilla_noBrowserTitle, Messages.showBugzilla_noBrowserMessage, SWT.SHEET);
-		}
+import org.easotope.framework.dbcore.tables.Options;
+import org.easotope.framework.dbcore.util.RawFileManager;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+
+public class OptionsGet extends Command {
+	private static final long serialVersionUID = 1L;
+
+	private Options options;
+
+	@Override
+	public boolean authenticate(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception {
+		return true;
+	}
+
+	@Override
+	public void execute(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception {
+		Dao<Options,Integer> optionsDao = DaoManager.createDao(connectionSource, Options.class);
+		options = optionsDao.queryForId(1);
+	}
+
+	public Options getOptions() {
+		return options;
 	}
 }

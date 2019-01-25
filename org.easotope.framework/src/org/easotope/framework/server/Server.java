@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -35,6 +35,7 @@ import java.text.MessageFormat;
 import java.util.concurrent.CountDownLatch;
 
 import org.easotope.framework.Messages;
+import org.easotope.framework.core.global.OptionsInfo;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.core.logging.LogTerminateListener;
@@ -118,6 +119,8 @@ public class Server implements IApplication, ProcessorListener, LogTerminateList
 		processor = new FolderProcessor(serverArgs.getDbDir(), true, true);
 		processor.addListener(this);
 		ProcessorManager.getInstance().installProcessor(processor, false);
+
+		OptionsInfo.getInstance();
 
 		if (serverArgs.getBackupDir() != null && serverArgs.getBackupTimes() != null) {
 			backupManager = new BackupManager(serverArgs.getDbDir(), serverArgs.getBackupDir(), serverArgs.getBackupTimes(), serverArgs.getMaxBackups(), processor);

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -61,30 +61,39 @@ public class Calculator extends RepStepCalculator {
 	public static final String OUTPUT_LABEL_δ45 = "δ45 Working Gas";
 	public static final String OUTPUT_LABEL_δ45_SD = "δ45 Working Gas Standard Deviation";
 	public static final String OUTPUT_LABEL_δ45_SE = "δ45 Working Gas Standard Error";
+	public static final String OUTPUT_LABEL_δ45_CI = "δ45 Working Gas Confidence Interval";
 	public static final String OUTPUT_LABEL_δ46 = "δ46 Working Gas";
 	public static final String OUTPUT_LABEL_δ46_SD = "δ46 Working Gas Standard Deviation";
 	public static final String OUTPUT_LABEL_δ46_SE = "δ46 Working Gas Standard Error";
+	public static final String OUTPUT_LABEL_δ46_CI = "δ46 Working Gas Confidence Interval";
 	public static final String OUTPUT_LABEL_δ47 = "δ47 Working Gas";
 	public static final String OUTPUT_LABEL_δ47_SD = "δ47 Working Gas Standard Deviation";
 	public static final String OUTPUT_LABEL_δ47_SE = "δ47 Working Gas Standard Error";
+	public static final String OUTPUT_LABEL_δ47_CI = "δ47 Working Gas Confidence Interval";
 	public static final String OUTPUT_LABEL_Δ47 = "Δ47 Working Gas";
 	public static final String OUTPUT_LABEL_Δ47_SD = "Δ47 Working Gas Standard Deviation";
 	public static final String OUTPUT_LABEL_Δ47_SE = "Δ47 Working Gas Standard Error";
+	public static final String OUTPUT_LABEL_Δ47_CI = "Δ47 Working Gas Confidence Interval";
 	public static final String OUTPUT_LABEL_δ48 = "δ48 Working Gas";
 	public static final String OUTPUT_LABEL_δ48_SD = "δ48 Working Gas Standard Deviation";
 	public static final String OUTPUT_LABEL_δ48_SE = "δ48 Working Gas Standard Error";
+	public static final String OUTPUT_LABEL_δ48_CI = "δ48 Working Gas Confidence Interval";
 	public static final String OUTPUT_LABEL_Δ48 = "Δ48 Working Gas";
 	public static final String OUTPUT_LABEL_Δ48_SD = "Δ48 Working Gas Standard Deviation";
 	public static final String OUTPUT_LABEL_Δ48_SE = "Δ48 Working Gas Standard Error";
+	public static final String OUTPUT_LABEL_Δ48_CI = "Δ48 Working Gas Confidence Interval";
 	public static final String OUTPUT_LABEL_δ49 = "δ49 Working Gas";
 	public static final String OUTPUT_LABEL_δ49_SD = "δ49 Working Gas Standard Deviation";
 	public static final String OUTPUT_LABEL_δ49_SE = "δ49 Working Gas Standard Error";
+	public static final String OUTPUT_LABEL_δ49_CI = "δ49 Working Gas Confidence Interval";
 	public static final String OUTPUT_LABEL_Δ49 = "Δ49 Working Gas";
 	public static final String OUTPUT_LABEL_Δ49_SD = "Δ49 Working Gas Standard Deviation";
 	public static final String OUTPUT_LABEL_Δ49_SE = "Δ49 Working Gas Standard Error";
+	public static final String OUTPUT_LABEL_Δ49_CI = "Δ49 Working Gas Confidence Interval";
 	public static final String OUTPUT_LABEL_49_PARAM = "49 Parameter";
 	public static final String OUTPUT_LABEL_49_PARAM_SD = "49 Parameter Standard Deviation";
 	public static final String OUTPUT_LABEL_49_PARAM_SE = "49 Parameter Standard Error";
+	public static final String OUTPUT_LABEL_49_PARAM_CI = "49 Parameter Confidence Interval";
 
 	public Calculator(RepStep repStep) {
 		super(repStep);
@@ -128,15 +137,15 @@ public class Calculator extends RepStepCalculator {
 			}
 		}
 
-		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ45), labelToColumnName(OUTPUT_LABEL_δ45_SD), labelToColumnName(OUTPUT_LABEL_δ45_SE), false);
-		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ46), labelToColumnName(OUTPUT_LABEL_δ46_SD), labelToColumnName(OUTPUT_LABEL_δ46_SE), false);
-		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ47), labelToColumnName(OUTPUT_LABEL_δ47_SD), labelToColumnName(OUTPUT_LABEL_δ47_SE), false);
-		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ47), labelToColumnName(OUTPUT_LABEL_Δ47_SD), labelToColumnName(OUTPUT_LABEL_Δ47_SE), false);
-		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ48), labelToColumnName(OUTPUT_LABEL_δ48_SD), labelToColumnName(OUTPUT_LABEL_δ48_SE), false);
-		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ48), labelToColumnName(OUTPUT_LABEL_Δ48_SD), labelToColumnName(OUTPUT_LABEL_Δ48_SE), false);
-		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ49), labelToColumnName(OUTPUT_LABEL_δ49_SD), labelToColumnName(OUTPUT_LABEL_δ49_SE), false);
-		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ49), labelToColumnName(OUTPUT_LABEL_Δ49_SD), labelToColumnName(OUTPUT_LABEL_Δ49_SE), false);
-		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_49_PARAM), labelToColumnName(OUTPUT_LABEL_49_PARAM_SD), labelToColumnName(OUTPUT_LABEL_49_PARAM_SE), false);
+		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ45), labelToColumnName(OUTPUT_LABEL_δ45_SD), labelToColumnName(OUTPUT_LABEL_δ45_SE), labelToColumnName(OUTPUT_LABEL_δ45_CI), false);
+		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ46), labelToColumnName(OUTPUT_LABEL_δ46_SD), labelToColumnName(OUTPUT_LABEL_δ46_SE), labelToColumnName(OUTPUT_LABEL_δ46_CI), false);
+		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ47), labelToColumnName(OUTPUT_LABEL_δ47_SD), labelToColumnName(OUTPUT_LABEL_δ47_SE), labelToColumnName(OUTPUT_LABEL_δ47_CI), false);
+		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ47), labelToColumnName(OUTPUT_LABEL_Δ47_SD), labelToColumnName(OUTPUT_LABEL_Δ47_SE), labelToColumnName(OUTPUT_LABEL_Δ47_CI), false);
+		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ48), labelToColumnName(OUTPUT_LABEL_δ48_SD), labelToColumnName(OUTPUT_LABEL_δ48_SE), labelToColumnName(OUTPUT_LABEL_δ48_CI), false);
+		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ48), labelToColumnName(OUTPUT_LABEL_Δ48_SD), labelToColumnName(OUTPUT_LABEL_Δ48_SE), labelToColumnName(OUTPUT_LABEL_Δ48_CI), false);
+		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ49), labelToColumnName(OUTPUT_LABEL_δ49_SD), labelToColumnName(OUTPUT_LABEL_δ49_SE), labelToColumnName(OUTPUT_LABEL_δ49_CI), false);
+		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ49), labelToColumnName(OUTPUT_LABEL_Δ49_SD), labelToColumnName(OUTPUT_LABEL_Δ49_SE), labelToColumnName(OUTPUT_LABEL_Δ49_CI), false);
+		replicatePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_49_PARAM), labelToColumnName(OUTPUT_LABEL_49_PARAM_SD), labelToColumnName(OUTPUT_LABEL_49_PARAM_SE),labelToColumnName(OUTPUT_LABEL_49_PARAM_CI), false);
 	}
 
 	private void calculateAcquisition(AcquisitionPad acquisitionPad, Dependencies dependencies, double δ13C_Ref, double δ18O_Ref) {
@@ -150,15 +159,15 @@ public class Calculator extends RepStepCalculator {
 			previousCyclePad = cyclePad;
 		}
 
-		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ45), labelToColumnName(OUTPUT_LABEL_δ45_SD), labelToColumnName(OUTPUT_LABEL_δ45_SE), false);
-		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ46), labelToColumnName(OUTPUT_LABEL_δ46_SD), labelToColumnName(OUTPUT_LABEL_δ46_SE), false);
-		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ47), labelToColumnName(OUTPUT_LABEL_δ47_SD), labelToColumnName(OUTPUT_LABEL_δ47_SE), false);
-		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ47), labelToColumnName(OUTPUT_LABEL_Δ47_SD), labelToColumnName(OUTPUT_LABEL_Δ47_SE), false);
-		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ48), labelToColumnName(OUTPUT_LABEL_δ48_SD), labelToColumnName(OUTPUT_LABEL_δ48_SE), false);
-		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ48), labelToColumnName(OUTPUT_LABEL_Δ48_SD), labelToColumnName(OUTPUT_LABEL_Δ48_SE), false);
-		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ49), labelToColumnName(OUTPUT_LABEL_δ49_SD), labelToColumnName(OUTPUT_LABEL_δ49_SE), false);
-		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ49), labelToColumnName(OUTPUT_LABEL_Δ49_SD), labelToColumnName(OUTPUT_LABEL_Δ49_SE), false);
-		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_49_PARAM), labelToColumnName(OUTPUT_LABEL_49_PARAM_SD), labelToColumnName(OUTPUT_LABEL_49_PARAM_SE), false);
+		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ45), labelToColumnName(OUTPUT_LABEL_δ45_SD), labelToColumnName(OUTPUT_LABEL_δ45_SE), labelToColumnName(OUTPUT_LABEL_δ45_CI), false);
+		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ46), labelToColumnName(OUTPUT_LABEL_δ46_SD), labelToColumnName(OUTPUT_LABEL_δ46_SE), labelToColumnName(OUTPUT_LABEL_δ46_CI), false);
+		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ47), labelToColumnName(OUTPUT_LABEL_δ47_SD), labelToColumnName(OUTPUT_LABEL_δ47_SE), labelToColumnName(OUTPUT_LABEL_δ47_CI), false);
+		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ47), labelToColumnName(OUTPUT_LABEL_Δ47_SD), labelToColumnName(OUTPUT_LABEL_Δ47_SE), labelToColumnName(OUTPUT_LABEL_Δ47_CI), false);
+		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ48), labelToColumnName(OUTPUT_LABEL_δ48_SD), labelToColumnName(OUTPUT_LABEL_δ48_SE), labelToColumnName(OUTPUT_LABEL_δ48_CI), false);
+		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ48), labelToColumnName(OUTPUT_LABEL_Δ48_SD), labelToColumnName(OUTPUT_LABEL_Δ48_SE), labelToColumnName(OUTPUT_LABEL_Δ48_CI), false);
+		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ49), labelToColumnName(OUTPUT_LABEL_δ49_SD), labelToColumnName(OUTPUT_LABEL_δ49_SE), labelToColumnName(OUTPUT_LABEL_δ49_CI), false);
+		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ49), labelToColumnName(OUTPUT_LABEL_Δ49_SD), labelToColumnName(OUTPUT_LABEL_Δ49_SE), labelToColumnName(OUTPUT_LABEL_Δ49_CI), false);
+		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_49_PARAM), labelToColumnName(OUTPUT_LABEL_49_PARAM_SD), labelToColumnName(OUTPUT_LABEL_49_PARAM_SE),labelToColumnName(OUTPUT_LABEL_49_PARAM_CI), false);
 	}
 
 	private void calculateCycle(CyclePad cyclePad, CyclePad previousCyclePad, Dependencies dependencies, double δ13C_Ref, double δ18O_Ref) {

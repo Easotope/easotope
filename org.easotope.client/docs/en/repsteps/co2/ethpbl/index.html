@@ -13,34 +13,52 @@
   	is always present in the machine. This background value needs to be subtracted
   	from the measured value for each m/z in order to get the actual value. However,
   	some mass spectrometers do not calculate a background value that is precise
-  	enough for analyses such as clumped isotopes. This step allows a user-selected
-  	background to be used in place of the background value normally used by the mass
-  	spectrometer. The user specifies these background values by selecting an average
-  	background region in the scan editor.
+  	enough for analyses such as clumped isotopes.</p>
+  	
+  	<p>This step allows a user-selected background to be used in place of the background
+  	value normally used by the mass spectrometer. The user specifies these background
+  	values by selecting one of three algorithms when processing the scan files:</p>
+  	
+    <ul>
+      <li class="level1">
+        <div class="li">No correction.</div>
+      </li>
+      <li class="level1">
+        <div class="li">Correction based on a reference cup and a regression built from a selected region as described in <a href="http://doi.org/10.1002/rcm.6490" title="http://doi.org/10.1002/rcm.6490">Bernasconi et al, 2013</a></div>
+      </li>
+      <li class="level1">
+        <div class="li">Correction based on a half-cup measurement multiplied by a scaling factor.</div>
+      </li>
+    </ul>
+
+    <h2>Parameters</h2>
+
+    <p>In the parameters tab, the user can select whether:</p>
+   
+    <ul>
+      <li class="level1">
+        <div class="li">only the nearest scan file should be used for correction,</div>
+      </li>
+      <li class="level1">
+        <div class="li">an interpolation should be done using the two scan files surrounding the replicate being corrected,</div>
+      </li>
+      <li class="level1">
+        <div class="li">a moving window of scan files should be used for correction.</div>
+      </li>
+    </ul>
+    
+    <p>In case a window is selected the user may should how large the window should be.</p>
 
   	<h2>Algorithm</h2>
- 
- 	<p>The algorithm used by this step is described in
- 	<a href="http://doi.org/10.1002/rcm.6490" title="http://doi.org/10.1002/rcm.6490">Bernasconi et al, 2013</a>
- 	and is summarized below.</p>
-
- 	<p>When scan files are imported into Easotope, for each m/z cup the user has
- 	the option of selecting a region that they believe best represents the
- 	background value for that cup. Since multiple, simultaneous scans are made with
- 	different acceleration voltages, this region can be used to calculate an average
- 	off-peak measurement for each acceleration voltages and use these points to generate a
- 	linear regression. The result is one regression per m/z that can later be used to
- 	interpolate backgrounds for other measurements.</p>
- 
+  
     <p>This step first adds the background value that was previously subtracted by
-    the mass spectrometer. This returns the voltages to pure measurements. If no
+    the mass spectrometer. Doing so returns the voltages to pure measurements. If no
     background is present, voltages are simply copied.</p>
 
-    <p>Then it finds the most recent (past) scan files that were added to Easotope
-    and obtains the regression for each m/z. This regression is then used to
-    interpolate a new background by using the intensity of the 44 beam and this new
-    background value is subtracted from the voltages. In this last step, the voltages
-    are adjusted separately for sample measureuments and reference gas measurements.
-    In each case, the 44 beam of the sample or reference gas are used, respectively.</p>
+    <p>Then this step finds all the scan files that apply to this correction, as
+    indicated by the parameter settings. It uses each of these scan files to calculate
+    a background value and then interpolates appropriately among the scan files. The
+    resulting background value is then used to correct the raw voltages again.</p>
+    
   </body>
 </html>

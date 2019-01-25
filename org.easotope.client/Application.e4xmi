@@ -64,7 +64,6 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_UwYoplAEEeKcQrcP49hWoA" label="%aboutMenuItem" command="_UwYBpFAEEeKcQrcP49hWoA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_VFY6oJnREeWEEenwFvK8gQ" elementId="org.easotope.client.handledmenuitem.showhomepage" label="%showHomePage" command="_EcdZgJnREeWEEenwFvK8gQ"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_Z-Eg0JnREeWEEenwFvK8gQ" elementId="org.easotope.client.handledmenuitem.showVideos" label="%showVideos" command="_Hv5gMJnREeWEEenwFvK8gQ"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_-9sI0CWrEeaBrYgb5TGAow" elementId="org.easotope.client.handledmenuitem.showBugzilla" label="%showBugzilla" command="_cqiBoCWrEeaBrYgb5TGAow"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_0OkQIMsIEeWpoNWJ7PjlNg" elementId="org.easotope.client.handledmenuitem.reportbug" label="%reportBug" command="_lBoL4MsIEeWpoNWJ7PjlNg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_qnQ5wJmnEeWhscCfvBzBvA" elementId="org.easotope.client.handledmenuitem.subscribetouserlist" label="%subscribeToUserList" command="_bs3XAJmnEeWhscCfvBzBvA"/>
         <children xsi:type="menu:Menu" xmi:id="_OoXroNVgEeW-Jvbf4UNAOw" elementId="org.easotope.client.menu.0" label="%documentationMenu">
@@ -100,7 +99,6 @@
   <handlers xmi:id="_yIWg0Kj2EeW-9pU1pQgP0Q" elementId="org.easotope.client.handler.5" contributionURI="bundleclass://org.easotope.client/org.easotope.client.handler.ShowReference" command="_n_44gKj1EeW-9pU1pQgP0Q"/>
   <handlers xmi:id="_q2DBkMsIEeWpoNWJ7PjlNg" elementId="org.easotope.client.handler.6" contributionURI="bundleclass://org.easotope.client/org.easotope.client.handler.ReportBug" command="_lBoL4MsIEeWpoNWJ7PjlNg"/>
   <handlers xmi:id="_ZkQ8ANVhEeW-Jvbf4UNAOw" elementId="org.easotope.client.handler.propertydocs" contributionURI="bundleclass://org.easotope.client/org.easotope.client.handler.PropertyDocs" command="_QQhfwNVhEeW-Jvbf4UNAOw"/>
-  <handlers xmi:id="_g4OxICWrEeaBrYgb5TGAow" elementId="org.easotope.client.handler.7" contributionURI="bundleclass://org.easotope.client/org.easotope.client.handler.ShowBugzilla" command="_cqiBoCWrEeaBrYgb5TGAow"/>
   <handlers xmi:id="_FpTZkKGdEea7k6glbK9iUg" elementId="org.easotope.rawdata.handler" contributionURI="bundleclass://org.easotope.client/org.easotope.client.rawdata.handler.ShowRawdata" command="_AUQAcKGdEea7k6glbK9iUg"/>
   <handlers xmi:id="_hjba4KKJEea--pdW5aFKrA" elementId="org.easotope.analysis.handler" contributionURI="bundleclass://org.easotope.client/org.easotope.client.analysis.handler.ShowReplicateAnalysis" command="_WtLqEKKJEea--pdW5aFKrA"/>
   <handlers xmi:id="_nPHLUKKJEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.handler.0" contributionURI="bundleclass://org.easotope.client/org.easotope.client.analysis.handler.ShowSampleAnalysis" command="_Yj57IKKJEea--pdW5aFKrA"/>
@@ -143,7 +141,6 @@
   <commands xmi:id="_n_44gKj1EeW-9pU1pQgP0Q" elementId="org.easotope.client.command.showreference" commandName="showReference"/>
   <commands xmi:id="_lBoL4MsIEeWpoNWJ7PjlNg" elementId="org.easotope.client.command.reportbug" commandName="reportBug"/>
   <commands xmi:id="_QQhfwNVhEeW-Jvbf4UNAOw" elementId="org.easotope.client.command.propertydocs" commandName="propertyDocsCommand"/>
-  <commands xmi:id="_cqiBoCWrEeaBrYgb5TGAow" elementId="org.easotope.client.command.showbugzilla" commandName="showBugzilla"/>
   <commands xmi:id="_AUQAcKGdEea7k6glbK9iUg" elementId="org.easotope.rawdata.command" commandName="showRawdata"/>
   <commands xmi:id="_WtLqEKKJEea--pdW5aFKrA" elementId="org.easotope.analysis.command" commandName="showReplicateAnalysis"/>
   <commands xmi:id="_Yj57IKKJEea--pdW5aFKrA" elementId="org.easotope.analysis.gui.command.0" commandName="showSampleAnalysis"/>

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -30,12 +30,12 @@ package org.easotope.shared.admin.cache.options.options;
 import java.util.HashSet;
 
 import org.easotope.framework.commands.Command;
+import org.easotope.framework.commands.OptionsGet;
 import org.easotope.framework.dbcore.cmdprocessors.Event;
 import org.easotope.framework.dbcore.cmdprocessors.Processor;
 import org.easotope.framework.dbcore.cmdprocessors.ProcessorManager;
-import org.easotope.shared.admin.events.OptionsUpdated;
-import org.easotope.shared.admin.tables.Options;
-import org.easotope.shared.commands.OptionsGet;
+import org.easotope.framework.dbcore.tables.Options;
+import org.easotope.framework.events.OptionsUpdated;
 import org.easotope.shared.commands.OptionsUpdate;
 import org.easotope.shared.core.cache.AbstractCache;
 import org.easotope.shared.core.cache.CacheHashMap;

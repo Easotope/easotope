@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -33,6 +33,7 @@ import org.easotope.client.core.part.EasotopePart;
 import org.easotope.client.rawdata.PluginConstants;
 import org.easotope.client.rawdata.replicate.SampleReplicatePart;
 import org.easotope.client.rawdata.replicate.StandardReplicatePart;
+import org.easotope.client.rawdata.scan.ScanPart;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPerspective;
 import org.eclipse.e4.ui.model.application.ui.basic.MBasicFactory;
@@ -63,6 +64,12 @@ public class PartManager {
 		HashMap<String,String> parameters = new HashMap<String,String>();
 		parameters.put(SampleReplicatePart.INPUTURI_PARAM_REPLICATE, String.valueOf(replicateId));
 		PartManager.openPart(easotopePart, SampleReplicatePart.ELEMENTID_BASE, SampleReplicatePart.class.getName(), parameters, true);
+	}
+	
+	public static void openScanReplicate(EasotopePart easotopePart, int scanId) {
+		HashMap<String,String> parameters = new HashMap<String,String>();
+		parameters.put(ScanPart.INPUTURI_PARAM_SCAN, String.valueOf(scanId));
+		PartManager.openPart(easotopePart, ScanPart.ELEMENTID_BASE, ScanPart.class.getName(), parameters, true);
 	}
 
 	public static void openPart(EasotopePart easotopePart, String elementIdBase, String editorPartName, HashMap<String,String> parameters, boolean showPartIfExists) {

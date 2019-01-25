@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -96,35 +96,44 @@ public class Controller extends RepStepController {
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ45, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ45_SD, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ45_SE, "0.000", null, null, false),
-
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ45_CI, "0.000", null, null, false),
+			
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ46, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ46_SD, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ46_SE, "0.000", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ46_CI, "0.000", null, null, false),
 
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ47, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ47_SD, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ47_SE, "0.000", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ47_CI, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ47, "0.000", StandardParameter.Δ47, IsotopicScale.CDES, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ47_SD, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ47_SE, "0.000", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ47_CI, "0.000", null, null, false),
 
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ48, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ48_SD, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ48_SE, "0.000", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ48_CI, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ48, "0.000", null, null, true),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ48_SD, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ48_SE, "0.000", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ48_CI, "0.000", null, null, false),
 
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ49, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ49_SD, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ49_SE, "0.000", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ49_CI, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ49, "0.000", null, null, true),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ49_SD, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ49_SE, "0.000", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ49_CI, "0.000", null, null, false),
 			
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_49_PARAM, "0.000", null, null, true),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_49_PARAM_SD, "0.000", null, null, false),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_49_PARAM_SE, "0.000", null, null, false)
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_49_PARAM_SE, "0.000", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_49_PARAM_CI, "0.000", null, null, false)
 		};
 	}
 

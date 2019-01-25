@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -79,12 +79,15 @@ public class Controller extends StepController {
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ13C_VPDB, "0.00"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ13C_VPDB_SD, "0.00"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ13C_VPDB_SE, "0.00"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ13C_VPDB_CI, "0.00"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB, "0.00"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB_SD, "0.00"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB_SE, "0.00"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB_CI, "0.00"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW, "0.00"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW_SD, "0.00"),
-			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW_SE, "0.00")
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW_SE, "0.00"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW_CI, "0.00")
 		};
 	}
 }

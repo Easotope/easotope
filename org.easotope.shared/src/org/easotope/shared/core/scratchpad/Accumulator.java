@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -29,6 +29,7 @@ package org.easotope.shared.core.scratchpad;
 
 import java.util.ArrayList;
 
+import org.easotope.framework.core.global.OptionsInfo;
 import org.easotope.shared.math.Statistics;
 
 public class Accumulator {
@@ -43,8 +44,8 @@ public class Accumulator {
 		this.isRecursive = isRecursive;
 	}
 
-	Accumulator(double meanValue, double stdDevSampleValue, double stdErrValue) {
-		this.frozenValues = new double[] { meanValue, stdDevSampleValue, stdErrValue };
+	Accumulator(double meanValue, double stdDevSampleValue, double stdErrValue, double confidenceInterval) {
+		this.frozenValues = new double[] { meanValue, stdDevSampleValue, stdErrValue, confidenceInterval };
 	}
 
 	Pad getOwningPad() {
@@ -59,24 +60,25 @@ public class Accumulator {
 		return isRecursive;
 	}
 
-	public double[] getMeanStdDevSampleAndStdError() {
+	public double[] getAccumulatedValues() {
 		if (frozenValues != null) {
 			return frozenValues;
 		}
-
+		
 		if (owningPad.children.size() == 1) {
 			Object object = owningPad.children.get(0).getValue(property);
-
+			
 			if (object instanceof Accumulator) {
-				double[] values = ((Accumulator) object).getMeanStdDevSampleAndStdError();				
-				return new double[] { values[0], values[1], values[2] };
+				double[] values = ((Accumulator) object).getAccumulatedValues();
+				return new double[] { values[0], values[1], values[2], values[3] };
 			}
 		}
 
 		Statistics statistics = new Statistics();
 		addChildPadsToStatistics(owningPad.children, statistics);
 
-		return new double[] { statistics.getMean(), statistics.getStandardDeviationSample(), statistics.getStandardErrorSample() };
+		double confidenceLevel = OptionsInfo.getInstance().getOptions().getConfidenceLevel();
+		return new double[] { statistics.getMean(), statistics.getStandardDeviationSample(), statistics.getStandardErrorSample(), statistics.getConfidenceIntervalSample(confidenceLevel) };
 	}
 
 	private void addChildPadsToStatistics(ArrayList<Pad> children, Statistics statistics) {
@@ -96,7 +98,7 @@ public class Accumulator {
 					addChildPadsToStatistics(pad.getChildPads(), statistics);
 				} else {
 					// TODO should we do something special for combining std dev and std err??
-					statistics.addNumber(((Accumulator) object).getMeanStdDevSampleAndStdError()[0]);
+					statistics.addNumber(((Accumulator) object).getAccumulatedValues()[0]);
 				}
 			}
 		}
@@ -108,6 +110,6 @@ public class Accumulator {
 
 	@Override
 	public String toString() {
-		return String.valueOf(getMeanStdDevSampleAndStdError()[0]);
+		return String.valueOf(getAccumulatedValues()[0]);
 	}
 }

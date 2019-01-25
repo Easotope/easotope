@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -34,13 +34,13 @@ import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.dbcore.cmdprocessors.Event;
 import org.easotope.framework.dbcore.events.Initialized;
+import org.easotope.framework.dbcore.tables.Options;
+import org.easotope.framework.dbcore.tables.Options.OverviewResolution;
 import org.easotope.framework.dbcore.util.RawFileManager;
 import org.easotope.shared.admin.AcidTempParameter;
 import org.easotope.shared.admin.SciConstantNames;
 import org.easotope.shared.admin.tables.AcidTemp;
 import org.easotope.shared.admin.tables.MassSpec;
-import org.easotope.shared.admin.tables.Options;
-import org.easotope.shared.admin.tables.Options.OverviewResolution;
 import org.easotope.shared.admin.tables.RefGas;
 import org.easotope.shared.admin.tables.SampleType;
 import org.easotope.shared.admin.tables.SciConstant;
@@ -60,6 +60,8 @@ public class InitializedHandler {
 
 			Options options = new Options();
 			options.setOverviewResolution(OverviewResolution.REPLICATE);
+			options.setIncludeStds(false);
+			options.setConfidenceLevel(90.0);
 			optionsDao.create(options);
 
 			TableUtils.createTable(connectionSource, MassSpec.class);

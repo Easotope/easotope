@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -77,7 +77,7 @@ public class StepCalculator {
 			result = (Double) value;
 
 		} else if (value instanceof Accumulator) {
-			result = ((Accumulator) value).getMeanStdDevSampleAndStdError()[0];
+			result = ((Accumulator) value).getAccumulatedValues()[0];
 
 		} else if (value instanceof Integer) {
 			result = (double) ((Integer) value);

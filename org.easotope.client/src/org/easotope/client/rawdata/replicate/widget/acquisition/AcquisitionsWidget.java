@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -678,6 +678,7 @@ public class AcquisitionsWidget extends EasotopeComposite {
 
 		refreshButtons();
 		tabFolder.setSelection(newSelectedTab);
+		tabFolder.pack(true);
 		tabFolder.redraw();
 
 		((StackLayout) getLayout()).topControl = tabFolder;

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -160,7 +160,7 @@ class ScratchPadBodyDataProvider implements IDataProvider, ITreeRowModel<Pad> {
 			doubleToFormat = (Double) object;
 
 		} else if (object instanceof Accumulator) {
-			doubleToFormat = ((Accumulator) object).getMeanStdDevSampleAndStdError()[0];
+			doubleToFormat = ((Accumulator) object).getAccumulatedValues()[0];
 
 		} else if (object instanceof AccumulatorStdDevSample) {
 			doubleToFormat = ((AccumulatorStdDevSample) object).getValue();

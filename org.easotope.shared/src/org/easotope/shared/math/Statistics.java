@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -28,6 +28,8 @@
 package org.easotope.shared.math;
 
 import java.util.ArrayList;
+
+import org.apache.commons.math3.distribution.TDistribution;
 
 public class Statistics {
 	private ArrayList<Double> numbers = new ArrayList<Double>();
@@ -84,6 +86,18 @@ public class Statistics {
 		}
 
 		return getStandardDeviationSample() / Math.sqrt(getSampleSize());
+	}
+
+	public double getConfidenceIntervalSample(double confidenceLevel) {
+		final double probability = 1 - ((1-(confidenceLevel/100.0)) / 2);
+
+		if (getSampleSize() < 2) {
+			return Double.NaN;
+		}
+        
+        TDistribution tDist = new TDistribution(getSampleSize() - 1);
+        double critVal = tDist.inverseCumulativeProbability(probability);
+        return critVal * getStandardErrorSample();
 	}
 
 	private double getSumOfSquares() {

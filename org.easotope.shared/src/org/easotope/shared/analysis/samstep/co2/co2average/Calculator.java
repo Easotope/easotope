@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -40,12 +40,15 @@ public class Calculator extends SamStepCalculator {
 	public static final String OUTPUT_LABEL_δ13C_VPDB = "δ13C VPDB";
 	public static final String OUTPUT_LABEL_δ13C_VPDB_SD = "δ13C VPDB Standard Deviation";
 	public static final String OUTPUT_LABEL_δ13C_VPDB_SE = "δ13C VPDB Standard Error";
+	public static final String OUTPUT_LABEL_δ13C_VPDB_CI = "δ13C VPDB Confidence Interval";
 	public static final String OUTPUT_LABEL_δ18O_VPDB = "δ18O VPDB";
 	public static final String OUTPUT_LABEL_δ18O_VPDB_SD = "δ18O VPDB Standard Deviation";
 	public static final String OUTPUT_LABEL_δ18O_VPDB_SE = "δ18O VPDB Standard Error";
+	public static final String OUTPUT_LABEL_δ18O_VPDB_CI = "δ18O VPDB Confidence Interval";
 	public static final String OUTPUT_LABEL_δ18O_VSMOW = "δ18O VSMOW";
 	public static final String OUTPUT_LABEL_δ18O_VSMOW_SD = "δ18O VSMOW Standard Deviation";
 	public static final String OUTPUT_LABEL_δ18O_VSMOW_SE = "δ18O VSMOW Standard Error";
+	public static final String OUTPUT_LABEL_δ18O_VSMOW_CI = "δ18O VSMOW Confidence Interval";
 
 	public Calculator(SamStep samStep) {
 		super(samStep);
@@ -58,8 +61,8 @@ public class Calculator extends SamStepCalculator {
 
 	@Override
 	public void calculate(SamplePad samplePad, DependencyManager dependencyManager) {
-		samplePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ13C_VPDB), labelToColumnName(OUTPUT_LABEL_δ13C_VPDB_SD), labelToColumnName(OUTPUT_LABEL_δ13C_VPDB_SE), false);
-		samplePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ18O_VPDB), labelToColumnName(OUTPUT_LABEL_δ18O_VPDB_SD), labelToColumnName(OUTPUT_LABEL_δ18O_VPDB_SE), false);
-		samplePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ18O_VSMOW), labelToColumnName(OUTPUT_LABEL_δ18O_VSMOW_SD), labelToColumnName(OUTPUT_LABEL_δ18O_VSMOW_SE), false);
+		samplePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ13C_VPDB), labelToColumnName(OUTPUT_LABEL_δ13C_VPDB_SD), labelToColumnName(OUTPUT_LABEL_δ13C_VPDB_SE), labelToColumnName(OUTPUT_LABEL_δ13C_VPDB_CI),false);
+		samplePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ18O_VPDB), labelToColumnName(OUTPUT_LABEL_δ18O_VPDB_SD), labelToColumnName(OUTPUT_LABEL_δ18O_VPDB_SE), labelToColumnName(OUTPUT_LABEL_δ18O_VPDB_CI),false);
+		samplePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ18O_VSMOW), labelToColumnName(OUTPUT_LABEL_δ18O_VSMOW_SD), labelToColumnName(OUTPUT_LABEL_δ18O_VSMOW_SE), labelToColumnName(OUTPUT_LABEL_δ18O_VSMOW_CI),false);
 	}
 }

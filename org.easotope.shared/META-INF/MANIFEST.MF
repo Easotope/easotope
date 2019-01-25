@@ -10,7 +10,8 @@ Require-Bundle: org.easotope.framework,
  org.eclipse.swt,
  org.eclipse.osgi
 Eclipse-RegisterBuddy: org.easotope.framework
-Export-Package: org.easotope.shared.admin,
+Export-Package: org.carbonateresearch.shared.analysis.repstep.co2.ethpbl,
+ org.easotope.shared.admin,
  org.easotope.shared.admin.cache.massspec,
  org.easotope.shared.admin.cache.massspec.massspec,
  org.easotope.shared.admin.cache.massspec.massspeclist,

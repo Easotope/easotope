@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -25,12 +25,9 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.shared.admin.tables;
+package org.easotope.framework.dbcore.tables;
 
-import org.easotope.framework.dbcore.tables.TableObjectWithIntegerId;
-import org.easotope.shared.core.scratchpad.AcquisitionPad;
-import org.easotope.shared.core.scratchpad.CyclePad;
-import org.easotope.shared.core.scratchpad.ReplicatePad;
+import org.easotope.framework.core.logging.Log;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -41,15 +38,23 @@ public class Options extends TableObjectWithIntegerId {
 
 	public static final String TABLE_NAME = "OPTIONS_V0";
 	public static final String OVERVIEW_RES_FIELD_NAME = "OVERVIEWRES";
+	public static final String OVERVIEW_INCLUDE_STDS_FIELD_NAME = "INCLUDESTDS";
+	public static final String OVERVIEW_CONFIDENCE_LEVEL_FIELD_NAME = "CONFLEVEL";
 
 	@DatabaseField(columnName=OVERVIEW_RES_FIELD_NAME, canBeNull=false)
 	public OverviewResolution overviewRes;
+	@DatabaseField(columnName=OVERVIEW_INCLUDE_STDS_FIELD_NAME, canBeNull=false)
+	public boolean includeStds;
+	@DatabaseField(columnName=OVERVIEW_CONFIDENCE_LEVEL_FIELD_NAME, canBeNull=false)
+	public double confidenceLevel;
 
 	public Options() { }
 
 	public Options(Options options) {
 		super(options);
 		this.overviewRes = options.overviewRes;
+		this.includeStds = options.includeStds;
+		this.confidenceLevel = options.confidenceLevel;
 	}
 
 	public OverviewResolution getOverviewResolution() {
@@ -59,18 +64,39 @@ public class Options extends TableObjectWithIntegerId {
 	public void setOverviewResolution(OverviewResolution overviewRes) {
 		this.overviewRes = overviewRes;
 	}
+	
+	public boolean isIncludeStds() {
+		return includeStds;
+	}
+
+	public void setIncludeStds(boolean includeStds) {
+		this.includeStds = includeStds;
+	}
+
+	public double getConfidenceLevel() {
+		return confidenceLevel;
+	}
+
+	public void setConfidenceLevel(double confidenceLevel) {
+		this.confidenceLevel = confidenceLevel;
+	}
 
 	public enum OverviewResolution {
-		REPLICATE("Replicate", ReplicatePad.class),
-		ACQUISITION("Acquisition", AcquisitionPad.class),
-		CYCLE("Cycle", CyclePad.class);
+		REPLICATE("Replicate", "org.easotope.shared.core.scratchpad.ReplicatePad"),
+		ACQUISITION("Acquisition", "org.easotope.shared.core.scratchpad.AcquisitionPad"),
+		CYCLE("Cycle", "org.easotope.shared.core.scratchpad.CyclePad");
 
 		private String name;
-		private Class<?> padClazz;
+		private Class<?> clazz;
 
-		OverviewResolution(String name, Class<?> clazz) {
+		OverviewResolution(String name, String className) {
 			this.name = name;
-			this.padClazz = clazz;
+
+			try {
+				this.clazz = Class.forName(className);
+			} catch (ClassNotFoundException e) {
+				Log.getInstance().log(Log.Level.TERMINAL, "could not load class " + className);
+			}
 		}
 
 		public String getName() {
@@ -78,7 +104,7 @@ public class Options extends TableObjectWithIntegerId {
 		}
 
 		public Class<?> getPadClass() {
-			return padClazz;
+			return clazz;
 		}
 	}
 }

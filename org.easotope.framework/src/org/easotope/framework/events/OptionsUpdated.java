@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -25,32 +25,25 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.shared.commands;
+package org.easotope.framework.events;
 
 import java.util.Hashtable;
 
-import org.easotope.framework.commands.Command;
-import org.easotope.framework.dbcore.util.RawFileManager;
-import org.easotope.shared.admin.tables.Options;
+import org.easotope.framework.dbcore.cmdprocessors.Event;
+import org.easotope.framework.dbcore.tables.Options;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-
-public class OptionsGet extends Command {
+public class OptionsUpdated extends Event {
 	private static final long serialVersionUID = 1L;
 
 	private Options options;
 
 	@Override
-	public boolean authenticate(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception {
+	public boolean isAuthorized(Hashtable<String,Object> authenticationObjects) {
 		return true;
 	}
 
-	@Override
-	public void execute(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String,Object> authenticationObjects) throws Exception {
-		Dao<Options,Integer> optionsDao = DaoManager.createDao(connectionSource, Options.class);
-		options = optionsDao.queryForId(1);
+	public OptionsUpdated(Options options) {
+		this.options = options;
 	}
 
 	public Options getOptions() {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -31,9 +31,9 @@ import java.sql.SQLException;
 
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
+import org.easotope.framework.dbcore.tables.Options;
+import org.easotope.framework.dbcore.tables.Options.OverviewResolution;
 import org.easotope.framework.dbcore.util.RawFileManager;
-import org.easotope.shared.admin.tables.Options;
-import org.easotope.shared.admin.tables.Options.OverviewResolution;
 import org.easotope.shared.rawdata.tables.ScanV3;
 import org.easotope.shared.rawdata.tables.old.ScanV2;
 
@@ -63,6 +63,8 @@ public class Upgrade20170328 extends DatabaseUpgrade {
 			Dao<Options,Integer> optionsDao = DaoManager.createDao(connectionSource, Options.class);
 			Options options = new Options();
 			options.setOverviewResolution(OverviewResolution.REPLICATE);
+			options.setIncludeStds(false);
+			options.setConfidenceLevel(90.0);
 			optionsDao.create(options);
 
 		} catch (SQLException e) {

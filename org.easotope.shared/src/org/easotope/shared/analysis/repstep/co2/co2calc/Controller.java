@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -90,14 +90,17 @@ public class Controller extends RepStepController {
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ13C, "0.00", StandardParameter.δ13C, IsotopicScale.VPDB, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ13C_SD, "0.00", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ13C_SE, "0.00", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ13C_CI, "0.00", null, null, false),
 
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB, "0.00", StandardParameter.δ18O, IsotopicScale.VPDB, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB_SD, "0.00", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB_SE, "0.00", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB_CI, "0.00", null, null, false),
 
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW, "0.00", StandardParameter.δ18O, IsotopicScale.VSMOW, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW_SD, "0.00", null, null, false),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW_SE, "0.00", null, null, false)
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW_SE, "0.00", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW_CI, "0.00", null, null, false)
 		};
 	}
 

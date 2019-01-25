@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -52,6 +52,7 @@ public class Calculator extends SamStepCalculator {
 	public static final String OUTPUT_LABEL_Δ47 = "Δ47";
 	public static final String OUTPUT_LABEL_Δ47_SD = "Δ47 Standard Deviation";
 	public static final String OUTPUT_LABEL_Δ47_SE = "Δ47 Standard Error";
+	public static final String OUTPUT_LABEL_Δ47_CI = "Δ47 Confidence Interval";
 //	public static final String OUTPUT_LABEL_Δ48 = "Δ48";
 //	public static final String OUTPUT_LABEL_Δ48_SD = "Δ48 Standard Deviation";
 //	public static final String OUTPUT_LABEL_Δ48_SE = "Δ48 Standard Error";
@@ -70,6 +71,6 @@ public class Calculator extends SamStepCalculator {
 
 	@Override
 	public void calculate(SamplePad samplePad, DependencyManager dependencyManager) {
-		samplePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ47), labelToColumnName(OUTPUT_LABEL_Δ47_SD), labelToColumnName(OUTPUT_LABEL_Δ47_SE), false);
+		samplePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ47), labelToColumnName(OUTPUT_LABEL_Δ47_SD), labelToColumnName(OUTPUT_LABEL_Δ47_SE),labelToColumnName(OUTPUT_LABEL_Δ47_CI), false);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -34,12 +34,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.easotope.framework.core.global.OptionsInfo;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.dbcore.DatabaseConstants;
+import org.easotope.framework.dbcore.tables.Options.OverviewResolution;
 import org.easotope.shared.Messages;
-import org.easotope.shared.admin.tables.Options;
-import org.easotope.shared.admin.tables.Options.OverviewResolution;
 import org.easotope.shared.analysis.execute.AnalysisWithParameters;
 import org.easotope.shared.analysis.execute.CalculationError;
 import org.easotope.shared.analysis.execute.calculator.AllStandardsCalculator;
@@ -95,13 +95,7 @@ public class LoadOrCalculateCorrInterval {
 		this.replicateAnalysisId = replicateAnalysisId;
 		this.connectionSource = connectionSource;
 
-		try {
-			Dao<Options,Integer> optionsDao = DaoManager.createDao(connectionSource, Options.class);
-			overviewRes = optionsDao.queryForId(1).getOverviewResolution();
-
-		} catch (SQLException e) {
-			Log.getInstance().log(Level.INFO, this, Messages.recalculateCorrInterval_errorLoadingOptions, e);
-		}
+		overviewRes = OptionsInfo.getInstance().getOptions().getOverviewResolution();
 
 		try {
 			Dao<CorrIntervalError,Integer> corrIntervalErrorDao = DaoManager.createDao(connectionSource, CorrIntervalError.class);

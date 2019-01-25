@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -27,7 +27,7 @@
 
 package org.easotope.shared.admin.cache.options.options;
 
-import org.easotope.shared.admin.tables.Options;
+import org.easotope.framework.dbcore.tables.Options;
 import org.easotope.shared.core.cache.CacheListener;
 
 public interface OptionsCacheOptionsGetListener extends CacheListener {

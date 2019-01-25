@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -116,12 +116,15 @@ public class AnalysesCreator {
 					"δ¹³C VPDB (Raw)",
 					"δ¹³C VPDB (Raw) SD",
 					"δ¹³C VPDB (Raw) SE",
+					"δ¹³C VPDB (Raw) CI",
 					"δ¹⁸O VPDB (Raw)",
 					"δ¹⁸O VPDB (Raw) SD",
 					"δ¹⁸O VPDB (Raw) SE",
+					"δ¹⁸O VPDB (Raw) CI",
 					"δ¹⁸O VSMOW (Raw)",
 					"δ¹⁸O VSMOW (Raw) SD",
-					"δ¹⁸O VSMOW (Raw) SE"
+					"δ¹⁸O VSMOW (Raw) SE",
+					"δ¹⁸O VSMOW (Raw) CI"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -152,30 +155,39 @@ public class AnalysesCreator {
 					"δ45 WG (Raw)",
 					"δ45 WG (Raw) SD",
 					"δ45 WG (Raw) SE",
+					"δ45 WG (Raw) CI",
 					"δ46 WG (Raw)",
 					"δ46 WG (Raw) SD",
 					"δ46 WG (Raw) SE",
+					"δ46 WG (Raw) CI",
 					"δ47 WG (Raw)",
 					"δ47 WG (Raw) SD",
 					"δ47 WG (Raw) SE",
+					"δ47 WG (Raw) CI",
 					"Δ47 WG (Raw)",
 					"Δ47 WG (Raw) SD",
 					"Δ47 WG (Raw) SE",
+					"Δ47 WG (Raw) CI",
 					"δ48 WG (Raw)",
 					"δ48 WG (Raw) SD",
 					"δ48 WG (Raw) SE",
+					"δ48 WG (Raw) CI",
 					"Δ48 WG (Raw)",
 					"Δ48 WG (Raw) SD",
 					"Δ48 WG (Raw) SE",
+					"Δ48 WG (Raw) CI",
 					"δ49 WG (Raw)",
 					"δ49 WG (Raw) SD",
 					"δ49 WG (Raw) SE",
+					"δ49 WG (Raw) CI",
 					"Δ49 WG (Raw)",
 					"Δ49 WG (Raw) SD",
 					"Δ49 WG (Raw) SE",
+					"Δ49 WG (Raw) CI",
 					"49 Param",
 					"49 Param SD",
-					"49 Param SE"
+					"49 Param SE",
+					"49 Param CI"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -411,12 +423,15 @@ public class AnalysesCreator {
 					"δ¹³C VPDB (PBL)",
 					"δ¹³C VPDB (PBL) SD",
 					"δ¹³C VPDB (PBL) SE",
+					"δ¹³C VPDB (Raw) CI",
 					"δ¹⁸O VPDB (PBL)",
 					"δ¹⁸O VPDB (PBL) SD",
 					"δ¹⁸O VPDB (PBL) SE",
+					"δ¹⁸O VPDB (PBL) CI",
 					"δ¹⁸O VSMOW (PBL)",
 					"δ¹⁸O VSMOW (PBL) SD",
-					"δ¹⁸O VSMOW (PBL) SE"
+					"δ¹⁸O VSMOW (PBL) SE",
+					"δ¹⁸O VSMOW (PBL) CI"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -447,30 +462,39 @@ public class AnalysesCreator {
 					"δ45 WG (PBL)",
 					"δ45 WG (PBL) SD",
 					"δ45 WG (PBL) SE",
+					"δ45 WG (PBL) CI",
 					"δ46 WG (PBL)",
 					"δ46 WG (PBL) SD",
 					"δ46 WG (PBL) SE",
+					"δ46 WG (PBL) CI",
 					"δ47 WG (PBL)",
 					"δ47 WG (PBL) SD",
 					"δ47 WG (PBL) SE",
+					"δ47 WG (PBL) CI",
 					"Δ47 WG (PBL)",
 					"Δ47 WG (PBL) SD",
 					"Δ47 WG (PBL) SE",
+					"Δ47 WG (PBL) CI",
 					"δ48 WG (PBL)",
 					"δ48 WG (PBL) SD",
 					"δ48 WG (PBL) SE",
+					"δ48 WG (PBL) CI",
 					"Δ48 WG (PBL)",
 					"Δ48 WG (PBL) SD",
 					"Δ48 WG (PBL) SE",
+					"Δ48 WG (PBL) CI",
 					"δ49 WG (PBL)",
 					"δ49 WG (PBL) SD",
 					"δ49 WG (PBL) SE",
+					"δ49 WG (PBL) CI",
 					"Δ49 WG (PBL)",
 					"Δ49 WG (PBL) SD",
 					"Δ49 WG (PBL) SE",
+					"Δ49 WG (PBL) CI",
 					"49 Param",
 					"49 Param SD",
-					"49 Param SE"
+					"49 Param SE",
+					"49 Param CI"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -619,7 +643,7 @@ public class AnalysesCreator {
 
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
-			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.ethpbl.Controller");
+			repStep.setClazz("org.carbonateresearch.shared.analysis.repstep.co2.ethpbl.Controller");
 			repStep.setPosition(1);
 			repStep.setApplyToContext(true);
 			repStep.setApplyToResults(true);
@@ -718,12 +742,15 @@ public class AnalysesCreator {
 					"δ¹³C VPDB (PBL)",
 					"δ¹³C VPDB (PBL) SD",
 					"δ¹³C VPDB (PBL) SE",
+					"δ¹³C VPDB (Raw) CI",
 					"δ¹⁸O VPDB (PBL)",
 					"δ¹⁸O VPDB (PBL) SD",
 					"δ¹⁸O VPDB (PBL) SE",
+					"δ¹⁸O VPDB (PBL) CI",
 					"δ¹⁸O VSMOW (PBL)",
 					"δ¹⁸O VSMOW (PBL) SD",
-					"δ¹⁸O VSMOW (PBL) SE"
+					"δ¹⁸O VSMOW (PBL) SE",
+					"δ¹⁸O VSMOW (PBL) CI"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -754,30 +781,39 @@ public class AnalysesCreator {
 					"δ45 WG (PBL)",
 					"δ45 WG (PBL) SD",
 					"δ45 WG (PBL) SE",
+					"δ45 WG (PBL) CI",
 					"δ46 WG (PBL)",
 					"δ46 WG (PBL) SD",
 					"δ46 WG (PBL) SE",
+					"δ46 WG (PBL) CI",
 					"δ47 WG (PBL)",
 					"δ47 WG (PBL) SD",
 					"δ47 WG (PBL) SE",
+					"δ47 WG (PBL) CI",
 					"Δ47 WG (PBL)",
 					"Δ47 WG (PBL) SD",
 					"Δ47 WG (PBL) SE",
+					"Δ47 WG (PBL) CI",
 					"δ48 WG (PBL)",
 					"δ48 WG (PBL) SD",
 					"δ48 WG (PBL) SE",
+					"δ48 WG (PBL) CI",
 					"Δ48 WG (PBL)",
 					"Δ48 WG (PBL) SD",
 					"Δ48 WG (PBL) SE",
+					"Δ48 WG (PBL) CI",
 					"δ49 WG (PBL)",
 					"δ49 WG (PBL) SD",
 					"δ49 WG (PBL) SE",
+					"δ49 WG (PBL) CI",
 					"Δ49 WG (PBL)",
 					"Δ49 WG (PBL) SD",
 					"Δ49 WG (PBL) SE",
+					"Δ49 WG (PBL) CI",
 					"49 Param",
 					"49 Param SD",
-					"49 Param SE"
+					"49 Param SE",
+					"49 Param CI"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -845,14 +881,34 @@ public class AnalysesCreator {
 
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
-			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.etfpbl.Controller");
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.nonlinearity.Controller");
 			repStep.setPosition(8);
 			repStep.setApplyToContext(false);
 			repStep.setApplyToResults(true);
 			setStepInputs(repStep, new String[] {
+					"δ47 WG (PBL)",
 					"Δ47 WG (PBL)",
 					"δ47 WG (PBL)",
 					"Δ47 WG (PBL)",
+			});
+			setStepOutputs(repStep, new String[] {
+					"Δ47 Nonlinearity Slope",
+					"Δ47 Nonlinearity Intercepts",
+					"Δ47 WG (PBL HG)"
+			});
+			setStepFormats(repStep);
+			repStepDao.create(repStep);
+
+			repStep = new RepStep();
+			repStep.setAnalysisId(repAnalysis.getId());
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.etfpbl.Controller");
+			repStep.setPosition(9);
+			repStep.setApplyToContext(false);
+			repStep.setApplyToResults(true);
+			setStepInputs(repStep, new String[] {
+					"Δ47 WG (PBL HG)",
+					"δ47 WG (PBL)",
+					"Δ47 WG (PBL HG)",
 					"Acid Temp"
 			});
 			setStepOutputs(repStep, new String[] {
@@ -866,7 +922,7 @@ public class AnalysesCreator {
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
 			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d47acid.Controller");
-			repStep.setPosition(9);
+			repStep.setPosition(10);
 			repStep.setApplyToContext(false);
 			repStep.setApplyToResults(true);
 			setStepInputs(repStep, new String[] {
@@ -881,15 +937,18 @@ public class AnalysesCreator {
 
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
-			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48offsetpbl.Controller");
-			repStep.setPosition(10);
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48offset.Controller");
+			repStep.setPosition(11);
 			repStep.setApplyToContext(false);
 			repStep.setApplyToResults(true);
 			setStepInputs(repStep, new String[] {
+					"δ48 WG (PBL)",
 					"Δ48 WG (PBL)",
-					"Δ48 WG (PBL)"
+					"δ48 WG (PBL)",
+					"Δ48 WG (PBL)",
 			});
 			setStepOutputs(repStep, new String[] {
+					"Δ48 WG (PBL HG)",
 					"Δ48 Offset"
 			});
 			setStepFormats(repStep);
@@ -944,12 +1003,15 @@ public class AnalysesCreator {
 					"δ¹³C VPDB (Raw)",
 					"δ¹³C VPDB (Raw) SD",
 					"δ¹³C VPDB (Raw) SE",
+					"δ¹³C VPDB (Raw) CI",
 					"δ¹⁸O VPDB (Raw)",
 					"δ¹⁸O VPDB (Raw) SD",
 					"δ¹⁸O VPDB (Raw) SE",
+					"δ¹⁸O VPDB (Raw) CI",
 					"δ¹⁸O VSMOW (Raw)",
 					"δ¹⁸O VSMOW (Raw) SD",
-					"δ¹⁸O VSMOW (Raw) SE"
+					"δ¹⁸O VSMOW (Raw) SE",
+					"δ¹⁸O VSMOW (Raw) CI"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -1014,7 +1076,9 @@ public class AnalysesCreator {
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
-
+			
+			/////////////////
+	
 			Dao<SamAnalysis,Integer> samAnalysisDao = DaoManager.createDao(connectionSource, SamAnalysis.class);
 			TableUtils.createTable(connectionSource, SamAnalysis.class);
 
@@ -1053,12 +1117,15 @@ public class AnalysesCreator {
 					"δ¹³C VPDB (Final)",
 					"δ¹³C VPDB (Final) SD",
 					"δ¹³C VPDB (Final) SE",
+					"δ¹³C VPDB (Final) CI",
 					"δ¹⁸O VPDB (Final)",
 					"δ¹⁸O VPDB (Final) SD",
 					"δ¹⁸O VPDB (Final) SE",
+					"δ¹⁸O VPDB (Final) CI",
 					"δ¹⁸O VSMOW (Final)",
 					"δ¹⁸O VSMOW (Final) SD",
-					"δ¹⁸O VSMOW (Final) SE"
+					"δ¹⁸O VSMOW (Final) SE",
+					"δ¹⁸O VSMOW (Final) CI"
 			});
 			setStepFormats(samStep);
 			samStepDao.create(samStep);
@@ -1074,6 +1141,7 @@ public class AnalysesCreator {
 					"Δ47 CDES (Final)",
 					"Δ47 CDES (Final) SD",
 					"Δ47 CDES (Final) SE",
+					"Δ47 CDES (Final) CI",
 			});
 			setStepFormats(samStep);
 			samStepDao.create(samStep);
@@ -1091,36 +1159,42 @@ public class AnalysesCreator {
 					"Δ47 Dennis",
 					"Δ47 Dennis SD",
 					"Δ47 Dennis SE",
+					"Δ47 Dennis CI",
 					"Dennis-SE ˚C",
 					"Dennis ˚C",
 					"Dennis+SE ˚C",
 					"Δ47 Gosh",
 					"Δ47 Gosh SD",
 					"Δ47 Gosh SE",
+					"Δ47 Gosh CI",
 					"Gosh-SE ˚C",
 					"Gosh ˚C",
 					"Gosh+SE ˚C",
 					"Δ47 Henkes",
 					"Δ47 Henkes SD",
 					"Δ47 Henkes SE",
+					"Δ47 Henkes CI",
 					"Henkes-SE ˚C",
 					"Henkes ˚C",
 					"Henkes+SE ˚C",
 					"Δ47 Kluge",
 					"Δ47 Kluge SD",
 					"Δ47 Kluge SE",
+					"Δ47 Kluge CI",
 					"Kluge-SE ˚C",
 					"Kluge ˚C",
 					"Kluge+SE ˚C",
 					"Δ47 Passey",
 					"Δ47 Passey SD",
 					"Δ47 Passey SE",
+					"Δ47 Passey CI",
 					"Passey-SE ˚C",
 					"Passey ˚C",
 					"Passey+SE ˚C",
 					"Δ47 Zaruur",
 					"Δ47 Zaruur SD",
 					"Δ47 Zaruur SE",
+					"Δ47 Zaruur CI",
 					"Zaruur-SE ˚C",
 					"Zaruur ˚C",
 					"Zaruur+SE ˚C"
@@ -1160,12 +1234,15 @@ public class AnalysesCreator {
 					"δ¹³C VPDB (Final)",
 					"δ¹³C VPDB (Final) SD",
 					"δ¹³C VPDB (Final) SE",
+					"δ¹³C VPDB (Final) CI",
 					"δ¹⁸O VPDB (Final)",
 					"δ¹⁸O VPDB (Final) SD",
 					"δ¹⁸O VPDB (Final) SE",
+					"δ¹⁸O VPDB (Final) CI",
 					"δ¹⁸O VSMOW (Final)",
 					"δ¹⁸O VSMOW (Final) SD",
-					"δ¹⁸O VSMOW (Final) SE"
+					"δ¹⁸O VSMOW (Final) SE",
+					"δ¹⁸O VSMOW (Final) CI"
 			});
 			setStepFormats(samStep);
 			samStepDao.create(samStep);

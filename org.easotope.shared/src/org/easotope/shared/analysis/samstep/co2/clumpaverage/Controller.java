@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 by Devon Bowen.
+ * Copyright © 2016-2019 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -77,7 +77,8 @@ public class Controller extends StepController {
 		return new OutputDescription[] {
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_SD, "0.000"),
-			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_SE, "0.000")
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_SE, "0.000"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_CI, "0.000")
 		};
 	}
 }

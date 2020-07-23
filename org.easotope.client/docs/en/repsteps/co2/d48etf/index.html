@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	  <title>Δ48 Empirical Transfer Function</title>
+	</meta>
+  </head>
+
+  <body>
+  	<h2>Purpose</h2>
+
+  	<p>So that calculated Δ48 values can be compared against values from other labs,
+  	a standard CDES scale was created. This step maps a measured sample Δ48 onto this
+  	scale.</p>
+
+ 	<h2>Parameters</h2>
+
+ 	<p>Because acid temperature affects the Δ48 measurements, only standard replicates
+ 	made with the same acid temperature can be used to build the CDES scale. This
+ 	means the acid temperature must be entered as a parameter.</p>
+ 
+  	<p>A collection of standard replicates is needed to do this step. The user
+  	may choose to select all standard replicates from the correction interval
+  	or only those in a user specified window around the sample replicate. If a window
+  	is chosen, the number of standard replicates that will be used before and after
+  	the sample replicate must be entered. Standard types that are considered valid
+  	for this correction must also be indicated.</p>
+
+  	<p>The original algorithm (Dennis et al) for calculating an ETF called for
+  	averaging the Δ48 values for each standard individually. These averages were
+  	then used to build the ETF regression. This is not Easotope's default algorithm.
+  	However, it can be optionally turned on.</p>
+
+	<h2>Algorithm</h2>
+
+	<p>The default algorithm is to collect all the appropriate standard replicates
+	and use the measured Δ48 and known Δ48 CDES values to build a regression.
+	Measured Δ48 values from samples can then be projected into the Δ48 CDES scale
+	by solving this linear equation.</p>
+
+	<p>If averaging is turned on, then for each standard, an average Δ48 of all of
+	that standard's replicates is first calculated. This results in the same
+	number of points in the ETF regression as there are selected standards. Because
+	this averaging "blurs" the data that is fed into the regression, the weights
+	of the original data can cause the regression to shift slightly from the
+	default algorithm.</p>
+
+  </body>
+</html>

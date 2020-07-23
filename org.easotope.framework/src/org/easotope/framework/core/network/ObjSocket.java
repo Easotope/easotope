@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -322,7 +322,7 @@ public class ObjSocket implements Runnable {
 		private ArrayList<byte[]> byteBlocks = new ArrayList<byte[]>();
 
 		void writeObject(Serializable object) throws IOException, IllegalBlockSizeException, BadPaddingException, MissingRemotePublicKey {
-			if (suspended) {
+			if (suspended || diffieHellmanDES == null || !diffieHellmanDES.isReady()) {
 				return;
 			}
 

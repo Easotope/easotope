@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -30,5 +30,6 @@ package org.easotope.shared.admin;
 public enum AcidTempParameter {
 	NONE,
 	δ18O,
-	clumped
+	Δ47,
+	Δ48
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -27,16 +27,15 @@
 
 package org.easotope.shared.analysis.repstep.co2.d47acid;
 
-import org.easotope.shared.analysis.execute.RepStepCalculator;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
 import org.easotope.shared.analysis.repstep.co2.d47acid.dependencies.Dependencies;
 import org.easotope.shared.analysis.tables.RepStep;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
 
-public class Calculator extends RepStepCalculator {
-	public static final String INPUT_LABEL_Δ47 = "Δ47 CDES";
-	public static final String OUTPUT_LABEL_AFF = "Acid Fractionation Factor";
-	public static final String OUTPUT_LABEL_Δ47 = "Δ47 CDES Acid Corrected";
+public class Calculator extends org.easotope.shared.analysis.repstep.superclass.acidfrac.Calculator {
+	public static final String INPUT_LABEL = "Δ47 CDES";
+	public static final String OUTPUT_LABEL_AFF = "Δ47 Acid Fractionation Factor";
+	public static final String OUTPUT_LABEL = "Δ47 CDES Acid Corrected";
 
 	public Calculator(RepStep repStep) {
 		super(repStep);
@@ -48,20 +47,22 @@ public class Calculator extends RepStepCalculator {
 	}
 
 	@Override
-	public void calculate(ReplicatePad[] replicatePads, int padNumber, DependencyManager dependencyManager) {
-		Double α = null;
-		Double value = getDouble(replicatePads[padNumber], INPUT_LABEL_Δ47);
+	public String getInputLabel() {
+		return INPUT_LABEL;
+	}
 
-		if (value != null) {
-			Dependencies dependencies = (Dependencies) dependencyManager;
-			α = dependencies.getα();
+	@Override
+	public String getOutputLabelAff() {
+		return OUTPUT_LABEL_AFF;
+	}
 
-			if (α != null) {
-				value += α;
-			}
-		}
+	@Override
+	public String getOutputLabel() {
+		return OUTPUT_LABEL;
+	}
 
-		replicatePads[padNumber].setValue(labelToColumnName(OUTPUT_LABEL_AFF), α);
-	    	replicatePads[padNumber].setValue(labelToColumnName(OUTPUT_LABEL_Δ47), value);
+	@Override
+	protected double getNewValue(double value, double factor) {
+		return value + factor;
 	}
 }

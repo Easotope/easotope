@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -40,7 +40,7 @@ public abstract class Controller extends RepStepController {
 	}
 
 	@Override
-	public void removeStandardIds(RepStepParams repStepParams, HashSet<Integer> standardIds) {
+	public final void removeStandardIds(RepStepParams repStepParams, HashSet<Integer> standardIds) {
 		RepStepCalculator.removeStandardIds(repStepParams, standardIds);
 	}
 }

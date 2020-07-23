@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -116,6 +116,10 @@ public class DiffieHellmanDES {
 		privateKey = null;
 	}
 
+	public boolean isReady() {
+		return ecipher != null && dcipher != null;
+	} 
+
 	public byte[] encrypt(byte[] bytes) throws IllegalBlockSizeException, BadPaddingException, MissingRemotePublicKey {
 		if (ecipher == null) {
 			throw new MissingRemotePublicKey();
@@ -138,5 +142,5 @@ public class DiffieHellmanDES {
 		public MissingRemotePublicKey() {
 			super("Remote Diffie-Hellman key has not been set.");
 		}
-	} 
+	}
 }

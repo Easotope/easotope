@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -83,7 +83,9 @@ public class Controller extends RepStepController {
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_CORR_INTERVAL, null, null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_ACID_TEMP, null, null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_ACQUISITIONS, null, null, null, false),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_ENABLED_ACQUISITIONS, null, null, null, false)
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_ENABLED_ACQUISITIONS, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_MZ44_FIRST_REFGAS_CYCLE, null, null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_MZ44_FIRST_SAMPLE_CYCLE, null, null, null, false)
 		};
 	}
 

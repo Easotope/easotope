@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -155,7 +155,7 @@ public class InitializedHandler {
 			acidTemp.setDescription("");
 			HashMap<Integer,NumericValue> values = new HashMap<Integer,NumericValue>();
 			values.put(AcidTempParameter.δ18O.ordinal(), new NumericValue(1.008541256, "Kim et al. 2007"));
-			values.put(AcidTempParameter.clumped.ordinal(), new NumericValue(0.069, "Guo et al. 2009 and Wacker et al. 2013"));
+			values.put(AcidTempParameter.Δ47.ordinal(), new NumericValue(0.069, "Guo et al. 2009 and Wacker et al. 2013"));
 			acidTemp.setValues(values);
 			acidTempDao.create(acidTemp);
 
@@ -165,7 +165,7 @@ public class InitializedHandler {
 			acidTemp.setDescription("");
 			values = new HashMap<Integer,NumericValue>();
 			values.put(AcidTempParameter.δ18O.ordinal(), new NumericValue(1.008128581, "Kim et al. 2007"));
-			values.put(AcidTempParameter.clumped.ordinal(), new NumericValue(0.069, "Guo et al. 2009 and Wacker et al. 2013"));
+			values.put(AcidTempParameter.Δ47.ordinal(), new NumericValue(0.069, "Guo et al. 2009 and Wacker et al. 2013"));
 			acidTemp.setValues(values);
 			acidTempDao.create(acidTemp);
 
@@ -175,7 +175,7 @@ public class InitializedHandler {
 			acidTemp.setDescription("");
 			values = new HashMap<Integer,NumericValue>();
 			values.put(AcidTempParameter.δ18O.ordinal(), new NumericValue(1.008410826, "Kim et al. 2007"));
-			values.put(AcidTempParameter.clumped.ordinal(), new NumericValue(0.061, "Guo et al. 2009 and Wacker et al. 2013"));
+			values.put(AcidTempParameter.Δ47.ordinal(), new NumericValue(0.061, "Guo et al. 2009 and Wacker et al. 2013"));
 			acidTemp.setValues(values);
 			acidTempDao.create(acidTemp);
 
@@ -185,7 +185,7 @@ public class InitializedHandler {
 			acidTemp.setDescription("");
 			values = new HashMap<Integer,NumericValue>();
 			values.put(AcidTempParameter.δ18O.ordinal(), new NumericValue(1.008714222, "Kim et al. 2007"));
-			values.put(AcidTempParameter.clumped.ordinal(), new NumericValue(0.052, "Guo et al. 2009 and Wacker et al. 2013"));
+			values.put(AcidTempParameter.Δ47.ordinal(), new NumericValue(0.052, "Guo et al. 2009 and Wacker et al. 2013"));
 			acidTemp.setValues(values);
 			acidTempDao.create(acidTemp);
 
@@ -204,7 +204,7 @@ public class InitializedHandler {
 			acidTemp.setDescription("");
 			values = new HashMap<Integer,NumericValue>();
 			values.put(AcidTempParameter.δ18O.ordinal(), new NumericValue(1.0093, "Rosenbaum & Sheppard 1986"));
-			values.put(AcidTempParameter.clumped.ordinal(), new NumericValue(0.069, "Guo et al. 2009 and Wacker et al. 2013"));
+			values.put(AcidTempParameter.Δ47.ordinal(), new NumericValue(0.069, "Guo et al. 2009 and Wacker et al. 2013"));
 			acidTemp.setValues(values);
 			acidTempDao.create(acidTemp);
 
@@ -214,7 +214,7 @@ public class InitializedHandler {
 			acidTemp.setDescription("");
 			values = new HashMap<Integer,NumericValue>();
 			values.put(AcidTempParameter.δ18O.ordinal(), new NumericValue(1.009455, ""));
-			values.put(AcidTempParameter.clumped.ordinal(), new NumericValue(0.069, "Guo et al. 2009 and Wacker et al. 2013"));
+			values.put(AcidTempParameter.Δ47.ordinal(), new NumericValue(0.069, "Guo et al. 2009 and Wacker et al. 2013"));
 			acidTemp.setValues(values);
 			acidTempDao.create(acidTemp);
 
@@ -224,7 +224,7 @@ public class InitializedHandler {
 			acidTemp.setDescription("");
 			values = new HashMap<Integer,NumericValue>();
 			values.put(AcidTempParameter.δ18O.ordinal(), new NumericValue(1.007259532, "Passey et al 2007"));
-			values.put(AcidTempParameter.clumped.ordinal(), new NumericValue(0.069, "Guo et al. 2009 and Wacker et al. 2013"));
+			values.put(AcidTempParameter.Δ47.ordinal(), new NumericValue(0.069, "Guo et al. 2009 and Wacker et al. 2013"));
 			acidTemp.setValues(values);
 			acidTempDao.create(acidTemp);
 

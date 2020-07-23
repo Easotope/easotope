@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -85,7 +85,7 @@ public abstract class Calculator extends RepStepCalculator {
 	}
 
 	@Override
-	public void calculate(ReplicatePad[] replicatePads, int targetPadNumber, DependencyManager dependencyManager) {
+	public final void calculate(ReplicatePad[] replicatePads, int targetPadNumber, DependencyManager dependencyManager) {
 		HashMap<Integer,Double> standardIdToExpectedValue = new HashMap<Integer,Double>();
 		HashMap<Integer,Standard> standardIdToStandard = new HashMap<Integer,Standard>();
 

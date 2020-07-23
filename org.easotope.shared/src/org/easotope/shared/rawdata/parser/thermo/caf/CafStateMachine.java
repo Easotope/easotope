@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -151,7 +151,7 @@ public class CafStateMachine implements StateMachine {
 			int mass = (int) Math.round(Double.parseDouble(massPatternMatcher.group(1)));
 
 			if (!knownMasses.contains(mass)) {
-				mapBuilder.put(InputParameter.ChannelToMZX10, knownMasses.size(), mass);
+				mapBuilder.put(InputParameter.ChannelToMZX10, knownMasses.size(), mass*10);
 				knownMasses.add(mass);
 			}
 

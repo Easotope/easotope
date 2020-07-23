@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -296,6 +296,10 @@ public class StandardComposite extends EditorComposite implements SampleTypeCach
 		temp = new HashMap<Integer,String>();
 		temp.put(IsotopicScale.CDES.ordinal(), IsotopicScale.CDES.toString());
 		descriptionPossibilities.put(StandardParameter.Δ47.ordinal(), temp);
+
+		temp = new HashMap<Integer,String>();
+		temp.put(IsotopicScale.CDES.ordinal(), IsotopicScale.CDES.toString());
+		descriptionPossibilities.put(StandardParameter.Δ48.ordinal(), temp);
 
 		values = new NumericValueList(this, SWT.NONE);
 		gridData = new GridData();

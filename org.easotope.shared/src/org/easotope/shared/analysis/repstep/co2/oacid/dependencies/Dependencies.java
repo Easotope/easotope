@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -27,17 +27,8 @@
 
 package org.easotope.shared.analysis.repstep.co2.oacid.dependencies;
 
-import org.easotope.shared.admin.AcidTempParameter;
-import org.easotope.shared.admin.tables.AcidTemp;
-import org.easotope.shared.analysis.execute.dependency.DependencyManager;
-
-public class Dependencies extends DependencyManager {
+public class Dependencies extends org.easotope.shared.analysis.repstep.superclass.acidfrac.dependencies.Dependencies {
 	public Dependencies() {
-		addPlugin(new AlphaPlugin());
-	}
-
-	public Double getα() {
-		AcidTemp acidTemp = (AcidTemp) getDependencyPlugins().get(0).getObject();
-		return acidTemp == null ? null : acidTemp.getValues().get(AcidTempParameter.δ18O.ordinal()).getValue();
+		super(new OxygenAlphaPlugin());
 	}
 }

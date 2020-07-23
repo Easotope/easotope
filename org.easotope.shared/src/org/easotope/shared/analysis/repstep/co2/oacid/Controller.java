@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -27,8 +27,6 @@
 
 package org.easotope.shared.analysis.repstep.co2.oacid;
 
-import java.util.HashSet;
-
 import org.easotope.shared.Messages;
 import org.easotope.shared.admin.IsotopicScale;
 import org.easotope.shared.admin.StandardParameter;
@@ -36,10 +34,8 @@ import org.easotope.shared.analysis.repstep.RepInputDescription;
 import org.easotope.shared.analysis.repstep.RepOutputDescription;
 import org.easotope.shared.analysis.step.InputDescription;
 import org.easotope.shared.analysis.step.OutputDescription;
-import org.easotope.shared.analysis.step.RepStepController;
-import org.easotope.shared.analysis.tables.RepStepParams;
 
-public class Controller extends RepStepController {
+public class Controller extends org.easotope.shared.analysis.repstep.superclass.acidfrac.Controller {
 	@Override
 	public String getStepName() {
 		return Messages.repStepCO2OAcid_name;
@@ -61,19 +57,9 @@ public class Controller extends RepStepController {
 	}
 
 	@Override
-	public String getParameterComposite() {
-		return null;
-	}
-
-	@Override
-	public String getGraphicComposite() {
-		return null;
-	}
-
-	@Override
 	public InputDescription[] getInputDescription() {
 		return new InputDescription[] {
-			new RepInputDescription(Calculator.INPUT_LABEL_δ18O, true, false)
+			new RepInputDescription(Calculator.INPUT_LABEL, true, false)
 		};
 	}
 
@@ -81,12 +67,7 @@ public class Controller extends RepStepController {
 	public OutputDescription[] getOutputDescription() {
 		return new OutputDescription[] {
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_AFF, null, null, null, false),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O, "0.00", StandardParameter.δ18O, IsotopicScale.VPDB, false)
+			new RepOutputDescription(Calculator.OUTPUT_LABEL, "0.00", StandardParameter.δ18O, IsotopicScale.VPDB, false)
 		};
-	}
-
-	@Override
-	public void removeStandardIds(RepStepParams repStepParams, HashSet<Integer> standardIds) {
-
 	}
 }

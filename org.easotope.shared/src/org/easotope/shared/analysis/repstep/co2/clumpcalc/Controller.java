@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -116,7 +116,7 @@ public class Controller extends RepStepController {
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ48_SD, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ48_SE, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ48_CI, "0.000", null, null, false),
-			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ48, "0.000", null, null, true),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ48, "0.000", StandardParameter.Δ48, IsotopicScale.CDES, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ48_SD, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ48_SE, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_Δ48_CI, "0.000", null, null, false),

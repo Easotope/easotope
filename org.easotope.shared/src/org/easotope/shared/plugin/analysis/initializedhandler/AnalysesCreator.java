@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -91,7 +91,9 @@ public class AnalysesCreator {
 					"Corr Interval",
 					"Acid Temp",
 					"Acquisitions",
-					"Enabled Acquisitions"
+					"Enabled Acquisitions",
+					"First MZ44 Ref Gas",
+					"First MZ44 Sample"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -255,7 +257,7 @@ public class AnalysesCreator {
 
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
-			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.nonlinearity.Controller");
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d47nonlinearity.Controller");
 			repStep.setPosition(7);
 			repStep.setApplyToContext(false);
 			repStep.setApplyToResults(true);
@@ -275,7 +277,7 @@ public class AnalysesCreator {
 
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
-			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.etf.Controller");
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d47etf.Controller");
 			repStep.setPosition(8);
 			repStep.setApplyToContext(false);
 			repStep.setApplyToResults(true);
@@ -287,8 +289,8 @@ public class AnalysesCreator {
 					"Acid Temp"
 			});
 			setStepOutputs(repStep, new String[] {
-					"ETF Slope",
-					"ETF Intercept",
+					"Δ47 ETF Slope",
+					"Δ47 ETF Intercept",
 					"Δ47 CDES (ETF)"
 			});
 			setStepFormats(repStep);
@@ -304,7 +306,7 @@ public class AnalysesCreator {
 					"Δ47 CDES (ETF)"
 			});
 			setStepOutputs(repStep, new String[] {
-					"Clumped AFF",
+					"Δ47 AFF",
 					"Δ47 CDES (Final)"
 			});
 			setStepFormats(repStep);
@@ -312,8 +314,65 @@ public class AnalysesCreator {
 
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
-			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48offset.Controller");
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48nonlinearity.Controller");
 			repStep.setPosition(10);
+			repStep.setApplyToContext(false);
+			repStep.setApplyToResults(true);
+			setStepInputs(repStep, new String[] {
+					"δ48 WG (Raw)",
+					"Δ48 WG (Raw)",
+					"δ48 WG (Raw)",
+					"Δ48 WG (Raw)",
+			});
+			setStepOutputs(repStep, new String[] {
+					"Δ48 Nonlinearity Slope",
+					"Δ48 Nonlinearity Intercepts",
+					"Δ48 WG (HG)"
+			});
+			setStepFormats(repStep);
+			repStepDao.create(repStep);
+
+			repStep = new RepStep();
+			repStep.setAnalysisId(repAnalysis.getId());
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48etf.Controller");
+			repStep.setPosition(11);
+			repStep.setApplyToContext(false);
+			repStep.setApplyToResults(true);
+			setStepInputs(repStep, new String[] {
+					"Δ48 WG (HG)",
+					"δ48 WG (Raw)",
+					"Δ48 WG (Raw)",
+					"Δ48 WG (HG)",
+					"Acid Temp"
+			});
+			setStepOutputs(repStep, new String[] {
+					"Δ48 ETF Slope",
+					"Δ48 ETF Intercept",
+					"Δ48 CDES (ETF)"
+			});
+			setStepFormats(repStep);
+			repStepDao.create(repStep);
+
+			repStep = new RepStep();
+			repStep.setAnalysisId(repAnalysis.getId());
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48acid.Controller");
+			repStep.setPosition(12);
+			repStep.setApplyToContext(false);
+			repStep.setApplyToResults(true);
+			setStepInputs(repStep, new String[] {
+					"Δ48 CDES (ETF)"
+			});
+			setStepOutputs(repStep, new String[] {
+					"Δ48 AFF",
+					"Δ48 CDES (Final)"
+			});
+			setStepFormats(repStep);
+			repStepDao.create(repStep);
+
+			repStep = new RepStep();
+			repStep.setAnalysisId(repAnalysis.getId());
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48offset.Controller");
+			repStep.setPosition(13);
 			repStep.setApplyToContext(false);
 			repStep.setApplyToResults(true);
 			setStepInputs(repStep, new String[] {
@@ -353,7 +412,9 @@ public class AnalysesCreator {
 					"Corr Interval",
 					"Acid Temp",
 					"Acquisitions",
-					"Enabled Acquisitions"
+					"Enabled Acquisitions",
+					"First MZ44 Ref Gas",
+					"First MZ44 Sample"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -562,7 +623,7 @@ public class AnalysesCreator {
 
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
-			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.etfpbl.Controller");
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d47etfpbl.Controller");
 			repStep.setPosition(8);
 			repStep.setApplyToContext(false);
 			repStep.setApplyToResults(true);
@@ -573,8 +634,8 @@ public class AnalysesCreator {
 					"Acid Temp"
 			});
 			setStepOutputs(repStep, new String[] {
-					"ETF Slope",
-					"ETF Intercept",
+					"Δ47 ETF Slope",
+					"Δ47 ETF Intercept",
 					"Δ47 CDES (ETF)"
 			});
 			setStepFormats(repStep);
@@ -590,7 +651,7 @@ public class AnalysesCreator {
 					"Δ47 CDES (ETF)"
 			});
 			setStepOutputs(repStep, new String[] {
-					"Clumped AFF",
+					"Δ47 AFF",
 					"Δ47 CDES (Final)"
 			});
 			setStepFormats(repStep);
@@ -598,8 +659,44 @@ public class AnalysesCreator {
 
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
-			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48offsetpbl.Controller");
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48etfpbl.Controller");
 			repStep.setPosition(10);
+			repStep.setApplyToContext(false);
+			repStep.setApplyToResults(true);
+			setStepInputs(repStep, new String[] {
+					"Δ48 WG (PBL)",
+					"δ48 WG (PBL)",
+					"Δ48 WG (PBL)",
+					"Acid Temp"
+			});
+			setStepOutputs(repStep, new String[] {
+					"Δ48 ETF Slope",
+					"Δ48 ETF Intercept",
+					"Δ48 CDES (ETF)"
+			});
+			setStepFormats(repStep);
+			repStepDao.create(repStep);
+
+			repStep = new RepStep();
+			repStep.setAnalysisId(repAnalysis.getId());
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48acid.Controller");
+			repStep.setPosition(11);
+			repStep.setApplyToContext(false);
+			repStep.setApplyToResults(true);
+			setStepInputs(repStep, new String[] {
+					"Δ48 CDES (ETF)"
+			});
+			setStepOutputs(repStep, new String[] {
+					"Δ48 AFF",
+					"Δ48 CDES (Final)"
+			});
+			setStepFormats(repStep);
+			repStepDao.create(repStep);
+
+			repStep = new RepStep();
+			repStep.setAnalysisId(repAnalysis.getId());
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48offsetpbl.Controller");
+			repStep.setPosition(12);
 			repStep.setApplyToContext(false);
 			repStep.setApplyToResults(true);
 			setStepInputs(repStep, new String[] {
@@ -636,7 +733,9 @@ public class AnalysesCreator {
 					"Corr Interval",
 					"Acid Temp",
 					"Acquisitions",
-					"Enabled Acquisitions"
+					"Enabled Acquisitions",
+					"First MZ44 Ref Gas",
+					"First MZ44 Sample"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);
@@ -881,7 +980,7 @@ public class AnalysesCreator {
 
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
-			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.nonlinearity.Controller");
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d47nonlinearity.Controller");
 			repStep.setPosition(8);
 			repStep.setApplyToContext(false);
 			repStep.setApplyToResults(true);
@@ -901,7 +1000,7 @@ public class AnalysesCreator {
 
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
-			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.etfpbl.Controller");
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d47etfpbl.Controller");
 			repStep.setPosition(9);
 			repStep.setApplyToContext(false);
 			repStep.setApplyToResults(true);
@@ -912,8 +1011,8 @@ public class AnalysesCreator {
 					"Acid Temp"
 			});
 			setStepOutputs(repStep, new String[] {
-					"ETF Slope",
-					"ETF Intercept",
+					"Δ47 ETF Slope",
+					"Δ47 ETF Intercept",
 					"Δ47 CDES (ETF)"
 			});
 			setStepFormats(repStep);
@@ -929,7 +1028,7 @@ public class AnalysesCreator {
 					"Δ47 CDES (ETF)"
 			});
 			setStepOutputs(repStep, new String[] {
-					"Clumped AFF",
+					"Δ47 AFF",
 					"Δ47 CDES (Final)"
 			});
 			setStepFormats(repStep);
@@ -937,7 +1036,7 @@ public class AnalysesCreator {
 
 			repStep = new RepStep();
 			repStep.setAnalysisId(repAnalysis.getId());
-			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48offset.Controller");
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48nonlinearity.Controller");
 			repStep.setPosition(11);
 			repStep.setApplyToContext(false);
 			repStep.setApplyToResults(true);
@@ -948,7 +1047,63 @@ public class AnalysesCreator {
 					"Δ48 WG (PBL)",
 			});
 			setStepOutputs(repStep, new String[] {
+					"Δ48 Nonlinearity Slope",
+					"Δ48 Nonlinearity Intercepts",
+					"Δ48 WG (PBL HG)"
+			});
+			setStepFormats(repStep);
+			repStepDao.create(repStep);
+
+			repStep = new RepStep();
+			repStep.setAnalysisId(repAnalysis.getId());
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48etfpbl.Controller");
+			repStep.setPosition(12);
+			repStep.setApplyToContext(false);
+			repStep.setApplyToResults(true);
+			setStepInputs(repStep, new String[] {
 					"Δ48 WG (PBL HG)",
+					"δ48 WG (PBL)",
+					"Δ48 WG (PBL HG)",
+					"Acid Temp"
+			});
+			setStepOutputs(repStep, new String[] {
+					"Δ48 ETF Slope",
+					"Δ48 ETF Intercept",
+					"Δ48 CDES (ETF)"
+			});
+			setStepFormats(repStep);
+			repStepDao.create(repStep);
+
+			repStep = new RepStep();
+			repStep.setAnalysisId(repAnalysis.getId());
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48acid.Controller");
+			repStep.setPosition(13);
+			repStep.setApplyToContext(false);
+			repStep.setApplyToResults(true);
+			setStepInputs(repStep, new String[] {
+					"Δ48 CDES (ETF)"
+			});
+			setStepOutputs(repStep, new String[] {
+					"Δ48 AFF",
+					"Δ48 CDES (Final)"
+			});
+			setStepFormats(repStep);
+			repStepDao.create(repStep);
+
+			repStep = new RepStep();
+			repStep.setAnalysisId(repAnalysis.getId());
+			repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48offset.Controller");
+			repStep.setPosition(14);
+			repStep.setApplyToContext(false);
+			repStep.setApplyToResults(true);
+			setStepInputs(repStep, new String[] {
+					"δ48 WG (PBL)",
+					"Δ48 WG (PBL)",
+					"δ48 WG (PBL)",
+					"Δ48 WG (PBL)",
+			});
+			setStepOutputs(repStep, new String[] {
+					"Δ48 WG (PBL Off)",
 					"Δ48 Offset"
 			});
 			setStepFormats(repStep);
@@ -978,7 +1133,9 @@ public class AnalysesCreator {
 					"Corr Interval",
 					"Acid Temp",
 					"Acquisitions",
-					"Enabled Acquisitions"
+					"Enabled Acquisitions",
+					"First MZ44 Ref Gas",
+					"First MZ44 Sample"
 			});
 			setStepFormats(repStep);
 			repStepDao.create(repStep);

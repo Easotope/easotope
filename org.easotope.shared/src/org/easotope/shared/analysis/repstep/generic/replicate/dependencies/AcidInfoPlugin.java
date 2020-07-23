@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -86,7 +86,7 @@ public class AcidInfoPlugin extends DependencyPlugin {
 			return true;
 		}
 
-		if (acidTempId != DatabaseConstants.EMPTY_DB_ID && acidTemp != null && acidTemp.getId() == acidTempId && acidTemp.getValues().get(AcidTempParameter.clumped.ordinal()) != null) {
+		if (acidTempId != DatabaseConstants.EMPTY_DB_ID && acidTemp != null && acidTemp.getId() == acidTempId && acidTemp.getValues().get(AcidTempParameter.Δ47.ordinal()) != null) {
 			return true;
 		}
 

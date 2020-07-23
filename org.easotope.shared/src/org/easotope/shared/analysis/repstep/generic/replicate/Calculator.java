@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -37,6 +37,7 @@ import org.easotope.shared.analysis.execute.dependency.DependencyManager;
 import org.easotope.shared.analysis.repstep.generic.replicate.dependencies.Dependencies;
 import org.easotope.shared.analysis.tables.RepStep;
 import org.easotope.shared.core.scratchpad.AcquisitionPad;
+import org.easotope.shared.core.scratchpad.CyclePad;
 import org.easotope.shared.core.scratchpad.Pad;
 import org.easotope.shared.core.scratchpad.PadDate;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
@@ -52,6 +53,8 @@ public class Calculator extends RepStepCalculator {
 	public static final String OUTPUT_LABEL_ACID_TEMP = "Acid Temperature";
 	public static final String OUTPUT_LABEL_ACQUISITIONS = "Num Acqusitions";
 	public static final String OUTPUT_LABEL_ENABLED_ACQUISITIONS = "Num Enabled Acqusitions";
+	public static final String OUTPUT_LABEL_MZ44_FIRST_REFGAS_CYCLE = "MZ44 First Ref Gas Cycle";
+	public static final String OUTPUT_LABEL_MZ44_FIRST_SAMPLE_CYCLE = "MZ44 First Sample Cycle";
 
 	public Calculator(RepStep repStep) {
 		super(repStep);
@@ -87,6 +90,22 @@ public class Calculator extends RepStepCalculator {
 
     	replicatePad.setValue(labelToColumnName(OUTPUT_LABEL_ACQUISITIONS), acquisitions.size());
     	replicatePad.setValue(labelToColumnName(OUTPUT_LABEL_ENABLED_ACQUISITIONS), enabledAcqusitions);
+
+    	if (acquisitions.size() != 0) {
+    		ArrayList<CyclePad> firstAcqusitionCycles = acquisitions.get(0).getChildren();
+
+    		if (firstAcqusitionCycles.size() > 0) {
+    			CyclePad firstCycle = firstAcqusitionCycles.get(0);
+    			Object mz44FirstRefGasCycle = firstCycle.getValue("V44_Ref");
+    			replicatePad.setValue(labelToColumnName(OUTPUT_LABEL_MZ44_FIRST_REFGAS_CYCLE), mz44FirstRefGasCycle);
+    		}
+
+    		if (firstAcqusitionCycles.size() > 1) {
+    			CyclePad secondCycle = firstAcqusitionCycles.get(1);
+    			Object mz44FirstSampleCycle = secondCycle.getValue("V44_Sample");
+    			replicatePad.setValue(labelToColumnName(OUTPUT_LABEL_MZ44_FIRST_SAMPLE_CYCLE), mz44FirstSampleCycle);
+    		}
+    	}
 
     	InputParameter[] inputParameters = {
     		InputParameter.Identifier_1,

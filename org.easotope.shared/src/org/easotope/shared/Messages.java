@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -91,21 +91,37 @@ public class Messages {
 	public static String repStepCO2OPdbToSmow_shortDocumentation;
 	public static String repStepCO2OPdbToSmow_documentationPath;
 
-	public static String repStepCO2ONonlinearity_name;
-	public static String repStepCO2ONonlinearity_shortDocumentation;
-	public static String repStepCO2ONonlinearity_documentationPath;
+	public static String repStepD47Nonlinearity_name;
+	public static String repStepD47Nonlinearity_shortDocumentation;
+	public static String repStepD47Nonlinearity_documentationPath;
 
-	public static String repStepCO2OETF_name;
-	public static String repStepCO2OETF_shortDocumentation;
-	public static String repStepCO2OETF_documentationPath;
+	public static String repStepD48Nonlinearity_name;
+	public static String repStepD48Nonlinearity_shortDocumentation;
+	public static String repStepD48Nonlinearity_documentationPath;
 
-	public static String repStepCO2OETFPBL_name;
-	public static String repStepCO2OETFPBL_shortDocumentation;
-	public static String repStepCO2OETFPBL_documentationPath;
+	public static String repStepD47ETF_name;
+	public static String repStepD47ETF_shortDocumentation;
+	public static String repStepD47ETF_documentationPath;
+
+	public static String repStepD48ETF_name;
+	public static String repStepD48ETF_shortDocumentation;
+	public static String repStepD48ETF_documentationPath;
+
+	public static String repStepD47ETFPBL_name;
+	public static String repStepD47ETFPBL_shortDocumentation;
+	public static String repStepD47ETFPBL_documentationPath;
+
+	public static String repStepD48ETFPBL_name;
+	public static String repStepD48ETFPBL_shortDocumentation;
+	public static String repStepD48ETFPBL_documentationPath;
 
 	public static String repStepCO2OD47Acid_name;
 	public static String repStepCO2OD47Acid_shortDocumentation;
 	public static String repStepCO2OD47Acid_documentationPath;
+
+	public static String repStepCO2OD48Acid_name;
+	public static String repStepCO2OD48Acid_shortDocumentation;
+	public static String repStepCO2OD48Acid_documentationPath;
 
 	public static String repStepCO2OAcidInfo_name;
 	public static String repStepCO2OAcidInfo_shortDocumentation;
@@ -190,9 +206,11 @@ public class Messages {
 
 	public static String corrIntervalPlugin_corrInterval;
 
-	public static String etfPblCalc_noKnownD47;
+	public static String d47etfPblCalc_noKnownD47;
+	public static String d48etfPblCalc_noKnownD48;
 
-	public static String etfCalc_noKnownD47;
+	public static String d47etfCalc_noKnownD47;
+	public static String d48etfCalc_noKnownD48;
 
 	public static String locale;
 	

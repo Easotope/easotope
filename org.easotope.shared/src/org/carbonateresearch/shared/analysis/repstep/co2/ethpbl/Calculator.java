@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 by Cédric John.
+ * Copyright © 2019-2020 by Cédric John.
  *
  * This file is part of Easotope.
  *

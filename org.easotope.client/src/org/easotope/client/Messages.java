@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 by Devon Bowen.
+ * Copyright © 2016-2020 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -788,12 +788,20 @@ public class Messages extends NLS {
 	public static String nonlinearityGraphicComposite_intercept;
 	public static String nonlinearityGraphicComposite_correction;
 	public static String nonlinearityGraphicComposite_disabled;
+	
 	public static String nonlinearityGraphicComposite_d47;
 	public static String nonlinearityGraphicComposite_D47;
 	public static String nonlinearityGraphicComposite_D47_measured;
 	public static String nonlinearityGraphicComposite_D47_corrected;
-	public static String nonlinearityGraphicComposite_verticalLabel;
-	public static String nonlinearityGraphicComposite_horizontalLabel;
+	public static String nonlinearityGraphicComposite_47_verticalLabel;
+	public static String nonlinearityGraphicComposite_47_horizontalLabel;
+
+	public static String nonlinearityGraphicComposite_d48;
+	public static String nonlinearityGraphicComposite_D48;
+	public static String nonlinearityGraphicComposite_D48_measured;
+	public static String nonlinearityGraphicComposite_D48_corrected;
+	public static String nonlinearityGraphicComposite_48_verticalLabel;
+	public static String nonlinearityGraphicComposite_48_horizontalLabel;
 
 	public static String etfParameterComposite_acidTempLabel;
 	public static String etfParameterComposite_temperatureMustBeValidNumber;
@@ -821,16 +829,25 @@ public class Messages extends NLS {
 	public static String co2Etf_offset;
 	public static String co2Etf_disabled;
 	public static String co2Etf_sample;
-	public static String co2Etf_d47;
-	public static String co2Etf_D47;
-	public static String co2Etf_D47CDES;
-	public static String co2Etf_graph1VerticalLabel;
-	public static String co2Etf_graph1HorizontalLabel;
-	public static String co2Etf_graph2VerticalLabel;
-	public static String co2Etf_graph2HorizontalLabel;
 	public static String co2Etf_openReplicate;
 	public static String co2Etf_enableReplicate;
 	public static String co2Etf_disableReplicate;
+
+	public static String d47Etf_graph1VerticalLabel;
+	public static String d47Etf_graph1HorizontalLabel;
+	public static String d47Etf_graph2VerticalLabel;
+	public static String d47Etf_graph2HorizontalLabel;
+	public static String d47Etf_d47;
+	public static String d47Etf_D47;
+	public static String d47Etf_D47CDES;
+
+	public static String d48Etf_graph1VerticalLabel;
+	public static String d48Etf_graph1HorizontalLabel;
+	public static String d48Etf_graph2VerticalLabel;
+	public static String d48Etf_graph2HorizontalLabel;
+	public static String d48Etf_d48;
+	public static String d48Etf_D48;
+	public static String d48Etf_D48CDES;
 
 	public static String co2EtfPbl_slope;
 	public static String co2EtfPbl_intercept;
@@ -838,17 +855,26 @@ public class Messages extends NLS {
 	public static String co2EtfPbl_offset;
 	public static String co2EtfPbl_disabled;
 	public static String co2EtfPbl_sample;
-	public static String co2EtfPbl_d47;
-	public static String co2EtfPbl_D47;
-	public static String co2EtfPbl_D47CDES;
-	public static String co2EtfPbl_graph1VerticalLabel;
-	public static String co2EtfPbl_graph1HorizontalLabel;
-	public static String co2EtfPbl_graph2VerticalLabel;
-	public static String co2EtfPbl_graph2HorizontalLabel;
 	public static String co2EtfPbl_openReplicate;
 	public static String co2EtfPbl_enableReplicate;
 	public static String co2EtfPbl_disableReplicate;
 	
+	public static String d47EtfPbl_graph1VerticalLabel;
+	public static String d47EtfPbl_graph1HorizontalLabel;
+	public static String d47EtfPbl_graph2VerticalLabel;
+	public static String d47EtfPbl_graph2HorizontalLabel;
+	public static String d47EtfPbl_d47;
+	public static String d47EtfPbl_D47;
+	public static String d47EtfPbl_D47CDES;
+
+	public static String d48EtfPbl_graph1VerticalLabel;
+	public static String d48EtfPbl_graph1HorizontalLabel;
+	public static String d48EtfPbl_graph2VerticalLabel;
+	public static String d48EtfPbl_graph2HorizontalLabel;
+	public static String d48EtfPbl_d48;
+	public static String d48EtfPbl_D48;
+	public static String d48EtfPbl_D48CDES;
+
 	public static String co2EthPBL_openScan;
 	public static String co2EthPBL_enableScan;
 	public static String co2EthPBL_disableScan;

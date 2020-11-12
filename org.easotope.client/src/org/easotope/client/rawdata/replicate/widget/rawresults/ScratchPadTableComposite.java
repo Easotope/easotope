@@ -88,7 +88,7 @@ public class ScratchPadTableComposite extends Composite {
 		formData.right = new FormAttachment(100);
 		standardsErrorMessage.setLayoutData(formData);
 		standardsErrorMessage.setText(Messages.resultsCompositeTab_standardsErrorMessage);
-		standardsErrorMessage.setForeground(ColorCache.getColor(getDisplay(), ColorCache.YELLOW));
+		standardsErrorMessage.setForeground(ColorCache.getColor(getDisplay(), ColorCache.WARNING_TEXT));
 		standardsErrorMessage.setVisible(false);
 	}
 

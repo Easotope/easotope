@@ -68,7 +68,8 @@ public class Controller extends StepController {
 	@Override
 	public InputDescription[] getInputDescription() {
 		return new InputDescription[] {
-			new SamInputDescription(Calculator.INPUT_LABEL_Δ47, true)
+			new SamInputDescription(Calculator.INPUT_LABEL_Δ47, true),
+			new SamInputDescription(Calculator.INPUT_LABEL_Δ48, true)
 		};
 	}
 
@@ -78,7 +79,11 @@ public class Controller extends StepController {
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_SD, "0.000"),
 			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_SE, "0.000"),
-			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_CI, "0.000")
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ47_CI, "0.000"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ48, "0.000"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ48_SD, "0.000"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ48_SE, "0.000"),
+			new SamOutputDescription(Calculator.OUTPUT_LABEL_Δ48_CI, "0.000")
 		};
 	}
 }

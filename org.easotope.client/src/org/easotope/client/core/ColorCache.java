@@ -43,16 +43,17 @@ public class ColorCache {
 	public static final int[] LIGHT_GREY = new int[] { 0xe0, 0xe0, 0xe0 };
 	public static final int[] RED = new int[] { 0xff, 0x00, 0x00 };
 	public static final int[] YELLOW = new int[] { 0xff, 0xff, 0x00 };
+	public static final int[] WARNING_TEXT = new int[] { 0xfb, 0xc5, 0x0b };
 
 	// Wong, B. (2011) Points of view: Color blindness. Nature Methods 8:441.
 	private static int[][] standardPalette = {
 		{ 213, 94, 0 },		// vermillion
-		{ 0, 114, 178 },		// blue
+		{ 0, 114, 178 },	// blue
 		{ 204, 121, 167 },	// reddish purple
-		{ 230, 159, 0 },		// orange
-		{ 0, 158, 115 },		// bluish green
+		{ 230, 159, 0 },	// orange
+		{ 0, 158, 115 },	// bluish green
 		{ 86, 180, 233 },	// sky blue
-		{ 240, 228, 66 }		// yellow
+		{ 240, 228, 66 }	// yellow
 	};
 
 //	// old Easotope colors

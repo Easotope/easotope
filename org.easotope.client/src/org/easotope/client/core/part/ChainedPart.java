@@ -27,8 +27,9 @@
 
 package org.easotope.client.core.part;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.swt.SWT;
@@ -39,7 +40,7 @@ public abstract class ChainedPart extends EasotopePart {
 	private HashMap<String,Object> selection = new HashMap<String,Object>();
 	private int lastChainedCompositeIndex = -1;
 	private HashMap<Integer,ChainedComposite> indexToChainedComposites = new HashMap<Integer,ChainedComposite>();
-	private HashSet<Integer> chainedCompositeNeedsSelection = null;
+	private ArrayList<Integer> chainedCompositeNeedsSelection = null;
 
 	int registerComposite(ChainedComposite chainedComposite) {
 		lastChainedCompositeIndex++;
@@ -48,6 +49,7 @@ public abstract class ChainedPart extends EasotopePart {
 
 		if (chainedCompositeNeedsSelection != null) {
 			chainedCompositeNeedsSelection.add(lastChainedCompositeIndex);
+			Collections.sort(chainedCompositeNeedsSelection);
 		}
 
 		return lastChainedCompositeIndex;
@@ -92,13 +94,14 @@ public abstract class ChainedPart extends EasotopePart {
 		if (chainedCompositeNeedsSelection == null) {
 			// this is not a recursive call
 
-			chainedCompositeNeedsSelection = new HashSet<Integer>();
+			chainedCompositeNeedsSelection = new ArrayList<Integer>();
 			chainedCompositeNeedsSelection.addAll(indexToChainedComposites.keySet());
-			chainedCompositeNeedsSelection.remove(callersIndex);
+			chainedCompositeNeedsSelection.remove((Integer) callersIndex);
+			while (chainedCompositeNeedsSelection.remove(null));
+			Collections.sort(chainedCompositeNeedsSelection);
 
 			while (!chainedCompositeNeedsSelection.isEmpty()) {
-				Integer nextIndex = (Integer) chainedCompositeNeedsSelection.toArray()[0];
-				chainedCompositeNeedsSelection.remove(nextIndex);
+				Integer nextIndex = (Integer) chainedCompositeNeedsSelection.remove(0);
 				ChainedComposite chainedComposite = indexToChainedComposites.get(nextIndex);
 
 				if (chainedComposite != null) {
@@ -116,6 +119,8 @@ public abstract class ChainedPart extends EasotopePart {
 					chainedCompositeNeedsSelection.add(callersIndex);
 				}
 			}
+			
+			Collections.sort(chainedCompositeNeedsSelection);
 		}
 	}
 

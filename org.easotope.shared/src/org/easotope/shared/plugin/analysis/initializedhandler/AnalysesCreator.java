@@ -382,7 +382,7 @@ public class AnalysesCreator {
 					"Δ48 WG (Raw)",
 			});
 			setStepOutputs(repStep, new String[] {
-					"Δ48 WG (HG)",
+					"Δ48 WG (Off)",
 					"Δ48 Offset"
 			});
 			setStepFormats(repStep);
@@ -1292,13 +1292,18 @@ public class AnalysesCreator {
 			samStep.setClazz("org.easotope.shared.analysis.samstep.co2.clumpaverage.Controller");
 			samStep.setPosition(2);
 			setStepInputs(samStep, new String[] {
-					"Δ47 CDES (Final)"
+					"Δ47 CDES (Final)",
+					"Δ48 CDES (Final)"
 			});
 			setStepOutputs(samStep, new String[] {
 					"Δ47 CDES (Final)",
 					"Δ47 CDES (Final) SD",
 					"Δ47 CDES (Final) SE",
 					"Δ47 CDES (Final) CI",
+					"Δ48 CDES (Final)",
+					"Δ48 CDES (Final) SD",
+					"Δ48 CDES (Final) SE",
+					"Δ48 CDES (Final) CI",
 			});
 			setStepFormats(samStep);
 			samStepDao.create(samStep);
@@ -1309,7 +1314,7 @@ public class AnalysesCreator {
 			samStep.setPosition(3);
 			setStepInputs(samStep, new String[] {
 					"Acid Temp",
-					"Clumped AFF",
+					"Δ47 AFF",
 					"Δ47 CDES (Final)"
 			});
 			setStepOutputs(samStep, new String[] {

@@ -50,7 +50,7 @@ public class Upgrade20160704 extends DatabaseUpgrade {
 	}
 
 	@Override
-	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource) {
+	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion) {
 		try {
 			Dao<Preferences,Integer> scanV2Dao = DaoManager.createDao(connectionSource, Preferences.class);
 			scanV2Dao.executeRaw("ALTER TABLE " + Preferences.TABLE_NAME + " ADD COLUMN " + Preferences.PREVIOUSBESTSERVER_FIELD_NAME + " INT DEFAULT 0;");

@@ -161,7 +161,7 @@ public class LifeCycleManager implements ProcessorListener, LoginInfoCacheLoginI
 
 				case FOLDER:
 					String path = ApplicationPreferences.get(Key.Param1);
-					processor = new FolderProcessor(path, false, false);
+					processor = new FolderProcessor(path, false, false, false);
 					break;
 			}
 

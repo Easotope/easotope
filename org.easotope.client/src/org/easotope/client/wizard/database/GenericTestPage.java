@@ -237,7 +237,7 @@ public class GenericTestPage extends WizardPage implements CommandListener {
 			
 				case FOLDER:
 					String path = wizard.folderInputPage.getPath();
-					wizard.processor = new FolderProcessor(path, false, true);
+					wizard.processor = new FolderProcessor(path, false, false, true);
 					break;
 			}
 

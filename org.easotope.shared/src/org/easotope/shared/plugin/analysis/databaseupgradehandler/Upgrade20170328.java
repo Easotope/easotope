@@ -54,7 +54,7 @@ public class Upgrade20170328 extends DatabaseUpgrade {
 	}
 
 	@Override
-	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource) {
+	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion) {
 		Log.getInstance().log(Level.INFO, Upgrade20170328.class, "Creating options table");
 
 		try {

@@ -55,6 +55,7 @@ import com.j256.ormlite.support.ConnectionSource;
 
 public class FolderProcessor extends ThreadProcessor {
 	private boolean isServerMode;
+	private boolean reparseAcquisitions;
 	private String source;
 	private String jdbcUrl;
 	private RawFileManager rawFileManager;
@@ -63,8 +64,9 @@ public class FolderProcessor extends ThreadProcessor {
 	private boolean dbInitialized = false;
 	private ConnectionSource connectionSource;
 
-	public FolderProcessor(String source, boolean isServerMode, boolean createIfNecessary) {
+	public FolderProcessor(String source, boolean isServerMode, boolean reparseAcquisitions, boolean createIfNecessary) {
 		this.isServerMode = isServerMode;
+		this.reparseAcquisitions = reparseAcquisitions;
 		this.source = source;
 
 		String jdbcCompatibleSource = Platform.isWindows() ? source.replace(File.separator, "/") : source;
@@ -115,7 +117,7 @@ public class FolderProcessor extends ThreadProcessor {
 //ADD_FOR_BATCH_IMPORT
 //			batchStorageManager.removeAllCommands();
 			ArrayList<Event> events = new ArrayList<Event>();
-			events.add(new CoreStartup(isServerMode, version.getLastServerVersion()));
+			events.add(new CoreStartup(isServerMode, version.getLastServerVersion(), reparseAcquisitions));
 			Activator.distributeEventToPlugins(events, rawFileManager, connectionSource);
 		}
 

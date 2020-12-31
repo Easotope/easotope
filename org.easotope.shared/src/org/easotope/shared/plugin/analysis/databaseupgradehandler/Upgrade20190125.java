@@ -27,16 +27,8 @@
 
 package org.easotope.shared.plugin.analysis.databaseupgradehandler;
 
-import org.easotope.framework.core.logging.Log;
-import org.easotope.framework.core.logging.Log.Level;
 import org.easotope.framework.dbcore.util.RawFileManager;
-import org.easotope.shared.analysis.tables.RepStepParams;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.stmt.PreparedQuery;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 public class Upgrade20190125 extends DatabaseUpgrade {
@@ -51,50 +43,50 @@ public class Upgrade20190125 extends DatabaseUpgrade {
 	}
 
 	@Override
-	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource) {
-		// fix clumped analysis
-		
-		if (!shiftParametersBy(connectionSource, 1, 10, 3)) {
-			return false;
-		}
-
-		// fix icl analysis
-
-		if (!shiftParametersBy(connectionSource, 2, 10, 2)) {
-			return false;
-		}
-
-		// fix eth analysis
-
-		if (!shiftParametersBy(connectionSource, 3, 11, 3)) {
-			return false;
-		}
+	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion) {
+//		// fix clumped analysis
+//		
+//		if (!shiftParametersBy(connectionSource, 1, 10, 3)) {
+//			return false;
+//		}
+//
+//		// fix icl analysis
+//
+//		if (!shiftParametersBy(connectionSource, 2, 10, 2)) {
+//			return false;
+//		}
+//
+//		// fix eth analysis
+//
+//		if (!shiftParametersBy(connectionSource, 3, 11, 3)) {
+//			return false;
+//		}
 
 		rebuildAnalyses = true;
 		return true;
 	}
 
-	private boolean shiftParametersBy(ConnectionSource connectionSource, int analysisId, int position, int shiftBy) {
-		try {
-			Dao<RepStepParams,Integer> repStepParamsDao = DaoManager.createDao(connectionSource, RepStepParams.class);
-
-			QueryBuilder<RepStepParams,Integer> queryBuilder = repStepParamsDao.queryBuilder();
-			Where<RepStepParams, Integer> where = queryBuilder.where();
-			where = where.eq(RepStepParams.ANALYSIS_ID_FIELD_NAME, analysisId);
-			where = where.and();
-			where = where.ge(RepStepParams.POSITION_FIELD_NAME, position);
-			PreparedQuery<RepStepParams> preparedQuery = queryBuilder.prepare();
-
-			for (RepStepParams repStepParams : repStepParamsDao.query(preparedQuery)) {
-				repStepParams.setPosition(repStepParams.getPosition() + shiftBy);
-				repStepParamsDao.update(repStepParams);
-			}
-
-		} catch (Exception e) {
-			Log.getInstance().log(Level.INFO, Upgrade20190125.class, "Error while shifting analysis (id=" + analysisId + ") RepStepParams", e);
-			return false;
-		}
-		
-		return true;
-	}
+//	private boolean shiftParametersBy(ConnectionSource connectionSource, int analysisId, int position, int shiftBy) {
+//		try {
+//			Dao<RepStepParams,Integer> repStepParamsDao = DaoManager.createDao(connectionSource, RepStepParams.class);
+//
+//			QueryBuilder<RepStepParams,Integer> queryBuilder = repStepParamsDao.queryBuilder();
+//			Where<RepStepParams, Integer> where = queryBuilder.where();
+//			where = where.eq(RepStepParams.ANALYSIS_ID_FIELD_NAME, analysisId);
+//			where = where.and();
+//			where = where.ge(RepStepParams.POSITION_FIELD_NAME, position);
+//			PreparedQuery<RepStepParams> preparedQuery = queryBuilder.prepare();
+//
+//			for (RepStepParams repStepParams : repStepParamsDao.query(preparedQuery)) {
+//				repStepParams.setPosition(repStepParams.getPosition() + shiftBy);
+//				repStepParamsDao.update(repStepParams);
+//			}
+//
+//		} catch (Exception e) {
+//			Log.getInstance().log(Level.INFO, Upgrade20190125.class, "Error while shifting analysis (id=" + analysisId + ") RepStepParams", e);
+//			return false;
+//		}
+//		
+//		return true;
+//	}
 }

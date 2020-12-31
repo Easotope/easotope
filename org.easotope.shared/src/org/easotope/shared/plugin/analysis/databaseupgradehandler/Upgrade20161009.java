@@ -66,7 +66,7 @@ public class Upgrade20161009 extends DatabaseUpgrade {
 	}
 
 	@Override
-	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource) {
+	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion) {
 		try {
 			Dao<Permissions,Integer> permissionsDao = DaoManager.createDao(connectionSource, Permissions.class);
 			permissionsDao.executeRaw("UPDATE " + Permissions.TABLE_NAME + " SET " + Permissions.CANEDITCONSTANTS_FIELD_NAME + "=1 WHERE " + Permissions.USERID_FIELD_NAME + "=1");

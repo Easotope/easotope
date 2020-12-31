@@ -52,7 +52,7 @@ public class Upgrade20180724 extends DatabaseUpgrade {
 	}
 
 	@Override
-	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource) {
+	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion) {
 		try {
 			Dao<Options,Integer> optionsDao = DaoManager.createDao(connectionSource, Options.class);
 			optionsDao.executeRaw("ALTER TABLE " + Options.TABLE_NAME + " ADD COLUMN " + Options.OVERVIEW_INCLUDE_STDS_FIELD_NAME + " TINYINT DEFAULT 0 NOT NULL;");

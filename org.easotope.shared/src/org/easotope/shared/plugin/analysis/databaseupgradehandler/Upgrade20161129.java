@@ -51,7 +51,7 @@ public class Upgrade20161129 extends DatabaseUpgrade {
 	}
 
 	@Override
-	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource) {
+	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion) {
 		try {
 			Dao<Permissions,Integer> permissionsDao = DaoManager.createDao(connectionSource, Permissions.class);
 			permissionsDao.executeRaw("ALTER TABLE " + Permissions.TABLE_NAME + " ADD COLUMN " + Permissions.CANBATCHIMPORT_FIELD_NAME + " TINYINT DEFAULT 0 NOT NULL;");

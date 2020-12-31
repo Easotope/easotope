@@ -52,7 +52,7 @@ public class Upgrade20170222 extends DatabaseUpgrade {
 	}
 
 	@Override
-	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource) {
+	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion) {
 		try {
 			Dao<ReplicateV1,Integer> replicateDao = DaoManager.createDao(connectionSource, ReplicateV1.class);
 			Dao<AcquisitionInputV0,Integer> acqusitionInputDao = DaoManager.createDao(connectionSource, AcquisitionInputV0.class);

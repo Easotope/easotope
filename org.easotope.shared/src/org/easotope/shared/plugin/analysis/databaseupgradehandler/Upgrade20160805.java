@@ -54,7 +54,7 @@ public class Upgrade20160805 extends DatabaseUpgrade {
 	}
 
 	@Override
-	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource) {		
+	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion) {		
 		try {
 			Dao<Preferences,Integer> preferencesDao = DaoManager.createDao(connectionSource, Preferences.class);
 			preferencesDao.executeRaw("ALTER TABLE " + Preferences.TABLE_NAME + " ADD COLUMN " + Preferences.LEADINGEXPONENT_FIELD_NAME + " TINYINT DEFAULT 1;");

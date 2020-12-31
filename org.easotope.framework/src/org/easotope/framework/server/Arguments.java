@@ -49,6 +49,7 @@ public class Arguments {
 	private static String BACKUPTIMES_ARG = "backuptimes";
 	private static String MAXBACKUPS_ARG = "maxbackups";
 	private static String DEBUG_ARG = "debug";
+	private static String REPARSE_ACQUISITIONS_ARG = "reparseAcquisitions";
 
 	private boolean isInvalid = false;
 
@@ -58,6 +59,7 @@ public class Arguments {
 	private String backupTimes = null;
 	private int maxBackups = -1;
 	private boolean debug = false;
+	private boolean reparseAcquisitions = false;
 
 	public Arguments(String programName, String[] args) {
 		Options options = new Options();
@@ -69,6 +71,7 @@ public class Arguments {
 		options.addOption(BACKUPTIMES_ARG, true, Messages.arguments_backuptimesHelp);
 		options.addOption(MAXBACKUPS_ARG, true, Messages.arguments_maxbackupsHelp);
 		options.addOption(DEBUG_ARG, false, Messages.arguments_debugHelp);
+		options.addOption(REPARSE_ACQUISITIONS_ARG, false, Messages.arguments_reparseacquisitionsHelp);
 
 	    CommandLineParser parser = new DefaultParser();
 	    CommandLine commandLine = null;
@@ -131,6 +134,10 @@ public class Arguments {
 	    		if (properties.containsKey(DEBUG_ARG)) {
 	    			this.debug = Boolean.parseBoolean(properties.getProperty(DEBUG_ARG));
 	    		}
+
+	    		if (properties.containsKey(REPARSE_ACQUISITIONS_ARG)) {
+	    			this.reparseAcquisitions = Boolean.parseBoolean(properties.getProperty(REPARSE_ACQUISITIONS_ARG));
+	    		}
 	    }
 	    
 	    if (commandLine.getOptionValue(PORT_ARG) != null) {
@@ -165,6 +172,10 @@ public class Arguments {
 
 	    if (commandLine.hasOption(DEBUG_ARG)) {
 	    		this.debug = true;
+	    }
+
+	    if (commandLine.hasOption(REPARSE_ACQUISITIONS_ARG)) {
+    		this.reparseAcquisitions = true;
 	    }
 
 	    if (getPort() == -1) {
@@ -213,5 +224,9 @@ public class Arguments {
 
 	public boolean isDebug() {
 		return debug;
+	}
+	
+	public boolean isReparseAcquisitions() {
+		return reparseAcquisitions;
 	}
 }

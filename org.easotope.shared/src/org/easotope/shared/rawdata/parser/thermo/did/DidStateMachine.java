@@ -183,6 +183,19 @@ public class DidStateMachine implements StateMachine {
 		} else if (string.startsWith("Background:") && !string.endsWith("..")) {
 			background = string;
 
+		} else if (string.startsWith("Init int: ") && !string.endsWith("..")) {
+			double initialIntensity = Double.NaN;
+
+			try {
+				initialIntensity = Double.parseDouble(string.substring("Init int: ".length()).trim());
+			} catch (NumberFormatException e) {
+				// ignore
+			}
+
+			if (!Double.isNaN(initialIntensity)) {
+				mapBuilder.put(InputParameter.Init_Intensity, initialIntensity);
+			}
+
 		} else if (string.trim().startsWith("Sequence Info") && buffer.startsWith(sequenceInfoPattern)) {
 			byte[] intArray = new byte[INTEGER_SIZE];
 

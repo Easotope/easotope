@@ -116,7 +116,7 @@ public class Server implements IApplication, ProcessorListener, LogTerminateList
 			Log.getInstance().setProcessingLevel(Level.DEBUG);
 		}
 
-		processor = new FolderProcessor(serverArgs.getDbDir(), true, true);
+		processor = new FolderProcessor(serverArgs.getDbDir(), true, serverArgs.isReparseAcquisitions(), true);
 		processor.addListener(this);
 		ProcessorManager.getInstance().installProcessor(processor, false);
 

@@ -151,7 +151,7 @@ public class FolderTestPage extends WizardPage implements CommandListener {
 
 			DatabaseWizard wizard = (DatabaseWizard) getWizard();
 			String path = wizard.folderInputPage.getPath();
-			wizard.processor = new FolderProcessor(path, false, false);
+			wizard.processor = new FolderProcessor(path, false, false, false);
 			wizard.processor.process(new VersionGet(), null, this);
 			new Thread(wizard.processor).start();
 		}

@@ -47,7 +47,7 @@ import com.j256.ormlite.table.TableUtils;
 public class CoreStartupHandler {
 	public static ArrayList<Event> execute(CoreStartup event, RawFileManager rawFileManager, ConnectionSource connectionSource) {
 		try {
-			DatabaseUpgrade.upgradeFromVersion(event.getLastServerVersion(), rawFileManager, connectionSource);
+			DatabaseUpgrade.upgradeFromVersion(event.getLastServerVersion(), event.getReparseAcquisitions(), rawFileManager, connectionSource);
 
 			TableUtils.dropTable(connectionSource, CalcReplicateCache.class, true);
 			TableUtils.createTable(connectionSource, CalcReplicateCache.class);

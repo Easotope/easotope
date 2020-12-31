@@ -43,7 +43,7 @@ public class Upgrade20200723 extends DatabaseUpgrade {
 	}
 
 	@Override
-	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource) {
+	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion) {
 		rebuildAnalyses = true;
 		return true;
 	}

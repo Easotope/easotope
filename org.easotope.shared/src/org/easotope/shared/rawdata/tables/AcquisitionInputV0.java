@@ -49,7 +49,7 @@ public class AcquisitionInputV0 extends TableObjectWithIntegerId {
 
 	@DatabaseField(columnName=RAWFILEID_FIELD_NAME, canBeNull=false, index=true)
 	private int rawFileId;
-	@DatabaseField(columnName=REPLICATEID_FIELD_NAME, canBeNull=false)
+	@DatabaseField(columnName=REPLICATEID_FIELD_NAME, canBeNull=false, index=true)
 	private int replicateId;
 	@DatabaseField(columnName=DISABLED_FIELD_NAME, canBeNull=false)
 	private boolean disabled;

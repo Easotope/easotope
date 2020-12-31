@@ -11,7 +11,7 @@
   </tbody>
 </table>
 
-<p>This documentation is for Easotope release 20201112. It contains all the
+<p>This documentation is for Easotope release 20201231. It contains all the
 information necessary to install, configure, and run an Easotope server.</p>
 
 <ul>
@@ -173,6 +173,14 @@ enable additional functionality on the server:</p>
   <tr> 
     <td>debug</td>
     <td>If set to <i>true</i>, this will enable verbose logging.</td>
+  </tr>
+  
+  <tr>
+  	<td>reparseAcquisitions</td>
+  	<td>If set to <i>true</i>, the server will reparse all acquisition
+  	files whenever it starts. This could take a very long time, so this
+  	option should not normally be used. It is only useful in very rare
+  	cases.</td>
   </tr>
 </table>
 

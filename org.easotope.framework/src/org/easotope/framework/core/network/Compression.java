@@ -35,7 +35,7 @@ import java.util.zip.Inflater;
 public class Compression {
 	public static byte[] compress(byte[] bytes) {
 		Deflater dfl = new Deflater();
-		dfl.setLevel(Deflater.BEST_COMPRESSION);
+		dfl.setLevel(Deflater.BEST_SPEED);
 		dfl.setInput(bytes);
 		dfl.finish();
 

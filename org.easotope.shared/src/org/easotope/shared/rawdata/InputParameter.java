@@ -40,6 +40,9 @@ public enum InputParameter {
 	Disabled(Boolean.class, InputParameterType.Flag, null),
 	Off_Peak(Boolean.class, InputParameterType.Flag, null),
 
+	// THERE IS ANOTHER META FIELD AT THE BOTTOM OF THE LIST. IT SHOULD
+	// BE MOVED UP NEXT TIME A REPARSING OF THE INPUT FILES IS NECESSARY.
+
 	Identifier_1(String.class, InputParameterType.Meta, null),			// Thermo specific
 	Identifier_2(String.class, InputParameterType.Meta, null),			// Thermo specific
 	Run(String.class, InputParameterType.Meta, null),					// Thermo specific
@@ -241,7 +244,10 @@ public enum InputParameter {
 	V48_Scan_Factor(Double.class, InputParameterType.Factor2, 480),
 	V48_5_Scan_Factor(Double.class, InputParameterType.Factor2, 485),
 	V49_Scan_Factor(Double.class, InputParameterType.Factor2, 490),
-	V49_5_Scan_Factor(Double.class, InputParameterType.Factor2, 495);
+	V49_5_Scan_Factor(Double.class, InputParameterType.Factor2, 495),
+
+	// MOVE THIS UP TO OTHER META DATA NEXT TIME A REPARSING IS NECESSARY
+	Init_Intensity(String.class, InputParameterType.Meta, null);	// Thermo specific
 
 	private final Class<?> clazz;
 	private final InputParameterType inputParameterType;

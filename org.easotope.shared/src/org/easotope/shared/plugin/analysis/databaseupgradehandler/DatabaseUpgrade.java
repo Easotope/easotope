@@ -55,21 +55,22 @@ import com.j256.ormlite.table.TableUtils;
 public abstract class DatabaseUpgrade {
 	public abstract int appliesToVersion();
 	public abstract int resultsInVersion();
-	public abstract boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource);
+	public abstract boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion);
 
 	public static boolean rebuildScanFileParsed = false;
 	public static boolean rebuildAcquisitionsParsed = false;
 	public static boolean rebuildAnalyses = false;
 
-	public static void upgradeFromVersion(int lastServerVersion, RawFileManager rawFileManager, ConnectionSource connectionSource) {
-		int currentServerVersion = lastServerVersion;
+	public static void upgradeFromVersion(int originalServerVersion, boolean reparseAcquisitions, RawFileManager rawFileManager, ConnectionSource connectionSource) {
+		int currentServerVersion = originalServerVersion;
+		rebuildAcquisitionsParsed = rebuildAcquisitionsParsed || reparseAcquisitions;
 
 		for (DatabaseUpgrade databaseUpgrade : list) {
 			if (databaseUpgrade.appliesToVersion() == currentServerVersion) {
 				Log.getInstance().log(Level.INFO, "Upgrading database from version " + databaseUpgrade.appliesToVersion());
 
 				try {
-					if (!databaseUpgrade.upgrade(rawFileManager, connectionSource)) {
+					if (!databaseUpgrade.upgrade(rawFileManager, connectionSource, originalServerVersion)) {
 						throw new Exception("Upgrade returned false.");
 					}
 				} catch (Exception e) {
@@ -238,6 +239,7 @@ public abstract class DatabaseUpgrade {
 		new Upgrade20180218(),
 		new Upgrade20180724(),
 		new Upgrade20190125(),
-		new Upgrade20200723()
+		new Upgrade20200723(),
+		new Upgrade20201112()
 	};
 }

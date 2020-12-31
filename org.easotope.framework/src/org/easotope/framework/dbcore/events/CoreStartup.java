@@ -36,10 +36,12 @@ public class CoreStartup extends Event {
 
 	private boolean isServerMode;
 	private int lastServerVersion;
+	private boolean reparseAcquisitions;
 
-	public CoreStartup(boolean isServerMode, int lastServerVersion) {
+	public CoreStartup(boolean isServerMode, int lastServerVersion, boolean reparseAcquisitions) {
 		this.isServerMode = isServerMode;
 		this.lastServerVersion = lastServerVersion;
+		this.reparseAcquisitions = reparseAcquisitions;
 	}
 
 	public boolean getIsServerMode() {
@@ -48,6 +50,10 @@ public class CoreStartup extends Event {
 
 	public int getLastServerVersion() {
 		return lastServerVersion;
+	}
+
+	public boolean getReparseAcquisitions() {
+		return reparseAcquisitions;
 	}
 
 	@Override

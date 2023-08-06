@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -121,7 +121,7 @@ public class TabResultsComposite extends EasotopeComposite {
         scratchPadComposite.setLayoutData(formData);
         scratchPadComposite.setLayout(new FormLayout());
 
-        scratchPadTableInput = new ScratchPadTable(scratchPadComposite, false);
+        scratchPadTableInput = new ScratchPadTable(scratchPadComposite, false, false);
         formData = new FormData();
         formData.top = new FormAttachment(0, 5);
         formData.left = new FormAttachment(0);
@@ -130,7 +130,7 @@ public class TabResultsComposite extends EasotopeComposite {
         scratchPadTableInput.setLayoutData(formData);
         scratchPadTableInput.setCanSaveTableLayout(false);
 
-        scratchPadTableOutput = new ScratchPadTable(scratchPadComposite, false);
+        scratchPadTableOutput = new ScratchPadTable(scratchPadComposite, false, false);
         formData = new FormData();
         formData.top = new FormAttachment(50, 5);
         formData.left = new FormAttachment(0);

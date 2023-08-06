@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -199,7 +199,7 @@ public class PblRegression extends Composite {
 			return;
 		}
 
-		double[] coefficients = fitter.getCoefficients();
+		double[] coefficients = fitter.getPolynomial().getCoefficients();
 
 		x2Coeff = (degree == 1) ? 0.0d : coefficients[2];
 		x1Coeff = coefficients[1];
@@ -213,7 +213,7 @@ public class PblRegression extends Composite {
 			graph.addDrawableObjectFirst(lineWithEnds);
 
 		} else {
-			ParabolaWithXRange parabolaWithXRange = new ParabolaWithXRange(x2Coeff, x1Coeff, x0Coeff, minX, maxX, ColorCache.getColor(getDisplay(), ColorCache.BLACK), null);
+			ParabolaWithXRange parabolaWithXRange = new ParabolaWithXRange(coefficients, minX, maxX, ColorCache.getColor(getDisplay(), ColorCache.BLACK), null);
 			graph.addDrawableObjectFirst(parabolaWithXRange);
 		}
 

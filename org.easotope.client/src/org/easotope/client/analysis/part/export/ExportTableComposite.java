@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -91,7 +91,7 @@ public class ExportTableComposite extends ChainedComposite implements Calculated
 		composite.setLayoutData(formData);
 		composite.setLayout(new FormLayout());
 
-		requestedScratchPadTable = new ScratchPadTable(composite, false);
+		requestedScratchPadTable = new ScratchPadTable(composite, false, true);
 		formData = new FormData();
 		formData.top = new FormAttachment(0, 5);
 		formData.left = new FormAttachment(0);
@@ -114,7 +114,7 @@ public class ExportTableComposite extends ChainedComposite implements Calculated
 			}
 		});
 
-		corrIntervalReplicatesTable = new ScratchPadTable(composite, false);
+		corrIntervalReplicatesTable = new ScratchPadTable(composite, false, false);
 		formData = new FormData();
 		formData.top = new FormAttachment(requestedScratchPadTable, 5);
 		formData.left = new FormAttachment(0);

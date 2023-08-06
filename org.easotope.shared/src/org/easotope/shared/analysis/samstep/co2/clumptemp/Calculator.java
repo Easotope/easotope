@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -44,53 +44,13 @@ public class Calculator extends SamStepCalculator {
 	public static final String INPUT_LABEL_ACID_FRACTIONATION_FACTOR = "Acid Fractionation Factor";
 	public static final String INPUT_LABEL_Δ47 = "Δ47";
 
-	public static final String OUTPUT_LABEL_Δ47_KLUGE = "Δ47 Adjusted for Kluge";
-	public static final String OUTPUT_LABEL_Δ47_KLUGE_SD = "Δ47 Adjusted for Kluge SD";
-	public static final String OUTPUT_LABEL_Δ47_KLUGE_SE = "Δ47 Adjusted for Kluge SE";
-	public static final String OUTPUT_LABEL_Δ47_KLUGE_CI = "Δ47 Adjusted for Kluge CI";
-	public static final String OUTPUT_LABEL_KLUGE_MINUS_SE = "Kluge (Δ47-SE)";
-	public static final String OUTPUT_LABEL_KLUGE = "Kluge (Δ47)";
-	public static final String OUTPUT_LABEL_KLUGE_PLUS_SE = "Kluge (Δ47+SE)";
-
-	public static final String OUTPUT_LABEL_Δ47_PASSEY = "Δ47 Adjusted for Passey";
-	public static final String OUTPUT_LABEL_Δ47_PASSEY_SD = "Δ47 Adjusted for Passey SD";
-	public static final String OUTPUT_LABEL_Δ47_PASSEY_SE = "Δ47 Adjusted for Passey SE";
-	public static final String OUTPUT_LABEL_Δ47_PASSEY_CI = "Δ47 Adjusted for Passey CI";
-	public static final String OUTPUT_LABEL_PASSEY_MINUS_SE = "Passey (Δ47-SE)";
-	public static final String OUTPUT_LABEL_PASSEY = "Passey (Δ47)";
-	public static final String OUTPUT_LABEL_PASSEY_PLUS_SE = "Passey (Δ47+SE)";
-
-	public static final String OUTPUT_LABEL_Δ47_HENKES = "Δ47 Adjusted for Henkes";
-	public static final String OUTPUT_LABEL_Δ47_HENKES_SD = "Δ47 Adjusted for Henkes SD";
-	public static final String OUTPUT_LABEL_Δ47_HENKES_SE = "Δ47 Adjusted for Henkes SE";
-	public static final String OUTPUT_LABEL_Δ47_HENKES_CI = "Δ47 Adjusted for Henkes CI";
-	public static final String OUTPUT_LABEL_HENKES_MINUS_SE = "Henkes (Δ47-SE)";
-	public static final String OUTPUT_LABEL_HENKES = "Henkes (Δ47)";
-	public static final String OUTPUT_LABEL_HENKES_PLUS_SE = "Henkes (Δ47+SE)";
-
-	public static final String OUTPUT_LABEL_Δ47_GOSH = "Δ47 Adjusted for Gosh";
-	public static final String OUTPUT_LABEL_Δ47_GOSH_SD = "Δ47 Adjusted for Gosh SD";
-	public static final String OUTPUT_LABEL_Δ47_GOSH_SE = "Δ47 Adjusted for Gosh SE";
-	public static final String OUTPUT_LABEL_Δ47_GOSH_CI = "Δ47 Adjusted for Gosh CI";
-	public static final String OUTPUT_LABEL_GOSH_MINUS_SE = "Gosh (Δ47-SE)";
-	public static final String OUTPUT_LABEL_GOSH = "Gosh (Δ47)";
-	public static final String OUTPUT_LABEL_GOSH_PLUS_SE = "Gosh (Δ47+SE)";
-
-	public static final String OUTPUT_LABEL_Δ47_DENNIS = "Δ47 Adjusted for Dennis";
-	public static final String OUTPUT_LABEL_Δ47_DENNIS_SD = "Δ47 Adjusted for Dennis SD";
-	public static final String OUTPUT_LABEL_Δ47_DENNIS_SE = "Δ47 Adjusted for Dennis SE";
-	public static final String OUTPUT_LABEL_Δ47_DENNIS_CI = "Δ47 Adjusted for Dennis CI";
-	public static final String OUTPUT_LABEL_DENNIS_MINUS_SE = "Dennis (Δ47-SE)";
-	public static final String OUTPUT_LABEL_DENNIS = "Dennis (Δ47)";
-	public static final String OUTPUT_LABEL_DENNIS_PLUS_SE = "Dennis (Δ47+SE)";
-
-	public static final String OUTPUT_LABEL_Δ47_ZARUUR = "Δ47 Adjusted for Zaruur";
-	public static final String OUTPUT_LABEL_Δ47_ZARUUR_SD = "Δ47 Adjusted for Zaruur SD";
-	public static final String OUTPUT_LABEL_Δ47_ZARUUR_SE = "Δ47 Adjusted for Zaruur SE";
-	public static final String OUTPUT_LABEL_Δ47_ZARUUR_CI = "Δ47 Adjusted for Zaruur CI";
-	public static final String OUTPUT_LABEL_ZARUUR_MINUS_SE = "Zaruur (Δ47-SE)";
-	public static final String OUTPUT_LABEL_ZARUUR = "Zaruur (Δ47)";
-	public static final String OUTPUT_LABEL_ZARUUR_PLUS_SE = "Zaruur (Δ47+SE)";
+	public static final String OUTPUT_LABEL_Δ47_ANDERSON = "Δ47 Adjusted for Anderson";
+	public static final String OUTPUT_LABEL_Δ47_ANDERSON_SD = "Δ47 Adjusted for Anderson SD";
+	public static final String OUTPUT_LABEL_Δ47_ANDERSON_SE = "Δ47 Adjusted for Anderson SE";
+	public static final String OUTPUT_LABEL_Δ47_ANDERSON_CI = "Δ47 Adjusted for Anderson CI";
+	public static final String OUTPUT_LABEL_ANDERSON_MINUS_SE = "Anderson (Δ47-SE)";
+	public static final String OUTPUT_LABEL_ANDERSON = "Anderson (Δ47)";
+	public static final String OUTPUT_LABEL_ANDERSON_PLUS_SE = "Anderson (Δ47+SE)";
 
 	public Calculator(SamStep samStep) {
 		super(samStep);
@@ -112,7 +72,10 @@ public class Calculator extends SamStepCalculator {
 		atLeastOneConstantChanged = atLeastOneConstantChanged || !DoubleTools.essentiallyEqual(dependencies.getR18VSMOW().getValue(), dependencies.getR18VSMOW().getEnumeration().getDefaultValue());
 		atLeastOneConstantChanged = atLeastOneConstantChanged || !DoubleTools.essentiallyEqual(dependencies.getD18OVPDBVSMOW().getValue(), dependencies.getD18OVPDBVSMOW().getEnumeration().getDefaultValue());
 
-		TempCalibrations[] tempCalibrations = { new Kluge(), new Passey(), new Henkes(), new Gosh(), new Dennis(), new Zaruur() };
+		// hack till I figure out what to do here
+		atLeastOneConstantChanged = false;
+				
+		TempCalibrations[] tempCalibrations = { new Anderson() };
 
 		for (TempCalibrations tempCalibration : tempCalibrations) {
 			for (ReplicatePad replicatePad : samplePad.getChildren()) {
@@ -120,7 +83,7 @@ public class Calculator extends SamStepCalculator {
 					replicatePad.setValue(labelToColumnName(tempCalibration.getD47AdjustedLabel()), "UNDEFINED");
 					continue;
 				}
-
+				
 				Double atReplicate = getDouble(replicatePad, INPUT_LABEL_ACID_TEMP);
 				Double affReplicate = getDouble(replicatePad, INPUT_LABEL_ACID_FRACTIONATION_FACTOR);
 				Double d47 = getDouble(replicatePad, INPUT_LABEL_Δ47);
@@ -268,111 +231,21 @@ public class Calculator extends SamStepCalculator {
 		}
 	}
 
-	private class Kluge extends TempCalibrations {
-		//Kluge et al, 2015
-		//AFF = 0.069
-		//calibration range 25 - 250 degrees C
-		//D = 0.98 * (((-3.407*10^9) / (T^4)) + ((2.365*10^7) / (T^3)) + ((-2.607*10^3) / (T^2)) + ((-5.880) / (T))) + 0.293
+	private class Anderson extends TempCalibrations {
+		//Anderson et al 2021
+		//WARNING: PUBLISHED VERSION HAS +- VALUES THAT HAVE BEEN REMOVED
+		//D = 0.0391 * (10^6 / T^2) + 0.154
 
-		Kluge() {
-			atOfEquation = 90.0;
-			affOfEquation = 0.069;
-			d47AdjustedLabel = OUTPUT_LABEL_Δ47_KLUGE;
-			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_KLUGE_SD;
-			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_KLUGE_SE;
-			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_KLUGE_CI;
-			tempMinusSeLabel = OUTPUT_LABEL_KLUGE_MINUS_SE;
-			tempLabel = OUTPUT_LABEL_KLUGE;
-			tempPlusSeLabel = OUTPUT_LABEL_KLUGE_PLUS_SE;
-			lowValue = 195.51;
-			highValue = 2944.2;
-		}
-
-		public TempEquation getTempEquation(double d47) {
-			return new TempEquation(d47) {
-				@Override
-				public double solve(double t) {
-					return 0.98 * ((-3.407e9 / Math.pow(t, 4)) + (2.365e7 / Math.pow(t, 3)) + (-2.607e3 / Math.pow(t, 2)) + (-5.880 / t)) + 0.293 - this.d47;
-				}
-			};
-		}
-	}
-
-	private class Passey extends TempCalibrations {
-		//Passey and Henkes, 2012
-		//AFF = 0.081
-		//D = ((-3.407*10^9) / (T^4)) + ((2.365*10^7) / (T^3)) + ((-2.607*10^3) / (T^2)) + ((-5.880) / (T)) + 0.280
-
-		Passey() {
-			atOfEquation = 90.0;
-			affOfEquation = 0.081;
-			d47AdjustedLabel = OUTPUT_LABEL_Δ47_PASSEY;
-			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_PASSEY_SD;
-			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_PASSEY_SE;
-			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_PASSEY_CI;
-			tempMinusSeLabel = OUTPUT_LABEL_PASSEY_MINUS_SE;
-			tempLabel = OUTPUT_LABEL_PASSEY;
-			tempPlusSeLabel = OUTPUT_LABEL_PASSEY_PLUS_SE;
-			lowValue = 195.51;
-			highValue = 2944.2;
-		}
-
-		public TempEquation getTempEquation(double d47) {
-			return new TempEquation(d47) {
-				@Override
-				public double solve(double t) {
-					return (-3.407e9 / Math.pow(t, 4)) + (2.365e7 / Math.pow(t, 3)) + (-2.607e3 / Math.pow(t, 2)) + (-5.880 / t) + 0.280 - this.d47;
-				}
-			};
-		}
-	}
-
-	private class Henkes extends TempCalibrations {
-		//Henkes et al, 2013
-		//AFF = 0.081
-		//D = ((0.0327*10^6) / (T^2)) + 0.3286
-
-		Henkes() {
-			atOfEquation = 90.0;
-			affOfEquation = 0.081;
-			d47AdjustedLabel = OUTPUT_LABEL_Δ47_HENKES;
-			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_HENKES_SD;
-			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_HENKES_SE;
-			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_HENKES_CI;
-			tempMinusSeLabel = OUTPUT_LABEL_HENKES_MINUS_SE;
-			tempLabel = OUTPUT_LABEL_HENKES;
-			tempPlusSeLabel = OUTPUT_LABEL_HENKES_PLUS_SE;
-			lowValue = 1;
-			highValue = 10000;
-		}
-
-		public TempEquation getTempEquation(double d47) {
-			return new TempEquation(d47) {
-				@Override
-				public double solve(double t) {
-					return (0.0327e6 / Math.pow(t, 2)) + 0.3286 - this.d47;
-				}
-			};
-		}
-	}
-
-	private class Gosh extends TempCalibrations {
-		//Gosh et al 2006 calibration as recalibrated for the CDES scale in Dennis et al 2011
-		//AFF = 0.000 (25 degrees C acidification)
-		//calibration range 1 - 50 degrees C
-		//WARNING: ORIGINAL HAD +- VALUES THAT HAVE BEEN REMOVED
-		//D = ((0.0636*10^6) / (T^2)) - 0.0047
-
-		Gosh() {
+		Anderson() {
 			atOfEquation = 25.0;
 			affOfEquation = 0.000;
-			d47AdjustedLabel = OUTPUT_LABEL_Δ47_GOSH;
-			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_GOSH_SD;
-			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_GOSH_SE;
-			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_GOSH_CI;
-			tempMinusSeLabel = OUTPUT_LABEL_GOSH_MINUS_SE;
-			tempLabel = OUTPUT_LABEL_GOSH;
-			tempPlusSeLabel = OUTPUT_LABEL_GOSH_PLUS_SE;
+			d47AdjustedLabel = OUTPUT_LABEL_Δ47_ANDERSON;
+			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_ANDERSON_SD;
+			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_ANDERSON_SE;
+			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_ANDERSON_CI;
+			tempMinusSeLabel = OUTPUT_LABEL_ANDERSON_MINUS_SE;
+			tempLabel = OUTPUT_LABEL_ANDERSON;
+			tempPlusSeLabel = OUTPUT_LABEL_ANDERSON_PLUS_SE;
 			lowValue = 1;
 			highValue = 10000;
 		}
@@ -381,68 +254,7 @@ public class Calculator extends SamStepCalculator {
 			return new TempEquation(d47) {
 				@Override
 				public double solve(double t) {
-					return (0.0636e6 / Math.pow(t, 2)) - 0.0047 - this.d47;
-				}
-			};
-		}
-	}
-
-	private class Dennis extends TempCalibrations {
-		//Dennis and Schrag 2010 calibration as recalibrated for the CDES scale in Dennis et al 2011
-		//AFF = 0.069
-		//calibration range 7.5 - 77 degrees C
-		//WARNING: ORIGINAL HAD +- VALUES THAT HAVE BEEN REMOVED
-		//D = ((0.0362*10^6) / (T^2)) + 0.2920
-
-		Dennis() {
-			atOfEquation = 90.0;
-			affOfEquation = 0.069;
-			d47AdjustedLabel = OUTPUT_LABEL_Δ47_DENNIS;
-			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_DENNIS_SD;
-			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_DENNIS_SE;
-			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_DENNIS_CI;
-			tempMinusSeLabel = OUTPUT_LABEL_DENNIS_MINUS_SE;
-			tempLabel = OUTPUT_LABEL_DENNIS;
-			tempPlusSeLabel = OUTPUT_LABEL_DENNIS_PLUS_SE;
-			lowValue = 1;
-			highValue = 10000;
-		}
-
-		public TempEquation getTempEquation(double d47) {
-			return new TempEquation(d47) {
-				@Override
-				public double solve(double t) {
-					return (0.0362e6 / Math.pow(t, 2)) + 0.2920 - this.d47;
-				}
-			};
-		}
-	}
-	
-	private class Zaruur extends TempCalibrations {
-		//Zaruur et al 2013
-		//AFF = 0.000 (25 degrees C acidification)
-		//WARNING: ORIGINAL HAD +- VALUES THAT HAVE BEEN REMOVED
-		//D = ((0.0526*10^6) / (T^2)) + 0.0520
-
-		Zaruur() {
-			atOfEquation = 25.0;
-			affOfEquation = 0.000;
-			d47AdjustedLabel = OUTPUT_LABEL_Δ47_ZARUUR;
-			d47AdjustedSdLabel = OUTPUT_LABEL_Δ47_ZARUUR_SD;
-			d47AdjustedSeLabel = OUTPUT_LABEL_Δ47_ZARUUR_SE;
-			d47AdjustedCiLabel = OUTPUT_LABEL_Δ47_ZARUUR_CI;
-			tempMinusSeLabel = OUTPUT_LABEL_ZARUUR_MINUS_SE;
-			tempLabel = OUTPUT_LABEL_ZARUUR;
-			tempPlusSeLabel = OUTPUT_LABEL_ZARUUR_PLUS_SE;
-			lowValue = 1;
-			highValue = 10000;
-		}
-
-		public TempEquation getTempEquation(double d47) {
-			return new TempEquation(d47) {
-				@Override
-				public double solve(double t) {
-					return (0.0526e6 / Math.pow(t, 2)) + 0.0520 - this.d47;
+					return (0.0391e6 / Math.pow(t, 2)) + 0.154 - this.d47;
 				}
 			};
 		}

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -68,6 +68,7 @@ public class ComputeAcquisitionParsed {
 			HashMap<InputParameter,Double> backgrounds = new HashMap<InputParameter,Double>();
 			HashMap<InputParameter,Object> misc = new HashMap<InputParameter,Object>();
 			Integer[] channelToMzX10 = null;
+			AcquisitionParsedV2.DataFormat dataFormat = AcquisitionParsedV2.DataFormat.DUALINLET;
 
 			for (InputParameter parameter : map.keySet()) {
 				Object obj = map.get(parameter);
@@ -110,6 +111,9 @@ public class ComputeAcquisitionParsed {
 				} else if (parameter.getIsBackground()) {
 					backgrounds.put(parameter, (Double) obj);
 
+				} else if (parameter == InputParameter.Data_Format && obj != null) {
+					dataFormat = (AcquisitionParsedV2.DataFormat) obj;
+
 				} else {
 					misc.put(parameter, obj);
 				}
@@ -127,6 +131,7 @@ public class ComputeAcquisitionParsed {
 			acquisition.setBackgrounds(backgrounds);
 			acquisition.setChannelToMzX10(channelToMzX10);
 			acquisition.setMisc(misc);
+			acquisition.setDataFormat(dataFormat);
 
 			maps.add(acquisition);
 		}

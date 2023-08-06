@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -57,7 +57,7 @@ public class SamAnalysisCo2Clumped extends AnalysesCreator {
 
 		samStep = new SamStep();
 		samStep.setAnalysisId(samAnalysis.getId());
-		samStep.setClazz("org.easotope.shared.analysis.samstep.co2.co2average.Controller");
+		samStep.setClazz(org.easotope.shared.analysis.samstep.co2.co2average.Controller.class.getName());
 		samStep.setPosition(1);
 		setStepInputs(samStep, new String[] {
 				"δ¹³C VPDB (Final)",
@@ -83,28 +83,23 @@ public class SamAnalysisCo2Clumped extends AnalysesCreator {
 
 		samStep = new SamStep();
 		samStep.setAnalysisId(samAnalysis.getId());
-		samStep.setClazz("org.easotope.shared.analysis.samstep.co2.clumpaverage.Controller");
+		samStep.setClazz(org.easotope.shared.analysis.samstep.co2.clumpaverage.Controller.class.getName());
 		samStep.setPosition(2);
 		setStepInputs(samStep, new String[] {
 				"Δ47 CDES (Final)",
-				"Δ48 CDES (Final)"
 		});
 		setStepOutputs(samStep, new String[] {
 				"Δ47 CDES (Final)",
 				"Δ47 CDES (Final) SD",
 				"Δ47 CDES (Final) SE",
 				"Δ47 CDES (Final) CI",
-				"Δ48 CDES (Final)",
-				"Δ48 CDES (Final) SD",
-				"Δ48 CDES (Final) SE",
-				"Δ48 CDES (Final) CI",
 		});
 		setStepFormats(samStep);
 		samStepDao.create(samStep);
 
 		samStep = new SamStep();
 		samStep.setAnalysisId(samAnalysis.getId());
-		samStep.setClazz("org.easotope.shared.analysis.samstep.co2.clumptemp.Controller");
+		samStep.setClazz(org.easotope.shared.analysis.samstep.co2.clumptemp.Controller.class.getName());
 		samStep.setPosition(3);
 		setStepInputs(samStep, new String[] {
 				"Acid Temp",
@@ -112,48 +107,13 @@ public class SamAnalysisCo2Clumped extends AnalysesCreator {
 				"Δ47 CDES (Final)"
 		});
 		setStepOutputs(samStep, new String[] {
-				"Δ47 Dennis",
-				"Δ47 Dennis SD",
-				"Δ47 Dennis SE",
-				"Δ47 Dennis CI",
-				"Dennis-SE ˚C",
-				"Dennis ˚C",
-				"Dennis+SE ˚C",
-				"Δ47 Gosh",
-				"Δ47 Gosh SD",
-				"Δ47 Gosh SE",
-				"Δ47 Gosh CI",
-				"Gosh-SE ˚C",
-				"Gosh ˚C",
-				"Gosh+SE ˚C",
-				"Δ47 Henkes",
-				"Δ47 Henkes SD",
-				"Δ47 Henkes SE",
-				"Δ47 Henkes CI",
-				"Henkes-SE ˚C",
-				"Henkes ˚C",
-				"Henkes+SE ˚C",
-				"Δ47 Kluge",
-				"Δ47 Kluge SD",
-				"Δ47 Kluge SE",
-				"Δ47 Kluge CI",
-				"Kluge-SE ˚C",
-				"Kluge ˚C",
-				"Kluge+SE ˚C",
-				"Δ47 Passey",
-				"Δ47 Passey SD",
-				"Δ47 Passey SE",
-				"Δ47 Passey CI",
-				"Passey-SE ˚C",
-				"Passey ˚C",
-				"Passey+SE ˚C",
-				"Δ47 Zaruur",
-				"Δ47 Zaruur SD",
-				"Δ47 Zaruur SE",
-				"Δ47 Zaruur CI",
-				"Zaruur-SE ˚C",
-				"Zaruur ˚C",
-				"Zaruur+SE ˚C"
+				"Δ47 Anderson",
+				"Δ47 Anderson SD",
+				"Δ47 Anderson SE",
+				"Δ47 Anderson CI",
+				"Anderson-SE ˚C",
+				"Anderson ˚C",
+				"Anderson+SE ˚C",
 		});
 		setStepFormats(samStep);
 		samStepDao.create(samStep);

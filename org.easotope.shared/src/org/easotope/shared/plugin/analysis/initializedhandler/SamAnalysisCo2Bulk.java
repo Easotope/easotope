@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -44,7 +44,7 @@ public class SamAnalysisCo2Bulk extends AnalysesCreator {
 
 		SamStep samStep = new SamStep();
 		samStep.setAnalysisId(samAnalysis.getId());
-		samStep.setClazz("org.easotope.shared.analysis.samstep.generic.sample.Controller");
+		samStep.setClazz(org.easotope.shared.analysis.samstep.generic.sample.Controller.class.getName());
 		samStep.setPosition(0);
 		setStepInputs(samStep, new String[] {
 
@@ -57,7 +57,7 @@ public class SamAnalysisCo2Bulk extends AnalysesCreator {
 
 		samStep = new SamStep();
 		samStep.setAnalysisId(samAnalysis.getId());
-		samStep.setClazz("org.easotope.shared.analysis.samstep.co2.co2average.Controller");
+		samStep.setClazz(org.easotope.shared.analysis.samstep.co2.co2average.Controller.class.getName());
 		samStep.setPosition(1);
 		setStepInputs(samStep, new String[] {
 				"δ¹³C VPDB (Final)",

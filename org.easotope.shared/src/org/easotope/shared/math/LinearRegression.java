@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -88,6 +88,11 @@ public class LinearRegression implements PolynomialFitter {
 
 	public double[] getCoefficients() {
 		return new double[] { getIntercept(), getSlope() };
+	}
+
+	@Override
+	public Polynomial getPolynomial() {
+		return new Polynomial(getCoefficients());
 	}
 
 	public double getR2() {

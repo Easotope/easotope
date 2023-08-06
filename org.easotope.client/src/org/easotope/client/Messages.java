@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -265,6 +265,8 @@ public class Messages extends NLS {
 	public static String loginInfo_showTimeZone;
 	public static String loginInfo_leadingExponent;
 	public static String loginInfo_forceExponent;
+	public static String loginInfo_lidi2RefRange;
+	public static String loginInfo_exportPadding;
 	public static String loginInfo_hasBeenUpdated;
 
 	public static String userAdminPart_userSelectCompositeLabel;
@@ -728,8 +730,6 @@ public class Messages extends NLS {
 	public static String samTabResultsComposite_errorMessageLabel;
 	public static String samTabResultsComposite_emptyRepStepName;
 
-	public static String co2IclPblParameterComposite_allowUnaveragedRefValues;
-
 	public static String co2IclPblGraphicComposite_instructions;
 	public static String co2IclPblGraphicComposite_acquisition;
 	public static String co2IclPblGraphicComposite_slope;
@@ -993,6 +993,17 @@ public class Messages extends NLS {
 	public static String ETHPBLCorrectionType_NearestScan;
 	public static String ETHPBLCorrectionType_Interpolate;
 	public static String ETHPBLCorrectionType_AveragedScans;
+
+	public static String bulkRefCalcParameterComposite_allowUnaveragedRefValues;
+
+	public static String bulkRefCalcGraphicComposite_acquisitionSelectLabel;
+	public static String bulkRefCalcGraphicComposite_mzSelectLabel;
+	public static String bulkRefCalcGraphicComposite_ref1Label;
+	public static String bulkRefCalcGraphicComposite_ref2Label;
+	public static String bulkRefCalcGraphicComposite_interpolatedLabel;
+	public static String bulkRefCalcGraphicComposite_dualInletLabel;
+	public static String bulkRefCalcGraphicComposite_verticalGraphLabel;
+	public static String bulkRefCalcGraphicComposite_horizontalGraphLabel;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

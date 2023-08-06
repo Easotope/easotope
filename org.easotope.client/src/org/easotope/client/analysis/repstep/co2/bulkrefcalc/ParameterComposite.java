@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -25,7 +25,7 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.client.analysis.repstep.co2.clumpcalc;
+package org.easotope.client.analysis.repstep.co2.bulkrefcalc;
 
 import java.util.HashMap;
 
@@ -34,7 +34,7 @@ import org.easotope.client.analysis.superclass.RepStepParamComposite;
 import org.easotope.client.core.adaptors.LoggingSelectionAdaptor;
 import org.easotope.client.core.part.ChainedPart;
 import org.easotope.client.core.widgets.VButton;
-import org.easotope.shared.analysis.repstep.co2.clumpcalc.Calculator;
+import org.easotope.shared.analysis.repstep.co2.bulkrefcalc.Calculator;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -53,7 +53,7 @@ public class ParameterComposite extends RepStepParamComposite {
 		setLayout(gridLayout);
 
 		Label requireAverageRefValuesLabel = new Label(this, SWT.NONE);
-		requireAverageRefValuesLabel.setText(Messages.co2IclPblParameterComposite_allowUnaveragedRefValues);
+		requireAverageRefValuesLabel.setText(Messages.bulkRefCalcParameterComposite_allowUnaveragedRefValues);
 
 		requireAverageRefValues = new VButton(this, SWT.CHECK);
 		requireAverageRefValues.addSelectionListener(new LoggingSelectionAdaptor() {

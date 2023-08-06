@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -69,12 +69,13 @@ public class PolynomialRegression implements PolynomialFitter {
 
 		return false;
 	}
-
-	public double[] getCoefficients() {
+	
+	@Override
+	public Polynomial getPolynomial() {
 		if (isInvalid()) {
 			return null;
 		}
 
-		return coefficients;
+		return new Polynomial(coefficients);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -75,6 +75,34 @@ public class DateParser {
 			date = formatter.parse(dateAsString);
 		} catch (ParseException e) {
 			Log.getInstance().log(Level.INFO, DateParser.class, "Date built from Nu Instruments date line cannot be parsed. Original: " + string + " Built:" + dateAsString);
+			return null;
+		}
+
+		return date.getTime();
+	}
+
+	public static Long lidiCycleHeaderTimeToJavaTime(String string, String assumedTimeZone) {
+		// sample input:
+		//  Gas          Ref            Block        1              LidiRefCycle 40            31/01/2022 21:44:32
+		
+		Pattern myPattern = Pattern.compile("^\\s*Gas\\s+(Bla|Ref|Sam)\\s+Block\\s+\\d+\\s+(Cycle|LidiRefCycle)\\s+\\d+\\s+(\\d{1,2}/\\d{1,2}/\\d{4}\\s+\\d{1,2}:\\d{1,2}:\\d{1,2})$");
+		Matcher matcher = myPattern.matcher(string);
+
+		if (!matcher.matches()) {
+			Log.getInstance().log(Level.INFO, DateParser.class, "Nu Instruments LidiRefCycle line does not match regex: " + string);
+			return null;
+		}
+
+		String timestamp = matcher.group(3);
+
+		SimpleDateFormat formatter = new SimpleDateFormat("d/M/yyyy H:m:s", Locale.ENGLISH);
+		formatter.setTimeZone(getTimeZone(assumedTimeZone));
+		Date date = null;
+
+		try {
+			date = formatter.parse(timestamp);
+		} catch (ParseException e) {
+			Log.getInstance().log(Level.INFO, DateParser.class, "Date in Nu Instruments LidiRefCycle cannot be parsed: " + timestamp);
 			return null;
 		}
 

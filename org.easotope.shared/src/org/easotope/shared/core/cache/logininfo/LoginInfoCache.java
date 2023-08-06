@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -57,8 +57,8 @@ public class LoginInfoCache extends AbstractCache {
 		addPlugin(loginInfoPlugin);
 	}
 
-	public synchronized int savePreferences(String password, String timeZoneId, Boolean checkForUpdates, Boolean showTimeZone, Boolean leadingExponent, Boolean forceExponent, CacheListener listener) {
-		return saveObject(loginInfoPlugin, listener, password, timeZoneId, checkForUpdates, showTimeZone, leadingExponent, forceExponent);
+	public synchronized int savePreferences(String password, String timeZoneId, Boolean checkForUpdates, Boolean showTimeZone, Boolean leadingExponent, Boolean forceExponent, int lidi2RefRange, int exportPadding, CacheListener listener) {
+		return saveObject(loginInfoPlugin, listener, password, timeZoneId, checkForUpdates, showTimeZone, leadingExponent, forceExponent, lidi2RefRange, exportPadding);
 	}
 
 	public synchronized void saveTableLayout(TableLayout tableLayout) {

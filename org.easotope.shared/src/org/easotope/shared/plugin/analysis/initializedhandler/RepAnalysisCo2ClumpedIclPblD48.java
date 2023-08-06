@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -45,7 +45,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		RepStep repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.generic.replicate.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.generic.replicate.Controller.class.getName());
 		repStep.setPosition(0);
 		repStep.setApplyToContext(true);
 		repStep.setApplyToResults(true);
@@ -68,7 +68,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.iclpbl.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.iclpbl.Controller.class.getName());
 		repStep.setPosition(1);
 		repStep.setApplyToContext(true);
 		repStep.setApplyToResults(true);
@@ -113,7 +113,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.co2calc.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.clumprefcalc.Controller.class.getName());
 		repStep.setPosition(2);
 		repStep.setApplyToContext(true);
 		repStep.setApplyToResults(true);
@@ -123,9 +123,41 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 				"V44_Ref (PBL)",
 				"V44_Sample (PBL)",
 				"V45_Ref (PBL)",
-				"V45_Sample (PBL)",
 				"V46_Ref (PBL)",
-				"V46_Sample (PBL)"
+				"V47_Ref (PBL)",
+				"V48_Ref (PBL)",
+				"V49_Ref (PBL)",
+		});
+		setStepOutputs(repStep, new String[] {
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V45_V44_REF_CALC,
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V46_V44_REF_CALC,
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V47_V44_REF_CALC,
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V48_V44_REF_CALC,
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V49_V44_REF_CALC
+		});
+		setStepFormats(repStep);
+		repStepDao.create(repStep);
+
+		repStep = new RepStep();
+		repStep.setAnalysisId(repAnalysis.getId());
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.clumpcalc.Controller.class.getName());
+		repStep.setPosition(3);
+		repStep.setApplyToContext(true);
+		repStep.setApplyToResults(true);
+		setStepInputs(repStep, new String[] {
+				InputParameter.Disabled.toString(),
+				InputParameter.Off_Peak.toString(),
+				"V44_Sample (PBL)",
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V45_V44_REF_CALC,
+				"V45_Sample (PBL)",
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V46_V44_REF_CALC,
+				"V46_Sample (PBL)",
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V47_V44_REF_CALC,
+				"V47_Sample (PBL)",
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V48_V44_REF_CALC,
+				"V48_Sample (PBL)",
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V49_V44_REF_CALC,
+				"V49_Sample (PBL)"
 		});
 		setStepOutputs(repStep, new String[] {
 				"δ¹³C VPDB (PBL)",
@@ -139,34 +171,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 				"δ¹⁸O VSMOW (PBL)",
 				"δ¹⁸O VSMOW (PBL) SD",
 				"δ¹⁸O VSMOW (PBL) SE",
-				"δ¹⁸O VSMOW (PBL) CI"
-		});
-		setStepFormats(repStep);
-		repStepDao.create(repStep);
-
-		repStep = new RepStep();
-		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.clumpcalc.Controller");
-		repStep.setPosition(3);
-		repStep.setApplyToContext(true);
-		repStep.setApplyToResults(true);
-		setStepInputs(repStep, new String[] {
-				InputParameter.Disabled.toString(),
-				InputParameter.Off_Peak.toString(),
-				"V44_Ref (PBL)",
-				"V44_Sample (PBL)",
-				"V45_Ref (PBL)",
-				"V45_Sample (PBL)",
-				"V46_Ref (PBL)",
-				"V46_Sample (PBL)",
-				"V47_Ref (PBL)",
-				"V47_Sample (PBL)",
-				"V48_Ref (PBL)",
-				"V48_Sample (PBL)",
-				"V49_Ref (PBL)",
-				"V49_Sample (PBL)"
-		});
-		setStepOutputs(repStep, new String[] {
+				"δ¹⁸O VSMOW (PBL) CI",
 				"δ45 WG (PBL)",
 				"δ45 WG (PBL) SD",
 				"δ45 WG (PBL) SE",
@@ -209,7 +214,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.cdrift.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.cdrift.Controller.class.getName());
 		repStep.setPosition(4);
 		repStep.setApplyToContext(false);
 		repStep.setApplyToResults(true);
@@ -224,7 +229,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.oacid.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.oacid.Controller.class.getName());
 		repStep.setPosition(5);
 		repStep.setApplyToContext(true);
 		repStep.setApplyToResults(true);
@@ -240,7 +245,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.odrift.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.odrift.Controller.class.getName());
 		repStep.setPosition(6);
 		repStep.setApplyToContext(false);
 		repStep.setApplyToResults(true);
@@ -255,7 +260,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.opdbtosmow.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.opdbtosmow.Controller.class.getName());
 		repStep.setPosition(7);
 		repStep.setApplyToContext(false);
 		repStep.setApplyToResults(true);
@@ -270,7 +275,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d47etfpbl.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.d47etfpbl.Controller.class.getName());
 		repStep.setPosition(8);
 		repStep.setApplyToContext(false);
 		repStep.setApplyToResults(true);
@@ -290,7 +295,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d47acid.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.d47acid.Controller.class.getName());
 		repStep.setPosition(9);
 		repStep.setApplyToContext(false);
 		repStep.setApplyToResults(true);
@@ -306,7 +311,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48etfpbl.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.d48etfpbl.Controller.class.getName());
 		repStep.setPosition(10);
 		repStep.setApplyToContext(false);
 		repStep.setApplyToResults(true);
@@ -326,7 +331,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48acid.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.d48acid.Controller.class.getName());
 		repStep.setPosition(11);
 		repStep.setApplyToContext(false);
 		repStep.setApplyToResults(true);
@@ -342,7 +347,7 @@ public class RepAnalysisCo2ClumpedIclPblD48 extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.d48offsetpbl.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.d48offsetpbl.Controller.class.getName());
 		repStep.setPosition(12);
 		repStep.setApplyToContext(false);
 		repStep.setApplyToResults(true);

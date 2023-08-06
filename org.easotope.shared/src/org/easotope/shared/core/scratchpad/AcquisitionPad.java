@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -34,13 +34,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
+import org.easotope.shared.rawdata.tables.AcquisitionParsedV2.DataFormat;
+
 public class AcquisitionPad extends DatedPad {
-	public AcquisitionPad(ScratchPad<ReplicatePad> parent, long date) {
+	private DataFormat dataFormat;
+
+	public AcquisitionPad(ScratchPad<ReplicatePad> parent, DataFormat dataFormat, long date) {
 		super(parent, date);
+		this.dataFormat = dataFormat;
 	}
 
-	public AcquisitionPad(ReplicatePad parent, long date) {
+	public AcquisitionPad(ReplicatePad parent, DataFormat dataFormat, long date) {
 		super(parent, date);
+		this.dataFormat = dataFormat;
 	}
 
 	AcquisitionPad(Pad parent, AcquisitionPad oldPad) {
@@ -49,11 +55,14 @@ public class AcquisitionPad extends DatedPad {
 		for (CyclePad child : oldPad.getChildren()) {
 			new CyclePad(this, child);
 		}
+		
+		this.dataFormat = oldPad.getDataFormat();
 	}
 
 	AcquisitionPad(Pad parent, ObjectInput input, Vector<String> allProperties, HashMap<String,Integer> propertyToIndex) throws IOException {
 		super(parent, input, allProperties, propertyToIndex);
 
+		dataFormat = DataFormat.values()[input.readByte()];
 		int numOfChildren = input.readInt();
 
 		for (int i=0; i<numOfChildren; i++) {
@@ -64,6 +73,8 @@ public class AcquisitionPad extends DatedPad {
 	@Override
 	public void writeExternal(ObjectOutput output, Vector<String> allProperties, HashMap<String,Integer> propertyToIndex) throws IOException {
 		super.writeExternal(output, allProperties, propertyToIndex);
+
+		output.writeByte(dataFormat.ordinal());
 
 		ArrayList<CyclePad> children = getChildren();
 		output.writeInt(children.size());
@@ -93,5 +104,9 @@ public class AcquisitionPad extends DatedPad {
 	@Override
 	boolean hasOffPeak() {
 		return false;
+	}
+	
+	public DataFormat getDataFormat() {
+		return dataFormat;
 	}
 }

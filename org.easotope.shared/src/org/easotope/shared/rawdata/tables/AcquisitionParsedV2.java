@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -40,6 +40,21 @@ import com.j256.ormlite.table.DatabaseTable;
 public class AcquisitionParsedV2 extends TableObjectWithIntegerId {
 	private static final long serialVersionUID = 1L;
 
+	public enum DataFormat {
+		DUALINLET("Dual Inlet"),
+		LIDI2("LIDI2");
+
+		private final String name;
+
+		DataFormat(String name) {
+	        this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+	};
+
 	public static final String TABLE_NAME = "ACQUISITIONPARSED_V2";
 	public static final String DATE_FIELD_NAME = "DATE";
 	public static final String NUMCYCLES_FIELD_NAME = "NUMCYCLES";
@@ -47,6 +62,7 @@ public class AcquisitionParsedV2 extends TableObjectWithIntegerId {
 	public static final String BACKGROUND_FIELD_NAME = "BACKGROUND";
 	public static final String CHANNEL_TO_MZX10_FIELD_NAME = "CHANNELTOMZX10";
 	public static final String MISC_FIELD_NAME = "MISC";
+	public static final String DATA_FORMAT_FIELD_NAME = "DATAFORMAT";
 
 	@DatabaseField(columnName=DATE_FIELD_NAME, canBeNull=false, index=true)
 	private long date;
@@ -60,6 +76,8 @@ public class AcquisitionParsedV2 extends TableObjectWithIntegerId {
 	public Integer[] channelToMzX10;
 	@DatabaseField(columnName=MISC_FIELD_NAME, canBeNull=false, dataType=DataType.SERIALIZABLE)
 	private HashMap<InputParameter,Object> misc;
+	@DatabaseField(columnName=DATA_FORMAT_FIELD_NAME, canBeNull=false, dataType=DataType.ENUM_STRING)
+	private DataFormat dataFormat;
 
 	public AcquisitionParsedV2() { }
 
@@ -80,6 +98,7 @@ public class AcquisitionParsedV2 extends TableObjectWithIntegerId {
 		}
 
 		this.misc = acquisitionParsed.misc == null ? null : new HashMap<InputParameter,Object>(acquisitionParsed.misc);
+		this.dataFormat = acquisitionParsed.getDataFormat();
 	}
 
 	public long getDate() {
@@ -128,5 +147,13 @@ public class AcquisitionParsedV2 extends TableObjectWithIntegerId {
 
 	public void setMisc(HashMap<InputParameter,Object> misc) {
 		this.misc = misc;
+	}
+	
+	public DataFormat getDataFormat() {
+		return dataFormat;
+	}
+
+	public void setDataFormat(DataFormat dataFormat) {
+		this.dataFormat = dataFormat;
 	}
 }

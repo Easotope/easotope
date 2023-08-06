@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -97,7 +97,27 @@ public class MapBuilder {
 		assert(vector.get(index) == null);
 		vector.setElementAt(value, index);
 	}
-	
+
+	public void equalizeMeasurementVectors() {
+		int maxLength = Integer.MIN_VALUE;
+		
+		for (InputParameter parameter : map.keySet()) {
+			if (parameter.getIsMeasurements()) {
+				@SuppressWarnings("unchecked")
+				Vector<Object> vector = (Vector<Object>) map.get(parameter);
+				maxLength = Math.max(maxLength, vector.size());
+			}
+		}
+
+		for (InputParameter parameter : map.keySet()) {
+			if (parameter.getIsMeasurements()) {
+				@SuppressWarnings("unchecked")
+				Vector<Object> vector = (Vector<Object>) map.get(parameter);
+				vector.setSize(maxLength);
+			}
+		}
+	}
+
 	public HashMap<InputParameter, Object> getMap() {
 		return map;
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -45,12 +45,11 @@ public class Calculator extends RepStepCalculator {
 
 	public static final String INPUT_LABEL_DISABLED = "Disabled";
 	public static final String INPUT_LABEL_OFF_PEAK = "Off Peak";
-	public static final String INPUT_LABEL_V44_REF = "V44 Reference";
 	public static final String INPUT_LABEL_V44_SAMPLE = "V44 Sample";
-	public static final String INPUT_LABEL_V45_REF = "V45 Reference";
 	public static final String INPUT_LABEL_V45_SAMPLE = "V45 Sample";
-	public static final String INPUT_LABEL_V46_REF = "V46 Reference";
+	public static final String INPUT_LABEL_V45_V44_INTERP_REF = "V45/V44 Interp Ref";
 	public static final String INPUT_LABEL_V46_SAMPLE = "V46 Sample";
+	public static final String INPUT_LABEL_V46_V44_INTERP_REF = "V46/V44 Interp Ref";
 
 	public static final String OUTPUT_LABEL_δ13C = "δ¹³C VPDB";
 	public static final String OUTPUT_LABEL_δ13C_SD = "δ¹³C VPDB Standard Deviation";
@@ -67,11 +66,6 @@ public class Calculator extends RepStepCalculator {
 
 	public Calculator(RepStep repStep) {
 		super(repStep);
-	}
-
-	public boolean getAllowUnaveragedRefValues() {
-		Boolean parameter = (Boolean) getParameter(Calculator.PARAMETER_ALLOW_UNAVERAGED_REF_VALUES);
-		return parameter == null ? DEFAULT_ALLOW_UNAVERAGED_REF_VALUES : parameter;
 	}
 
 	@Override
@@ -113,14 +107,10 @@ public class Calculator extends RepStepCalculator {
 	}
 
 	private void calculateAcquisition(AcquisitionPad acquisitionPad, Dependencies dependencies, double δ13C_Ref, double δ18O_Ref) {
-		CyclePad previousCyclePad = null;
-
 		for (CyclePad cyclePad : acquisitionPad.getChildren()) {
 			if (!isTrue(cyclePad, INPUT_LABEL_DISABLED) && !isTrue(cyclePad, INPUT_LABEL_OFF_PEAK)) {
-				calculateCycle(cyclePad, previousCyclePad, dependencies, δ13C_Ref, δ18O_Ref);
+				calculateCycle(cyclePad, dependencies, δ13C_Ref, δ18O_Ref);
 			}
-
-			previousCyclePad = cyclePad;
 		}
 
 		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ13C), labelToColumnName(OUTPUT_LABEL_δ13C_SD), labelToColumnName(OUTPUT_LABEL_δ13C_SE), labelToColumnName(OUTPUT_LABEL_δ13C_CI),false);
@@ -128,24 +118,23 @@ public class Calculator extends RepStepCalculator {
 		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ18O_VSMOW), labelToColumnName(OUTPUT_LABEL_δ18O_VSMOW_SD), labelToColumnName(OUTPUT_LABEL_δ18O_VSMOW_SE), labelToColumnName(OUTPUT_LABEL_δ18O_VSMOW_CI),  false);
 	}
 
-	private void calculateCycle(CyclePad cyclePad, CyclePad previousCyclePad, Dependencies dependencies, double δ13C_Ref, double δ18O_Ref) {
+	private void calculateCycle(CyclePad cyclePad, Dependencies dependencies, double δ13C_Ref, double δ18O_Ref) {
 		// V44_Ref ... V46_Ref for your reference gas
 	    // V44_Sample ... V46_Sample for your sample gas
 	    // ...based on voltage measurements from your dual-inlet spectrometer
 	    // Ideally, these voltages reflect abundance ratios
 
-	    final Double cycle_V44_Ref = getRef(cyclePad, previousCyclePad, labelToColumnName(INPUT_LABEL_V44_REF));
 	    final Double cycle_V44_Sample = (Double) cyclePad.getValue(labelToColumnName(INPUT_LABEL_V44_SAMPLE));
 
-	    final Double cycle_V45_Ref = getRef(cyclePad, previousCyclePad, labelToColumnName(INPUT_LABEL_V45_REF));
+	    final Double cycle_V45_V44_Interp_Ref = getRef(cyclePad, labelToColumnName(INPUT_LABEL_V45_V44_INTERP_REF));
 	    final Double cycle_V45_Sample = (Double) cyclePad.getValue(labelToColumnName(INPUT_LABEL_V45_SAMPLE));
 
-	    final Double cycle_V46_Ref = getRef(cyclePad, previousCyclePad, labelToColumnName(INPUT_LABEL_V46_REF));	    
+	    final Double cycle_V46_V44_Interp_Ref = getRef(cyclePad, labelToColumnName(INPUT_LABEL_V46_V44_INTERP_REF));	    
 	    final Double cycle_V46_Sample = (Double) cyclePad.getValue(labelToColumnName(INPUT_LABEL_V46_SAMPLE));
 
-	    if (cycle_V44_Ref == null || cycle_V44_Sample == null ||
-	    		cycle_V45_Ref == null || cycle_V45_Sample == null ||
-	    		cycle_V46_Ref == null || cycle_V46_Sample == null) {
+	    if (cycle_V44_Sample == null ||
+	    		cycle_V45_V44_Interp_Ref == null || cycle_V45_Sample == null ||
+	    		cycle_V46_V44_Interp_Ref == null || cycle_V46_Sample == null) {
 
 	    		return;
 	    }
@@ -192,8 +181,8 @@ public class Calculator extends RepStepCalculator {
 	    final double R45_Ref = C45_Ref / C44_Ref;
 	    final double R46_Ref = C46_Ref / C44_Ref;
 
-	    final double R45_Sample = R45_Ref * cycle_V45_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V45_Ref;
-	    final double R46_Sample = R46_Ref * cycle_V46_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V46_Ref;
+	    final double R45_Sample = R45_Ref * cycle_V45_Sample / cycle_V44_Sample / cycle_V45_V44_Interp_Ref;
+	    final double R46_Sample = R46_Ref * cycle_V46_Sample / cycle_V44_Sample / cycle_V46_V44_Interp_Ref;
 	    
 	    // (2.b) Compute the bulk composition of your sample gas
 	    // One way to do that is to define
@@ -228,22 +217,8 @@ public class Calculator extends RepStepCalculator {
 	    cyclePad.setValue(labelToColumnName(OUTPUT_LABEL_δ13C), δ13C);
 	}
 
-	private Double getRef(CyclePad cyclePad, CyclePad previousCyclePad, String columnName) {
-		boolean previousOffPeak = false;
-		Double previousValue = null;
-
-		if (previousCyclePad != null) {
-			previousOffPeak = isTrue(previousCyclePad, INPUT_LABEL_OFF_PEAK);
-			previousValue = (Double) previousCyclePad.getValue(columnName);
-		}
-
-		Double thisValue = (Double) cyclePad.getValue(columnName);
-
-		if (!previousOffPeak && previousValue != null && thisValue != null) {
-			return (previousValue + thisValue) / 2;
-		}
-
-		return getAllowUnaveragedRefValues() ? (Double) cyclePad.getValue(columnName) : null;
+	protected Double getRef(CyclePad cyclePad, String columnName) {
+		return (Double) cyclePad.getValue(columnName);
 	}
 
 	private class Function implements BrentsMethod.Function {

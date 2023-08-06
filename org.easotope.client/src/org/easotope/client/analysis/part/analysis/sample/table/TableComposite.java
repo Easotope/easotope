@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -73,7 +73,7 @@ public class TableComposite extends EditorComposite implements AnalysisCacheRepA
 		setLayout(stackLayout);
 
 		errorComposite = new ErrorComposite(this, SWT.NONE);
-		scratchPadTable = new ScratchPadTable(this, true);
+		scratchPadTable = new ScratchPadTable(this, true, false);
 		scratchPadTable.addListener(new ScratchPadTableListener() {
 			@Override
 			public void tableModified() {

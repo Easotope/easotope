@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -62,7 +62,7 @@ public class ScratchPadTableComposite extends Composite {
 		formLayout.marginWidth = GuiConstants.FORM_LAYOUT_MARGIN;
 		setLayout(formLayout);
 
-		scratchPadTable = new ScratchPadTable(this, false);
+		scratchPadTable = new ScratchPadTable(this, false, false);
 		scratchPadTableFormData = new FormData();
 		scratchPadTableFormData.top = new FormAttachment(0);
 		scratchPadTableFormData.left = new FormAttachment(0);

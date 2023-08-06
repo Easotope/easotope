@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -34,7 +34,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TimeZone;
-import java.util.regex.Pattern;
 
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
@@ -42,16 +41,19 @@ import org.easotope.shared.rawdata.InputParameter;
 import org.easotope.shared.rawdata.Vendor;
 import org.easotope.shared.rawdata.parser.MapBuilder;
 import org.easotope.shared.rawdata.parser.Parser;
+import org.easotope.shared.rawdata.tables.AcquisitionParsedV2;
 
 public class NuParser extends Parser {
 	enum State { DEFAULT, READ_CHANNELS, READ_ZEROS, LOOKING_FOR_DATA, READ_REF_DATA, READ_SAM_DATA };
 
+	private DataPatterns dataPatterns = new DataPatterns(false);
 	private Long oldDate = null;
 	private Long newDate = null;
+	private Boolean isLidi2 = false;
 	private String sourceWeightString = null;
 	private Double sampleWeight = null;
 	private String sampleName = null;
-	private ArrayList<MapBuilder> mapBuilders = new ArrayList<MapBuilder>();
+	private ArrayList<CycleMeasurements> cycleMeasurementsList = new ArrayList<CycleMeasurements>();
 	private TimeZone usedTimeZone = null;
 	ArrayList<Double[]> zeros = new ArrayList<Double[]>();
 
@@ -72,13 +74,14 @@ public class NuParser extends Parser {
 			line = reader.readLine();
 		} catch (Exception e) {
 			Log.getInstance().log(Level.INFO, NuParser.class, "Exception reading Nu file.", e);
-			mapBuilders = null;
+			cycleMeasurementsList = null;
 			return;
 		}
 
 		int currentCycle = 0;
 		int currentChannel = 0;
 		int cycleLength = -1;
+		Long cycleTimestamp = 0L;
 		int zeroMeasurementLength = -1;
 
 		while (line != null) {
@@ -90,6 +93,7 @@ public class NuParser extends Parser {
 				final String NUM_BLOCKS = "\"Num Blocks\",";
 				final String ZERO_DATA = "Zero Data";
 				final String INDIVIDUAL_DATA = "Individual Data";
+				final String LIDI_FORMAT = "\"LIDI data format";
 
 				if (line.startsWith(STARTING_ANALYSIS_AT)) {
 					oldDate = DateParser.startedAnalysisTimeToJavaTime(line, assumedTimeZone);
@@ -106,18 +110,18 @@ public class NuParser extends Parser {
 
 					if (sampleName != null && !sampleName.equals(newSourceName)) {
 						Log.getInstance().log(Level.INFO, NuParser.class, "Conflicting source names. old=" + sampleName + " new=" + newSourceName);
-						mapBuilders = null;
+						cycleMeasurementsList = null;
 						return;
 					}
 
 					sampleName = newSourceName;
 
-				} else if (line.startsWith(SAMPLE_WEIGHT)) {
+				} else if (line.startsWith(SAMPLE_WEIGHT) && !line.endsWith("-999")) {
 					String newSourceWeightString = line.substring(SAMPLE_WEIGHT.length()).trim();
 
 					if (sourceWeightString != null && !sourceWeightString.equals(newSourceWeightString)) {
 						Log.getInstance().log(Level.INFO, NuParser.class, "Conflicting source weights. line=" + line + " old=" + sourceWeightString + " new=" + newSourceWeightString);
-						mapBuilders = null;
+						cycleMeasurementsList = null;
 						return;
 					}
 
@@ -138,10 +142,16 @@ public class NuParser extends Parser {
 						numBlocks = Integer.parseInt(numBlocksString);
 					} catch (NumberFormatException e) {
 						Log.getInstance().log(Level.INFO, NuParser.class, "Could not parse number of blocks from line: " + line, e);
-						mapBuilders = null;
+						cycleMeasurementsList = null;
 						return;
 					}
 
+					if (isLidi2 && numBlocks != 1) {
+						Log.getInstance().log(Level.INFO, NuParser.class, "LIDI2 files must only contain 1 block but found " + numBlocks + " blocks.");
+						cycleMeasurementsList = null;
+						return;
+					}
+					
 					state = State.READ_CHANNELS;
 
 				} else if (line.startsWith(ZERO_DATA)) {
@@ -150,15 +160,25 @@ public class NuParser extends Parser {
 				} else if (line.startsWith(INDIVIDUAL_DATA)) {
 					if (numBlocks == 0) {
 						Log.getInstance().log(Level.INFO, NuParser.class, "Data starts before numBlocks is defined.");
-						mapBuilders = null;
+						cycleMeasurementsList = null;
 						return;
 					} else {
-						mapBuilders.add(new MapBuilder());
+						cycleMeasurementsList.add(new CycleMeasurements(isLidi2));
 						currentCycle = 0;
 						currentChannel = 0;
 						cycleLength = -1;
 						zeroMeasurementLength = -1;
 						state = State.LOOKING_FOR_DATA;
+					}
+
+				} else if (line.startsWith(LIDI_FORMAT) && line.contains("#TRUE#")) {
+					isLidi2 = true;
+					dataPatterns = new DataPatterns(true);
+
+					if (numBlocks != 0 && numBlocks != 1) {
+						Log.getInstance().log(Level.INFO, NuParser.class, "LIDI2 files must only contain 1 block but found " + numBlocks + " blocks.");
+						cycleMeasurementsList = null;
+						return;
 					}
 				}
 
@@ -182,7 +202,7 @@ public class NuParser extends Parser {
 						tmpList.add(Double.parseDouble(numbers[i]));
 					} catch (NumberFormatException e) {
 						Log.getInstance().log(Level.INFO, NuParser.class, "Could not parse zero value: " + numbers[i], e);
-						mapBuilders = null;
+						cycleMeasurementsList = null;
 						return;
 					}
 				}
@@ -191,12 +211,6 @@ public class NuParser extends Parser {
 				state = State.DEFAULT;
 
 			} else if (state == State.LOOKING_FOR_DATA) {
-				final Pattern refPattern1 = Pattern.compile("^Gas\\s+Ref\\s*$");
-				final Pattern refPattern2 = Pattern.compile("^Gas\\s+Ref\\s+Block\\s+\\d+\\s+Cycle\\s+\\d+.*$");
-				final Pattern samPattern1 = Pattern.compile("^Gas\\s+Sam\\s*$");
-				final Pattern samPattern2 = Pattern.compile("^Gas\\s+Sam\\s+Block\\s+\\d+\\s+Cycle\\s+\\d+.*$");
-				final Pattern endPattern1 = Pattern.compile("^\\s*Gas\\s*$");
-				final Pattern endPattern2 = Pattern.compile("^\\s*Gas\\s+Block\\s+\\d+.*$");
 				final String CYCLE_LENGTH = "Cycle_Length";
 				final String ZERO_MEASUREMENT_LENGTH = "Zero_Measurement_Length";
 				final String INDIVIDUAL_DATA = "Individual Data";
@@ -215,40 +229,60 @@ public class NuParser extends Parser {
 						// ignore
 					}
 
-				} else if (refPattern1.matcher(line).matches() || refPattern2.matcher(line).matches()) {
+				} else if (dataPatterns.matchesRefPattern(line)) {
 					if (numChannels == 0) {
 						Log.getInstance().log(Level.INFO, NuParser.class, "Data started without numChannels.");
-						mapBuilders = null;
+						cycleMeasurementsList = null;
 						return;
 					}
 
 					if (cycleLength != zeroMeasurementLength) {
 						Log.getInstance().log(Level.INFO, NuParser.class, "Cycle length " + cycleLength + " and zero data length " + zeroMeasurementLength + " are not compatible.");
 						return;
+					}
+
+					if (isLidi2) {
+						cycleTimestamp = DateParser.lidiCycleHeaderTimeToJavaTime(line, assumedTimeZone);
+
+						if (cycleTimestamp == null) {
+							cycleMeasurementsList = null;
+							return;
+						}
+						
+						currentCycle++;
 					}
 
 					state = State.READ_REF_DATA;
 
-				} else if (samPattern1.matcher(line).matches() || samPattern2.matcher(line).matches()) {
+				} else if (dataPatterns.matchesSamPattern(line)) {
 					if (numChannels == 0) {
 						Log.getInstance().log(Level.INFO, NuParser.class, "Data started without numChannels.");
-						mapBuilders = null;
+						cycleMeasurementsList = null;
 						return;
 					}
 
 					if (cycleLength != zeroMeasurementLength) {
 						Log.getInstance().log(Level.INFO, NuParser.class, "Cycle length " + cycleLength + " and zero data length " + zeroMeasurementLength + " are not compatible.");
 						return;
+					}
+
+					if (isLidi2) {
+						cycleTimestamp = DateParser.lidiCycleHeaderTimeToJavaTime(line, assumedTimeZone);
+
+						if (cycleTimestamp == null) {
+							cycleMeasurementsList = null;
+							return;
+						}
 					}
 
 					currentCycle++;
 					state = State.READ_SAM_DATA;
 
-				} else if (endPattern1.matcher(line).matches() || endPattern2.matcher(line).matches()) {
+				} else if (dataPatterns.matchesEndPattern(line)) {
 					state = State.DEFAULT;
 
 				} else if (line.startsWith(INDIVIDUAL_DATA)) {
-					mapBuilders.add(new MapBuilder());
+					cycleMeasurementsList.add(new CycleMeasurements(isLidi2));
 					currentCycle = 0;
 					currentChannel = 0;
 					cycleLength = -1;
@@ -264,10 +298,10 @@ public class NuParser extends Parser {
 				for (int i=0; i<numbers.length; i++) {
 					String number = numbers[i];
 
-					if (i == 0) {
+					if (!isLidi2 && i == 0) {
 						if (!"0.000000E+00".equals(number)) {
 							Log.getInstance().log(Level.INFO, NuParser.class, "First number is not zero: " + number);
-							mapBuilders = null;
+							cycleMeasurementsList = null;
 							return;
 						}
 
@@ -277,7 +311,7 @@ public class NuParser extends Parser {
 							count++;
 						} catch (NumberFormatException e) {
 							Log.getInstance().log(Level.INFO, NuParser.class, "Exception parsing double: " + number, e);
-							mapBuilders = null;
+							cycleMeasurementsList = null;
 							return;
 						}
 					}
@@ -285,7 +319,7 @@ public class NuParser extends Parser {
 
 				double average = sum / count;
 
-				int currentBlockNum = mapBuilders.size()-1;
+				int currentBlockNum = cycleMeasurementsList.size()-1;
 				Double[] zerosForBlock = null;
 
 				if (numBlocks == zeros.size()) {
@@ -301,7 +335,7 @@ public class NuParser extends Parser {
 				InputParameter parameter = (state == State.READ_REF_DATA) ? InputParameter.Channel0_Ref : InputParameter.Channel0_Sample;
 				parameter = InputParameter.values()[parameter.ordinal() + currentChannel];
 
-				mapBuilders.get(currentBlockNum).put(parameter, currentCycle, average);
+				cycleMeasurementsList.get(currentBlockNum).addCycle(parameter, currentCycle, average, cycleTimestamp);
 
 				if (++currentChannel == numChannels) {
 					currentChannel = 0;
@@ -313,14 +347,14 @@ public class NuParser extends Parser {
 				line = reader.readLine();
 			} catch (IOException e) {
 				Log.getInstance().log(Level.INFO, NuParser.class, "Exception reading Nu file.", e);
-				mapBuilders = null;
+				cycleMeasurementsList = null;
 				return;
 			}
 		}
 
 		if (state != State.DEFAULT) {
 			Log.getInstance().log(Level.INFO, NuParser.class, "File ended while not in default state. State was " + state);
-			mapBuilders = null;
+			cycleMeasurementsList = null;
 			return;
 		}
 
@@ -329,19 +363,20 @@ public class NuParser extends Parser {
 
 	@Override
 	public ArrayList<HashMap<InputParameter,Object>> getResultsList() {
-		if (mapBuilders == null) {
+		if (cycleMeasurementsList == null) {
 			return null;
 		}
 
 		ArrayList<HashMap<InputParameter,Object>> result = new ArrayList<HashMap<InputParameter,Object>>();
 
 		int currentBlockNum = 0;
-		for (MapBuilder mapBuilder : mapBuilders) {
+		for (CycleMeasurements cycleMeasurements : cycleMeasurementsList) {
+			MapBuilder mapBuilder = cycleMeasurements.getAsMapBuilder();
 			HashMap<InputParameter,Object> map = mapBuilder.getMap();
 
 			Double[] zerosForBlock = null;
 
-			if (zeros.size() == mapBuilders.size()) {
+			if (zeros.size() == cycleMeasurementsList.size()) {
 				zerosForBlock = zeros.get(currentBlockNum);
 			} else if (zeros.size() != 0) {
 				zerosForBlock = zeros.get(0);
@@ -357,6 +392,10 @@ public class NuParser extends Parser {
 				}
 			}
 
+			if (isLidi2) {
+				map.put(InputParameter.Data_Format, AcquisitionParsedV2.DataFormat.LIDI2);
+			}
+			
 			if (newDate != null) {
 				map.put(InputParameter.Java_Date, newDate + (currentBlockNum * 1000));
 			} else if (oldDate != null) {
@@ -365,7 +404,7 @@ public class NuParser extends Parser {
 			}
 
 			if (sampleWeight != null) {
-				map.put(InputParameter.Sample_Weight, sampleWeight + " | " + mapBuilders.size());
+				map.put(InputParameter.Sample_Weight, sampleWeight + " | " + cycleMeasurementsList.size());
 			}
 
 			if (sampleName != null) {

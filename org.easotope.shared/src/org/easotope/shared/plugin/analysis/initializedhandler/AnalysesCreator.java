@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -84,6 +84,7 @@ public class AnalysesCreator {
 			// THIS ORDER SHOULD NOT BE CHANGED - NEW ANALYSES SHOULD BE ADDED TO THE END
 			SamAnalysisCo2Clumped.create(samAnalysisDao, samStepDao, new int[] { co2ClumpedRepAnalysisId, co2ClumpedIclPblRepAnalysisId, co2ClumpedEthPblRepAnalysisId, co2ClumpedD48RepAnalysisId, co2ClumpedIclPblD48RepAnalysisId, co2ClumpedEthPblD48RepAnalysisId });
 			SamAnalysisCo2Bulk.create(samAnalysisDao, samStepDao, new int[] { co2ClumpedRepAnalysisId, co2ClumpedIclPblRepAnalysisId, co2ClumpedEthPblRepAnalysisId, co2BulkRepAnalysisId, co2ClumpedD48RepAnalysisId, co2ClumpedIclPblD48RepAnalysisId, co2ClumpedEthPblD48RepAnalysisId });
+			SamAnalysisCo2ClumpedD48.create(samAnalysisDao, samStepDao, new int[] { co2ClumpedD48RepAnalysisId, co2ClumpedIclPblD48RepAnalysisId, co2ClumpedEthPblD48RepAnalysisId });
 
 		} catch (Exception e) {
 			Log.getInstance().log(Level.INFO, AnalysesCreator.class, "Error during creation of rep and sam analyses.", e);

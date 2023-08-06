@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -56,12 +56,14 @@ public class UserPasswordTimeZoneUpdate extends Command {
 	private boolean showTimeZone;
 	private boolean leadingExponent;
 	private boolean forceExponent;
+	private int lidi2RefRange;
+	private int exportPadding;
 
 	private User user = null;
 	private Permissions permissions = null;
 	private Preferences preferences = null;
 
-	public UserPasswordTimeZoneUpdate(int userId, String password, String timeZoneId, boolean showTimeZone, boolean leadingExponent, boolean forceExponent, boolean checkForUpdates) {
+	public UserPasswordTimeZoneUpdate(int userId, String password, String timeZoneId, boolean showTimeZone, boolean leadingExponent, boolean forceExponent, boolean checkForUpdates, int lidi2RefRange, int exportPadding) {
 		this.userId = userId;
 		this.password = password;
 		this.timeZoneId = timeZoneId;
@@ -69,6 +71,8 @@ public class UserPasswordTimeZoneUpdate extends Command {
 		this.showTimeZone = showTimeZone;
 		this.leadingExponent = leadingExponent;
 		this.forceExponent = forceExponent;
+		this.lidi2RefRange = lidi2RefRange;
+		this.exportPadding = exportPadding;
 	}
 
 	@Override
@@ -109,6 +113,8 @@ public class UserPasswordTimeZoneUpdate extends Command {
         preferences.setShowTimeZone(showTimeZone);
         preferences.setLeadingExponent(leadingExponent);
         preferences.setForceExponent(forceExponent);
+        preferences.setLidi2RefRange(lidi2RefRange);
+        preferences.setExportPadding(exportPadding);
 
         prefsDao.update(preferences);
 

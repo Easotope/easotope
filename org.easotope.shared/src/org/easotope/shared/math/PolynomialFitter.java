@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -30,5 +30,5 @@ package org.easotope.shared.math;
 public interface PolynomialFitter {
 	public void addCoordinate(double x, double y);
 	public boolean isInvalid();
-	public double[] getCoefficients();
+	Polynomial getPolynomial();
 }

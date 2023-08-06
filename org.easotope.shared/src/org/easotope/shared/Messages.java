@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -58,6 +58,14 @@ public class Messages {
 	public static String forceClientRestartDueToDatabaseRecalc_message;
 
 	public static String correctionIntervalUpdatedHandler_scratchPadSaveError;
+
+	public static String repStepClumpRefCalc_name;
+	public static String repStepClumpRefCalc_shortDocumentation;
+	public static String repStepClumpRefCalc_documentationPath;
+
+	public static String repStepBulkRefCalc_name;
+	public static String repStepBulkRefCalc_shortDocumentation;
+	public static String repStepBulkRefCalc_documentationPath;
 
 	public static String repStepCO2_name;
 	public static String repStepCO2_shortDocumentation;
@@ -192,6 +200,10 @@ public class Messages {
 	public static String samStepClumpAverage_shortDocumentation;
 	public static String samStepClumpAverage_documentationPath;
 
+	public static String samStepClumpAverage48_name;
+	public static String samStepClumpAverage48_shortDocumentation;
+	public static String samStepClumpAverage48_documentationPath;
+
 	public static String samStepClumpedTemperature_name;
 	public static String samStepClumpedTemperature_shortDocumentation;
 	public static String samStepClumpedTemperature_documentationPath;
@@ -263,6 +275,8 @@ public class Messages {
 	public static String disabledStatusUpdate_noEnabledAcquisitions;
 	public static String disabledStatusUpdate_disabled;
 	public static String disabledStatusUpdate_enabled;
+	
+	public static String co2RefCalculator_missingRefValues;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

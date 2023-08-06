@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -44,6 +44,8 @@ public class Preferences extends TableObjectWithIntegerId {
 	public static final String PREVIOUSBESTSERVER_FIELD_NAME = "PREVIOUSBESTSERVER";
 	public static final String LEADINGEXPONENT_FIELD_NAME = "LEADINGEXPONENT";
 	public static final String FORCEEXPONENT_FIELD_NAME = "FORCEEXPONENT";
+	public static final String LIDI2REFRANGE = "LIDI2REFRANGE";
+	public static final String EXPORTPADDING = "EXPORTPADDING";
 
 	@DatabaseField(columnName=USERID_FIELD_NAME, uniqueIndex=true)
 	private int userId;
@@ -59,6 +61,10 @@ public class Preferences extends TableObjectWithIntegerId {
 	private boolean leadingExponent = true;
 	@DatabaseField(columnName=FORCEEXPONENT_FIELD_NAME)
 	private boolean forceExponent = false;
+	@DatabaseField(columnName=LIDI2REFRANGE)
+	private int lidi2RefRange = 10;
+	@DatabaseField(columnName=EXPORTPADDING)
+	private int exportPadding = 0;
 
 	public Preferences() { }
 
@@ -71,6 +77,8 @@ public class Preferences extends TableObjectWithIntegerId {
 		previousBestServer = preferences.previousBestServer;
 		leadingExponent = preferences.leadingExponent;
 		forceExponent = preferences.forceExponent;
+		lidi2RefRange = preferences.lidi2RefRange;
+		exportPadding = preferences.exportPadding;
 	}
 
 	public int getUserId() {
@@ -127,5 +135,21 @@ public class Preferences extends TableObjectWithIntegerId {
 
 	public void setForceExponent(boolean forceExponent) {
 		this.forceExponent = forceExponent;
+	}
+	
+	public int getLidi2RefRange() {
+		return lidi2RefRange;
+	}
+
+	public void setLidi2RefRange(int lidi2RefRange) {
+		this.lidi2RefRange = lidi2RefRange;
+	}
+	
+	public int getExportPadding() {
+		return exportPadding;
+	}
+
+	public void setExportPadding(int exportPadding) {
+		this.exportPadding = exportPadding;
 	}
 }

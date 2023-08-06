@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -36,9 +36,7 @@ import org.eclipse.swt.graphics.GC;
 public class ParabolaWithXRange extends DrawableObject {
 	private static final int PIXELS_BETWEEN_POINTS = 10;
 
-	private double x2Coeff;
-	private double x1Coeff;
-	private double x0Coeff;
+	private double[] coefficients;
 	private double xWithslope0;
 	private double yAtXWithSlope0;
 	private double x1;
@@ -48,20 +46,18 @@ public class ParabolaWithXRange extends DrawableObject {
 	private Color color;
 	private int lineStyle;
 
-	public ParabolaWithXRange(double x2Coeff, double x1Coeff, double x0Coeff, double x1, double x2, Color color, String[] tooltip) {
-		init(x2Coeff, x1Coeff, x0Coeff, x1, x2, color, SWT.NONE, tooltip);
+	public ParabolaWithXRange(double[] coefficients, double x1, double x2, Color color, String[] tooltip) {
+		init(coefficients, x1, x2, color, SWT.NONE, tooltip);
 	}
 
-	public ParabolaWithXRange(double x2Coeff, double x1Coeff, double x0Coeff, double x1, double x2, Color color, int lineStyle, String[] tooltip) {
-		init(x2Coeff, x1Coeff, x0Coeff, x1, x2, color, lineStyle, tooltip);
+	public ParabolaWithXRange(double[] coefficients, double x1, double x2, Color color, int lineStyle, String[] tooltip) {
+		init(coefficients, x1, x2, color, lineStyle, tooltip);
 	}
 
-	public void init(double x2Coeff, double x1Coeff, double x0Coeff, double x1, double x2, Color color, int lineStyle, String[] tooltip) {
-		this.x2Coeff = x2Coeff;
-		this.x1Coeff = x1Coeff;
-		this.x0Coeff = x0Coeff;
-		this.xWithslope0 = -x1Coeff / (x2Coeff * 2);
-		this.yAtXWithSlope0 = x2Coeff * xWithslope0 * xWithslope0 + x1Coeff * xWithslope0 + x0Coeff;
+	public void init(double[] coefficients, double x1, double x2, Color color, int lineStyle, String[] tooltip) {
+		this.coefficients = coefficients;
+		this.xWithslope0 = -coefficients[1] / (coefficients[2] * 2);
+		this.yAtXWithSlope0 = coefficients[2] * xWithslope0 * xWithslope0 + coefficients[1] * xWithslope0 + coefficients[0];
 
 		if (x1 < x2) {
 			this.x1 = x1;
@@ -71,8 +67,8 @@ public class ParabolaWithXRange extends DrawableObject {
 			this.x2 = x1;
 		}
 
-		this.yAtX1 = x2Coeff * x1 * x1 + x1Coeff * x1 + x0Coeff;
-		this.yAtX2 = x2Coeff * x2 * x2 + x1Coeff * x2 + x0Coeff;
+		this.yAtX1 = coefficients[2] * x1 * x1 + coefficients[1] * x1 + coefficients[0];
+		this.yAtX2 = coefficients[2] * x2 * x2 + coefficients[1] * x2 + coefficients[0];
 		this.color = color;
 		this.lineStyle = lineStyle;
 		setTooltip(tooltip);
@@ -137,7 +133,7 @@ public class ParabolaWithXRange extends DrawableObject {
 		double currentCoordinateX = x1 + coordinateStep;
 
 		while (currentCoordinateX <= x2) {
-			double currentCoordinateY = x2Coeff * currentCoordinateX * currentCoordinateX + x1Coeff * currentCoordinateX + x0Coeff;
+			double currentCoordinateY = coefficients[2] * currentCoordinateX * currentCoordinateX + coefficients[1] * currentCoordinateX + coefficients[0];
 
 			pixelValues = coordinateTransform.coordinateToPixel(currentCoordinateX, currentCoordinateY);
 			int currentPixelX = (int) Math.floor(pixelValues[0]);

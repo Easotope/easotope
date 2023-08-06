@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -25,43 +25,32 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.shared.analysis.repstep.co2.clumpcalc.dependencies;
+package org.easotope.shared.analysis.samstep.co2.clumpaverage48;
 
-import org.easotope.shared.admin.tables.RefGas;
-import org.easotope.shared.admin.tables.SciConstant;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
+import org.easotope.shared.analysis.tables.SamStep;
+import org.easotope.shared.core.scratchpad.SamplePad;
 
-public class Dependencies extends DependencyManager {
-	public Dependencies() {
-		addPlugin(new RefGasPlugin());
-		addPlugin(new R13VPDBPlugin());
-		addPlugin(new R17VSMOWPlugin());
-		addPlugin(new R18VSMOWPlugin());
-		addPlugin(new LambdaPlugin());
-		addPlugin(new D18OVPDBVSMOWPlugin());
+public class Calculator extends org.easotope.shared.analysis.samstep.co2.clumpaverage.Calculator {
+	public static final String INPUT_LABEL_Δ48 = "Δ48";
+
+	public static final String OUTPUT_LABEL_Δ48 = "Δ48";
+	public static final String OUTPUT_LABEL_Δ48_SD = "Δ48 Standard Deviation";
+	public static final String OUTPUT_LABEL_Δ48_SE = "Δ48 Standard Error";
+	public static final String OUTPUT_LABEL_Δ48_CI = "Δ48 Confidence Interval";
+
+	public Calculator(SamStep samStep) {
+		super(samStep);
 	}
 
-	public RefGas getReferenceGas() {
-		return (RefGas) getDependencyPlugins().get(0).getObject();
+	@Override
+	public DependencyManager getDependencyManager(SamplePad samplePad) {
+		return null;
 	}
 
-	public double getR13_VPDB() {
-		return ((SciConstant) getDependencyPlugins().get(1).getObject()).getValue();
-	}
-
-	public double getR17_VSMOW() {
-		return ((SciConstant) getDependencyPlugins().get(2).getObject()).getValue();
-	}
-
-	public double getR18_VSMOW() {
-		return ((SciConstant) getDependencyPlugins().get(3).getObject()).getValue();
-	}
-
-	public double getλ() {
-		return ((SciConstant) getDependencyPlugins().get(4).getObject()).getValue();
-	}
-
-	public double getδ18O_VPDB_VSMOW() {
-		return ((SciConstant) getDependencyPlugins().get(5).getObject()).getValue();
+	@Override
+	public void calculate(SamplePad samplePad, DependencyManager dependencyManager) {
+		super.calculate(samplePad, dependencyManager);
+		samplePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ48), labelToColumnName(OUTPUT_LABEL_Δ48_SD), labelToColumnName(OUTPUT_LABEL_Δ48_SE),labelToColumnName(OUTPUT_LABEL_Δ48_CI), false);
 	}
 }

@@ -3,12 +3,11 @@
 
 <product name="Easoserver" id="org.easotope.framework.product" application="org.easotope.framework.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Dorg.easotope.version=20201231 -Dorg.easotope.oldestcompatversion=20201231 -Dorg.easotope.databasename=easotope -Dorg.easotope.prefnodename=org.easotope
+      <vmArgs>-Dorg.easotope.version=20230622 -Dorg.easotope.oldestcompatversion=20230622 -Dorg.easotope.databasename=easotope -Dorg.easotope.prefnodename=org.easotope
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -18,7 +17,6 @@
 
    <windowImages/>
 
-
    <launcher name="easotope">
       <solaris/>
       <win useIco="true">
@@ -26,7 +24,6 @@
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</macos>

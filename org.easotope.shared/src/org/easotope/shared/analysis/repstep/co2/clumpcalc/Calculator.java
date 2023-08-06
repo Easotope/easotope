@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -29,9 +29,8 @@ package org.easotope.shared.analysis.repstep.co2.clumpcalc;
 
 import org.easotope.shared.admin.IsotopicScale;
 import org.easotope.shared.admin.RefGasParameter;
-import org.easotope.shared.analysis.execute.RepStepCalculator;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
-import org.easotope.shared.analysis.repstep.co2.clumpcalc.dependencies.Dependencies;
+import org.easotope.shared.analysis.repstep.co2.co2calc.dependencies.Dependencies;
 import org.easotope.shared.analysis.tables.RepStep;
 import org.easotope.shared.core.NumericValue;
 import org.easotope.shared.core.scratchpad.AcquisitionPad;
@@ -39,24 +38,13 @@ import org.easotope.shared.core.scratchpad.CyclePad;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
 import org.easotope.shared.math.BrentsMethod;
 
-public class Calculator extends RepStepCalculator {
-	public static final String PARAMETER_ALLOW_UNAVERAGED_REF_VALUES = "PARAMETER_ALLOW_UNAVERAGED_REF_VALUES";
-	public static final boolean DEFAULT_ALLOW_UNAVERAGED_REF_VALUES = false;
-
-	public static final String INPUT_LABEL_DISABLED = "Disabled";
-	public static final String INPUT_LABEL_OFF_PEAK = "Off Peak";
-	public static final String INPUT_LABEL_V44_REF = "V44 Reference";
-	public static final String INPUT_LABEL_V44_SAMPLE = "V44 Sample";
-	public static final String INPUT_LABEL_V45_REF = "V45 Reference";
-	public static final String INPUT_LABEL_V45_SAMPLE = "V45 Sample";
-	public static final String INPUT_LABEL_V46_REF = "V46 Reference";
-	public static final String INPUT_LABEL_V46_SAMPLE = "V46 Sample";
-	public static final String INPUT_LABEL_V47_REF = "V47 Reference";
+public class Calculator extends org.easotope.shared.analysis.repstep.co2.co2calc.Calculator {
 	public static final String INPUT_LABEL_V47_SAMPLE = "V47 Sample";
-	public static final String INPUT_LABEL_V48_REF = "V48 Reference";
+	public static final String INPUT_LABEL_V47_V44_INTERP_REF = "V47/V44 Interp Ref";
 	public static final String INPUT_LABEL_V48_SAMPLE = "V48 Sample";
-	public static final String INPUT_LABEL_V49_REF = "V49 Reference";
+	public static final String INPUT_LABEL_V48_V44_INTERP_REF = "V48/V44 Interp Ref";
 	public static final String INPUT_LABEL_V49_SAMPLE = "V49 Sample";
+	public static final String INPUT_LABEL_V49_V44_INTERP_REF = "V49/V44 Interp Ref";
 
 	public static final String OUTPUT_LABEL_δ45 = "δ45 Working Gas";
 	public static final String OUTPUT_LABEL_δ45_SD = "δ45 Working Gas Standard Deviation";
@@ -99,18 +87,10 @@ public class Calculator extends RepStepCalculator {
 		super(repStep);
 	}
 
-	public boolean getAllowUnaveragedRefValues() {
-		Boolean parameter = (Boolean) getParameter(Calculator.PARAMETER_ALLOW_UNAVERAGED_REF_VALUES);
-		return parameter == null ? DEFAULT_ALLOW_UNAVERAGED_REF_VALUES : parameter;
-	}
-
-	@Override
-	public DependencyManager getDependencyManager(ReplicatePad[] replicatePads, int standardNumber) {
-		return new Dependencies();
-	}
-
 	@Override
 	public void calculate(ReplicatePad[] replicatePads, int padNumber, DependencyManager dependencyManager) {
+		super.calculate(replicatePads, padNumber, dependencyManager);
+
 		Dependencies dependencies = (Dependencies) dependencyManager;
 
 		// δ13CRef - the nominal carbon isotope composition of your reference gas vs VPDB
@@ -149,14 +129,10 @@ public class Calculator extends RepStepCalculator {
 	}
 
 	private void calculateAcquisition(AcquisitionPad acquisitionPad, Dependencies dependencies, double δ13C_Ref, double δ18O_Ref) {
-		CyclePad previousCyclePad = null;
-
 		for (CyclePad cyclePad : acquisitionPad.getChildren()) {
 			if (!isTrue(cyclePad, INPUT_LABEL_DISABLED) && !isTrue(cyclePad, INPUT_LABEL_OFF_PEAK)) {
-				calculateCycle(cyclePad, previousCyclePad, dependencies, δ13C_Ref, δ18O_Ref);
+				calculateCycle(cyclePad, dependencies, δ13C_Ref, δ18O_Ref);
 			}
-
-			previousCyclePad = cyclePad;
 		}
 
 		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_δ45), labelToColumnName(OUTPUT_LABEL_δ45_SD), labelToColumnName(OUTPUT_LABEL_δ45_SE), labelToColumnName(OUTPUT_LABEL_δ45_CI), false);
@@ -170,36 +146,35 @@ public class Calculator extends RepStepCalculator {
 		acquisitionPad.setAccumulator(labelToColumnName(OUTPUT_LABEL_49_PARAM), labelToColumnName(OUTPUT_LABEL_49_PARAM_SD), labelToColumnName(OUTPUT_LABEL_49_PARAM_SE),labelToColumnName(OUTPUT_LABEL_49_PARAM_CI), false);
 	}
 
-	private void calculateCycle(CyclePad cyclePad, CyclePad previousCyclePad, Dependencies dependencies, double δ13C_Ref, double δ18O_Ref) {
+	private void calculateCycle(CyclePad cyclePad, Dependencies dependencies, double δ13C_Ref, double δ18O_Ref) {
 		// V44_Ref ... V49_Ref for your reference gas
 	    // V44_Sample ... V49_Sample for your sample gas
 	    // ...based on voltage measurements from your dual-inlet spectrometer
 	    // Ideally, these voltages reflect abundance ratios
 
-	    final Double cycle_V44_Ref = getRef(cyclePad, previousCyclePad, labelToColumnName(INPUT_LABEL_V44_REF));
 	    final Double cycle_V44_Sample = (Double) cyclePad.getValue(labelToColumnName(INPUT_LABEL_V44_SAMPLE));
 
-	    final Double cycle_V45_Ref = getRef(cyclePad, previousCyclePad, labelToColumnName(INPUT_LABEL_V45_REF));
+	    final Double cycle_V45_V44_Interp_Ref = getRef(cyclePad, labelToColumnName(INPUT_LABEL_V45_V44_INTERP_REF));
 	    final Double cycle_V45_Sample = (Double) cyclePad.getValue(labelToColumnName(INPUT_LABEL_V45_SAMPLE));
 
-	    final Double cycle_V46_Ref = getRef(cyclePad, previousCyclePad, labelToColumnName(INPUT_LABEL_V46_REF));	    
+	    final Double cycle_V46_V44_Interp_Ref = getRef(cyclePad, labelToColumnName(INPUT_LABEL_V46_V44_INTERP_REF));	    
 	    final Double cycle_V46_Sample = (Double) cyclePad.getValue(labelToColumnName(INPUT_LABEL_V46_SAMPLE));
 
-	    final Double cycle_V47_Ref = getRef(cyclePad, previousCyclePad, labelToColumnName(INPUT_LABEL_V47_REF));
+	    final Double cycle_V47_V44_Interp_Ref = getRef(cyclePad, labelToColumnName(INPUT_LABEL_V47_V44_INTERP_REF));
 	    final Double cycle_V47_Sample = (Double) cyclePad.getValue(labelToColumnName(INPUT_LABEL_V47_SAMPLE));
 	    
-	    final Double cycle_V48_Ref = getRef(cyclePad, previousCyclePad, labelToColumnName(INPUT_LABEL_V48_REF));	    
+	    final Double cycle_V48_V44_Interp_Ref = getRef(cyclePad, labelToColumnName(INPUT_LABEL_V48_V44_INTERP_REF));	    
 	    final Double cycle_V48_Sample = (Double) cyclePad.getValue(labelToColumnName(INPUT_LABEL_V48_SAMPLE));
 
-	    final Double cycle_V49_Ref = getRef(cyclePad, previousCyclePad, labelToColumnName(INPUT_LABEL_V49_REF));
+	    final Double cycle_V49_V44_Interp_Ref = getRef(cyclePad, labelToColumnName(INPUT_LABEL_V49_V44_INTERP_REF));
 	    final Double cycle_V49_Sample = (Double) cyclePad.getValue(labelToColumnName(INPUT_LABEL_V49_SAMPLE));
 
-	    if (cycle_V44_Ref == null || cycle_V44_Sample == null ||
-	    		cycle_V45_Ref == null || cycle_V45_Sample == null ||
-	    		cycle_V46_Ref == null || cycle_V46_Sample == null ||
-	    		cycle_V47_Ref == null || cycle_V47_Sample == null ||
-	    		cycle_V48_Ref == null || cycle_V48_Sample == null ||
-	    		cycle_V49_Ref == null || cycle_V49_Sample == null) {
+	    if (cycle_V44_Sample == null ||
+	    		cycle_V45_V44_Interp_Ref == null || cycle_V45_Sample == null ||
+	    		cycle_V46_V44_Interp_Ref == null || cycle_V46_Sample == null ||
+	    		cycle_V47_V44_Interp_Ref == null || cycle_V47_Sample == null ||
+	    		cycle_V48_V44_Interp_Ref == null || cycle_V48_Sample == null ||
+	    		cycle_V49_V44_Interp_Ref == null || cycle_V49_Sample == null) {
 
 	    		return;
 	    }
@@ -264,27 +239,27 @@ public class Calculator extends RepStepCalculator {
 	    final double R48_Ref = C48_Ref / C44_Ref;
 	    final double R49_Ref = C49_Ref / C44_Ref;
 
-	    final double R45_Sample = R45_Ref * cycle_V45_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V45_Ref;
-	    final double R46_Sample = R46_Ref * cycle_V46_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V46_Ref;
-	    final double R47_Sample = R47_Ref * cycle_V47_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V47_Ref;
-	    final double R48_Sample = R48_Ref * cycle_V48_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V48_Ref;
-	    final double R49_Sample = R49_Ref * cycle_V49_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V49_Ref;
+	    final double R45_Sample = R45_Ref * cycle_V45_Sample / cycle_V44_Sample / cycle_V45_V44_Interp_Ref;
+	    final double R46_Sample = R46_Ref * cycle_V46_Sample / cycle_V44_Sample / cycle_V46_V44_Interp_Ref;
+	    final double R47_Sample = R47_Ref * cycle_V47_Sample / cycle_V44_Sample / cycle_V47_V44_Interp_Ref;
+	    final double R48_Sample = R48_Ref * cycle_V48_Sample / cycle_V44_Sample / cycle_V48_V44_Interp_Ref;
+	    final double R49_Sample = R49_Ref * cycle_V49_Sample / cycle_V44_Sample / cycle_V49_V44_Interp_Ref;
 
 	    // And, using the conventional δ notation (relative to your reference gas): 
 
-	    double δ45 = 1000 * (cycle_V45_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V45_Ref - 1);
+	    double δ45 = 1000 * (cycle_V45_Sample / cycle_V44_Sample / cycle_V45_V44_Interp_Ref - 1);
 	    cyclePad.setValue(labelToColumnName(OUTPUT_LABEL_δ45), δ45);
 
-	    double δ46 = 1000 * (cycle_V46_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V46_Ref - 1);
+	    double δ46 = 1000 * (cycle_V46_Sample / cycle_V44_Sample / cycle_V46_V44_Interp_Ref - 1);
 	    cyclePad.setValue(labelToColumnName(OUTPUT_LABEL_δ46), δ46);
 
-	    double δ47 = 1000 * (cycle_V47_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V47_Ref - 1);
+	    double δ47 = 1000 * (cycle_V47_Sample / cycle_V44_Sample / cycle_V47_V44_Interp_Ref - 1);
 	    cyclePad.setValue(labelToColumnName(OUTPUT_LABEL_δ47), δ47);
 
-	    double δ48 = 1000 * (cycle_V48_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V48_Ref - 1);
+	    double δ48 = 1000 * (cycle_V48_Sample / cycle_V44_Sample / cycle_V48_V44_Interp_Ref - 1);
 	    cyclePad.setValue(labelToColumnName(OUTPUT_LABEL_δ48), δ48);
 
-	    double δ49 = 1000 * (cycle_V49_Sample / cycle_V44_Sample * cycle_V44_Ref / cycle_V49_Ref - 1);
+	    double δ49 = 1000 * (cycle_V49_Sample / cycle_V44_Sample / cycle_V49_V44_Interp_Ref - 1);
 	    cyclePad.setValue(labelToColumnName(OUTPUT_LABEL_δ49), δ49);
 	    
 	    // (2.b) Compute the bulk composition of your sample gas
@@ -352,43 +327,25 @@ public class Calculator extends RepStepCalculator {
 	    final double RS45_Sample = CS45_Sample / CS44_Sample;
 	    final double RS46_Sample = CS46_Sample / CS44_Sample;
 	    final double RS47_Sample = CS47_Sample / CS44_Sample;
-	    	final double RS48_Sample = CS48_Sample / CS44_Sample;
-	    	final double RS49_Sample = CS49_Sample / CS44_Sample;
+    	final double RS48_Sample = CS48_Sample / CS44_Sample;
+    	final double RS49_Sample = CS49_Sample / CS44_Sample;
 
-	    	// (3.b) Compute raw Δ values
-	    	// These Δ values are called "raw" because they have not yet been corrected for a number of analytical artifacts.
-	    	// Most importantly, we have assumed that your reference gas is in a stochastic state, which is unlikely.
-	    	// This is why raw Δ47 values are typically underestimated by roughly the actual Δ47 value of your reference gas.
+    	// (3.b) Compute raw Δ values
+    	// These Δ values are called "raw" because they have not yet been corrected for a number of analytical artifacts.
+    	// Most importantly, we have assumed that your reference gas is in a stochastic state, which is unlikely.
+    	// This is why raw Δ47 values are typically underestimated by roughly the actual Δ47 value of your reference gas.
 
-	    	double Δ47 = 1000 * ((R47_Sample/RS47_Sample - 1) - (R46_Sample/RS46_Sample - 1) - (R45_Sample/RS45_Sample - 1));
+	    double Δ47 = 1000 * ((R47_Sample/RS47_Sample - 1) - (R46_Sample/RS46_Sample - 1) - (R45_Sample/RS45_Sample - 1));
 		cyclePad.setValue(labelToColumnName(OUTPUT_LABEL_Δ47), Δ47);
 	    	
 		double Δ48 = 1000 * ((R48_Sample/RS48_Sample - 1) - 2 * (R46_Sample/RS46_Sample - 1));
 		cyclePad.setValue(labelToColumnName(OUTPUT_LABEL_Δ48), Δ48);
 
-	    	double Δ49 = 1000 * ((R49_Sample/RS49_Sample - 1) - 2 * (R46_Sample/RS46_Sample - 1) - (R45_Sample/RS45_Sample - 1));
-	    	cyclePad.setValue(labelToColumnName(OUTPUT_LABEL_Δ49), Δ49);
+	    double Δ49 = 1000 * ((R49_Sample/RS49_Sample - 1) - 2 * (R46_Sample/RS46_Sample - 1) - (R45_Sample/RS45_Sample - 1));
+	    cyclePad.setValue(labelToColumnName(OUTPUT_LABEL_Δ49), Δ49);
 
-	    double param49 = (cycle_V49_Sample / cycle_V44_Sample - cycle_V49_Ref / cycle_V44_Ref) * 10000;
+	    double param49 = (cycle_V49_Sample / cycle_V44_Sample - cycle_V49_V44_Interp_Ref) * 10000;
 	    cyclePad.setValue(labelToColumnName(OUTPUT_LABEL_49_PARAM), param49);
-	}
-
-	private Double getRef(CyclePad cyclePad, CyclePad previousCyclePad, String columnName) {
-		boolean previousOffPeak = false;
-		Double previousValue = null;
-
-		if (previousCyclePad != null) {
-			previousOffPeak = isTrue(previousCyclePad, INPUT_LABEL_OFF_PEAK);
-			previousValue = (Double) previousCyclePad.getValue(columnName);
-		}
-
-		Double thisValue = (Double) cyclePad.getValue(columnName);
-
-		if (!previousOffPeak && previousValue != null && thisValue != null) {
-			return (previousValue + thisValue) / 2;
-		}
-
-		return getAllowUnaveragedRefValues() ? (Double) cyclePad.getValue(columnName) : null;
 	}
 
 	private class Function implements BrentsMethod.Function {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -62,7 +62,7 @@ public class Controller extends RepStepController {
 
 	@Override
 	public String getParameterComposite() {
-		return "org.easotope.client.analysis.repstep.co2.clumpcalc.ParameterComposite";
+		return null;
 	}
 
 	@Override
@@ -75,17 +75,16 @@ public class Controller extends RepStepController {
 		return new InputDescription[] {
 			new RepInputDescription(Calculator.INPUT_LABEL_DISABLED, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_OFF_PEAK, true, false),
-			new RepInputDescription(Calculator.INPUT_LABEL_V44_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V44_SAMPLE, true, false),
-			new RepInputDescription(Calculator.INPUT_LABEL_V45_REF, true, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V45_V44_INTERP_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V45_SAMPLE, true, false),
-			new RepInputDescription(Calculator.INPUT_LABEL_V46_REF, true, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V46_V44_INTERP_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V46_SAMPLE, true, false),
-			new RepInputDescription(Calculator.INPUT_LABEL_V47_REF, true, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V47_V44_INTERP_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V47_SAMPLE, true, false),
-			new RepInputDescription(Calculator.INPUT_LABEL_V48_REF, true, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V48_V44_INTERP_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V48_SAMPLE, true, false),
-			new RepInputDescription(Calculator.INPUT_LABEL_V49_REF, true, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V49_V44_INTERP_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V49_SAMPLE, true, false)
 		};
 	}
@@ -93,6 +92,21 @@ public class Controller extends RepStepController {
 	@Override
 	public OutputDescription[] getOutputDescription() {
 		return new OutputDescription[] {
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ13C, "0.00", StandardParameter.δ13C, IsotopicScale.VPDB, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ13C_SD, "0.00", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ13C_SE, "0.00", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ13C_CI, "0.00", null, null, false),
+
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB, "0.00", StandardParameter.δ18O, IsotopicScale.VPDB, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB_SD, "0.00", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB_SE, "0.00", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VPDB_CI, "0.00", null, null, false),
+
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW, "0.00", StandardParameter.δ18O, IsotopicScale.VSMOW, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW_SD, "0.00", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW_SE, "0.00", null, null, false),
+			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ18O_VSMOW_CI, "0.00", null, null, false),
+
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ45, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ45_SD, "0.000", null, null, false),
 			new RepOutputDescription(Calculator.OUTPUT_LABEL_δ45_SE, "0.000", null, null, false),

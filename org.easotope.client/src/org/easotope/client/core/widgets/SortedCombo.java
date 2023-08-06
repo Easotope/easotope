@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -41,6 +41,7 @@ public class SortedCombo extends VCombo {
 	private int selectedInteger = -1;
 
 	private HashMap<Integer,String> possibilities = null;
+	private HashMap<String,Integer> reversePossibilities = null;
 	private HashMap<Integer,Integer> integerToIndex = new HashMap<Integer,Integer>();
 	private HashMap<Integer,Integer> indexToInteger = new HashMap<Integer,Integer>();
 
@@ -57,6 +58,12 @@ public class SortedCombo extends VCombo {
 	}
 
 	public void selectInteger(int integer) {
+		setSelectionButLeaveRevertValue(integer);
+		oldInteger = integer;
+	}
+
+	public void selectString(String string) {
+		int integer = reversePossibilities.containsKey(string) ? reversePossibilities.get(string) : -1;
 		setSelectionButLeaveRevertValue(integer);
 		oldInteger = integer;
 	}
@@ -79,6 +86,16 @@ public class SortedCombo extends VCombo {
 		}
 
 		return indexToInteger.get(getSelectionIndex());
+	}
+
+	public String getSelectedString() {
+		int selectedInteger = getSelectedInteger();
+
+		if (selectedInteger == -1 || possibilities == null) {
+			return null;
+		}
+
+		return possibilities.get(selectedInteger);
 	}
 
 	@Override
@@ -109,7 +126,8 @@ public class SortedCombo extends VCombo {
 
 	public void setPossibilities(HashMap<Integer,String> possibilities) {
 		this.possibilities  = possibilities;
-
+		reversePossibilities = new HashMap<String,Integer>();
+		
 		selectedInteger = getSelectedInteger();
 
 		ArrayList<IntegerAndString> allPossibilities = new ArrayList<IntegerAndString>();
@@ -118,6 +136,7 @@ public class SortedCombo extends VCombo {
 			for (Integer integer : possibilities.keySet()) {
 				String string = possibilities.get(integer);
 				allPossibilities.add(new IntegerAndString(integer, string));
+				reversePossibilities.put(string, integer);
 			}
 		}
 

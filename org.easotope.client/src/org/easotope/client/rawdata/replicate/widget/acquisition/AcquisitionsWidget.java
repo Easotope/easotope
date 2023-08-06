@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -59,6 +59,7 @@ import org.easotope.shared.rawdata.InputParameterType;
 import org.easotope.shared.rawdata.compute.ComputeAcquisitionParsed;
 import org.easotope.shared.rawdata.tables.AcquisitionInputV0;
 import org.easotope.shared.rawdata.tables.AcquisitionParsedV2;
+import org.easotope.shared.rawdata.tables.AcquisitionParsedV2.DataFormat;
 import org.easotope.shared.rawdata.tables.ReplicateV1;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -310,6 +311,11 @@ public class AcquisitionsWidget extends EasotopeComposite {
 	
 			for (Integer cycleIndex : offPeakCalculator.getOffPeakCycles()) {
 				offPeakCycles[cycleIndex] = true;
+			}
+
+			if (acquisitionParsed.getDataFormat() == DataFormat.LIDI2) {
+				Lidi2DisableCalculator lidi2DisableCalculator = new Lidi2DisableCalculator(remappedMeasurements);
+				lidi2DisableCalculator.disableCycles(acquisitionInput.getDisabledCycles());
 			}
 		}
 	}

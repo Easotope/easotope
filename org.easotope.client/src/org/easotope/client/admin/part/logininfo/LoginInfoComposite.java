@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -42,6 +42,7 @@ import org.easotope.client.core.part.ChainedPart;
 import org.easotope.client.core.part.EditorComposite;
 import org.easotope.client.core.widgets.VButton;
 import org.easotope.client.core.widgets.VCombo;
+import org.easotope.client.core.widgets.VSpinner;
 import org.easotope.client.core.widgets.VText;
 import org.easotope.framework.dbcore.tables.User;
 import org.easotope.shared.core.cache.logininfo.LoginInfoCache;
@@ -87,6 +88,8 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 	private VButton showTimeZone;
 	private VButton leadingExponent;
 	private VButton forceExponent;
+	private VSpinner lidi2RefRange;
+	private VSpinner exportPadding;
 
 	HashMap<Integer,String> indexToTimeZoneId = new HashMap<Integer,String>();
 	HashMap<String,Integer> timeZoneIdToIndex = new HashMap<String,Integer>();
@@ -288,6 +291,32 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 		});
 
 		label = new Label(this, SWT.NONE);
+		label.setText(Messages.loginInfo_lidi2RefRange);
+
+		lidi2RefRange = new VSpinner(this, SWT.NONE);
+		lidi2RefRange.setMinimum(0);
+		lidi2RefRange.setMaximum(100);
+		lidi2RefRange.addListener(SWT.Selection, new LoggingAdaptor() {
+			@Override
+			public void loggingHandleEvent(Event event) {
+				widgetStatusChanged();
+			}
+		});
+
+		label = new Label(this, SWT.NONE);
+		label.setText(Messages.loginInfo_exportPadding);
+
+		exportPadding = new VSpinner(this, SWT.NONE);
+		exportPadding.setMinimum(0);
+		exportPadding.setMaximum(100);
+		exportPadding.addListener(SWT.Selection, new LoggingAdaptor() {
+			@Override
+			public void loggingHandleEvent(Event event) {
+				widgetStatusChanged();
+			}
+		});
+
+		label = new Label(this, SWT.NONE);
 		label.setText(Messages.loginInfo_checkForUpdates);
 
 		checkForUpdates = new VButton(this, SWT.CHECK);
@@ -401,6 +430,8 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 		showTimeZone.setSelection(currentPreferences.getShowTimeZone());
 		leadingExponent.setSelection(currentPreferences.getLeadingExponent());
 		forceExponent.setSelection(currentPreferences.getForceExponent());
+        lidi2RefRange.setSelection(currentPreferences.getLidi2RefRange());
+        exportPadding.setSelection(currentPreferences.getExportPadding());
 		checkForUpdates.setSelection(currentPreferences.getCheckForUpdates());
 	}
 
@@ -440,6 +471,8 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 		showTimeZone.setEnabled(true);
 		leadingExponent.setEnabled(true);
 		forceExponent.setEnabled(true);
+		lidi2RefRange.setEnabled(true);
+		exportPadding.setEnabled(true);
 		checkForUpdates.setEnabled(true);
 	}
 
@@ -452,6 +485,8 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 		showTimeZone.setEnabled(false);
 		leadingExponent.setEnabled(false);
 		forceExponent.setEnabled(false);
+		lidi2RefRange.setEnabled(false);
+		exportPadding.setEnabled(false);
 		checkForUpdates.setEnabled(false);
 	}
 
@@ -466,6 +501,8 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 		isDirty = isDirty || showTimeZone.hasChanged();
 		isDirty = isDirty || leadingExponent.hasChanged();
 		isDirty = isDirty || forceExponent.hasChanged();
+		isDirty = isDirty || lidi2RefRange.hasChanged();
+		isDirty = isDirty || exportPadding.hasChanged();
 		isDirty = isDirty || checkForUpdates.hasChanged();
 
 		return isDirty;
@@ -534,9 +571,11 @@ public class LoginInfoComposite extends EditorComposite implements LoginInfoCach
 		boolean showtz = showTimeZone.getSelection();
 		boolean leadingExp = leadingExponent.getSelection();
 		boolean forceExp = forceExponent.getSelection();
+		int lidi2RefRng = lidi2RefRange.getSelection();
+		int exportPad = exportPadding.getSelection();
 		boolean updates = checkForUpdates.getSelection();
 
-		int commandId = LoginInfoCache.getInstance().savePreferences(password, tz, updates, showtz, leadingExp, forceExp, this);
+		int commandId = LoginInfoCache.getInstance().savePreferences(password, tz, updates, showtz, leadingExp, forceExp, lidi2RefRng, exportPad, this);
 		waitingFor(LOGIN_INFO_SAVE, commandId);
 	}
 

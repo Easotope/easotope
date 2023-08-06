@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -62,7 +62,7 @@ public class Controller extends RepStepController {
 
 	@Override
 	public String getParameterComposite() {
-		return "org.easotope.client.analysis.repstep.co2.co2calc.ParameterComposite";
+		return null;
 	}
 
 	@Override
@@ -75,11 +75,10 @@ public class Controller extends RepStepController {
 		return new InputDescription[] {
 			new RepInputDescription(Calculator.INPUT_LABEL_DISABLED, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_OFF_PEAK, true, false),
-			new RepInputDescription(Calculator.INPUT_LABEL_V44_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V44_SAMPLE, true, false),
-			new RepInputDescription(Calculator.INPUT_LABEL_V45_REF, true, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V45_V44_INTERP_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V45_SAMPLE, true, false),
-			new RepInputDescription(Calculator.INPUT_LABEL_V46_REF, true, false),
+			new RepInputDescription(Calculator.INPUT_LABEL_V46_V44_INTERP_REF, true, false),
 			new RepInputDescription(Calculator.INPUT_LABEL_V46_SAMPLE, true, false)
 		};
 	}

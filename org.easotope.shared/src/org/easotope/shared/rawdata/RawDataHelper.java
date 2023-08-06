@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -56,8 +56,9 @@ public class RawDataHelper {
 			AcquisitionInputV0 acquisitionInput = acquisition.getAcquisitionInput();
 			AcquisitionParsedV2 acquisitionParsed = acquisition.getAcquisitionParsed();
 
-			AcquisitionPad acquisitionPad = new AcquisitionPad(replicatePad, acquisitionParsed.getDate());
+			AcquisitionPad acquisitionPad = new AcquisitionPad(replicatePad, acquisitionParsed.getDataFormat(), acquisitionParsed.getDate());
 			acquisitionPad.setValue(Pad.DISABLED, acquisitionInput.isDisabled());
+			acquisitionPad.setValue(InputParameter.Data_Format.toString(), acquisitionParsed.getDataFormat().getName());
 
 			for (InputParameter inputParameter : acquisitionParsed.getMisc().keySet()) {
 				Object object = acquisitionParsed.getMisc().get(inputParameter);

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -45,7 +45,7 @@ public class RepAnalysisCo2Bulk extends AnalysesCreator {
 
 		RepStep repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.generic.replicate.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.generic.replicate.Controller.class.getName());
 		repStep.setPosition(0);
 		repStep.setApplyToContext(true);
 		repStep.setApplyToResults(true);
@@ -68,7 +68,7 @@ public class RepAnalysisCo2Bulk extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.co2calc.Controller");
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.bulkrefcalc.Controller.class.getName());
 		repStep.setPosition(1);
 		repStep.setApplyToContext(true);
 		repStep.setApplyToResults(true);
@@ -78,8 +78,28 @@ public class RepAnalysisCo2Bulk extends AnalysesCreator {
 				InputParameter.V44_Ref.toString(),
 				InputParameter.V44_Sample.toString(),
 				InputParameter.V45_Ref.toString(),
+				InputParameter.V46_Ref.toString()
+		});
+		setStepOutputs(repStep, new String[] {
+				org.easotope.shared.analysis.repstep.co2.bulkrefcalc.Calculator.OUTPUT_LABEL_V45_V44_REF_CALC,
+				org.easotope.shared.analysis.repstep.co2.bulkrefcalc.Calculator.OUTPUT_LABEL_V46_V44_REF_CALC
+		});
+		setStepFormats(repStep);
+		repStepDao.create(repStep);
+
+		repStep = new RepStep();
+		repStep.setAnalysisId(repAnalysis.getId());
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.co2calc.Controller.class.getName());
+		repStep.setPosition(2);
+		repStep.setApplyToContext(true);
+		repStep.setApplyToResults(true);
+		setStepInputs(repStep, new String[] {
+				InputParameter.Disabled.toString(),
+				InputParameter.Off_Peak.toString(),
+				InputParameter.V44_Sample.toString(),
+				org.easotope.shared.analysis.repstep.co2.bulkrefcalc.Calculator.OUTPUT_LABEL_V45_V44_REF_CALC,
 				InputParameter.V45_Sample.toString(),
-				InputParameter.V46_Ref.toString(),
+				org.easotope.shared.analysis.repstep.co2.bulkrefcalc.Calculator.OUTPUT_LABEL_V46_V44_REF_CALC,
 				InputParameter.V46_Sample.toString()
 		});
 		setStepOutputs(repStep, new String[] {
@@ -101,8 +121,8 @@ public class RepAnalysisCo2Bulk extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.cdrift.Controller");
-		repStep.setPosition(2);
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.cdrift.Controller.class.getName());
+		repStep.setPosition(3);
 		repStep.setApplyToContext(false);
 		repStep.setApplyToResults(true);
 		setStepInputs(repStep, new String[] {
@@ -116,8 +136,8 @@ public class RepAnalysisCo2Bulk extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.oacid.Controller");
-		repStep.setPosition(3);
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.oacid.Controller.class.getName());
+		repStep.setPosition(4);
 		repStep.setApplyToContext(true);
 		repStep.setApplyToResults(true);
 		setStepInputs(repStep, new String[] {
@@ -132,8 +152,8 @@ public class RepAnalysisCo2Bulk extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.odrift.Controller");
-		repStep.setPosition(4);
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.odrift.Controller.class.getName());
+		repStep.setPosition(5);
 		repStep.setApplyToContext(false);
 		repStep.setApplyToResults(true);
 		setStepInputs(repStep, new String[] {
@@ -147,8 +167,8 @@ public class RepAnalysisCo2Bulk extends AnalysesCreator {
 
 		repStep = new RepStep();
 		repStep.setAnalysisId(repAnalysis.getId());
-		repStep.setClazz("org.easotope.shared.analysis.repstep.co2.opdbtosmow.Controller");
-		repStep.setPosition(5);
+		repStep.setClazz(org.easotope.shared.analysis.repstep.co2.opdbtosmow.Controller.class.getName());
+		repStep.setPosition(6);
 		repStep.setApplyToContext(false);
 		repStep.setApplyToResults(true);
 		setStepInputs(repStep, new String[] {

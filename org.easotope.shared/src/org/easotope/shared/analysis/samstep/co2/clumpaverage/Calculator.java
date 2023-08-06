@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -33,33 +33,12 @@ import org.easotope.shared.analysis.tables.SamStep;
 import org.easotope.shared.core.scratchpad.SamplePad;
 
 public class Calculator extends SamStepCalculator {
-//	public static final String INPUT_LABEL_δ47 = "δ47";
-//	public static final String INPUT_LABEL_δ48 = "δ48";
-//	public static final String INPUT_LABEL_δ49 = "δ49";
 	public static final String INPUT_LABEL_Δ47 = "Δ47";
-	public static final String INPUT_LABEL_Δ48 = "Δ48";
-//	public static final String INPUT_LABEL_Δ49 = "Δ49";
 
-//	public static final String OUTPUT_LABEL_δ47 = "δ47";
-//	public static final String OUTPUT_LABEL_δ47_SD = "δ47 Standard Deviation";
-//	public static final String OUTPUT_LABEL_δ47_SE = "δ47 Standard Error";
-//	public static final String OUTPUT_LABEL_δ48 = "δ48";
-//	public static final String OUTPUT_LABEL_δ48_SD = "δ48 Standard Deviation";
-//	public static final String OUTPUT_LABEL_δ48_SE = "δ48 Standard Error";
-//	public static final String OUTPUT_LABEL_δ49 = "δ49";
-//	public static final String OUTPUT_LABEL_δ49_SD = "δ49 Standard Deviation";
-//	public static final String OUTPUT_LABEL_δ49_SE = "δ49 Standard Error";
 	public static final String OUTPUT_LABEL_Δ47 = "Δ47";
 	public static final String OUTPUT_LABEL_Δ47_SD = "Δ47 Standard Deviation";
 	public static final String OUTPUT_LABEL_Δ47_SE = "Δ47 Standard Error";
 	public static final String OUTPUT_LABEL_Δ47_CI = "Δ47 Confidence Interval";
-	public static final String OUTPUT_LABEL_Δ48 = "Δ48";
-	public static final String OUTPUT_LABEL_Δ48_SD = "Δ48 Standard Deviation";
-	public static final String OUTPUT_LABEL_Δ48_SE = "Δ48 Standard Error";
-	public static final String OUTPUT_LABEL_Δ48_CI = "Δ48 Confidence Interval";
-//	public static final String OUTPUT_LABEL_Δ49 = "Δ47";
-//	public static final String OUTPUT_LABEL_Δ49_SD = "Δ49 Standard Deviation";
-//	public static final String OUTPUT_LABEL_Δ49_SE = "Δ49 Standard Error";
 
 	public Calculator(SamStep samStep) {
 		super(samStep);
@@ -73,6 +52,5 @@ public class Calculator extends SamStepCalculator {
 	@Override
 	public void calculate(SamplePad samplePad, DependencyManager dependencyManager) {
 		samplePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ47), labelToColumnName(OUTPUT_LABEL_Δ47_SD), labelToColumnName(OUTPUT_LABEL_Δ47_SE),labelToColumnName(OUTPUT_LABEL_Δ47_CI), false);
-		samplePad.setAccumulator(labelToColumnName(OUTPUT_LABEL_Δ48), labelToColumnName(OUTPUT_LABEL_Δ48_SD), labelToColumnName(OUTPUT_LABEL_Δ48_SE),labelToColumnName(OUTPUT_LABEL_Δ48_CI), false);
 	}
 }

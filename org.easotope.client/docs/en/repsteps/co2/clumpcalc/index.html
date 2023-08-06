@@ -11,26 +11,16 @@
 
   	<p>Mass spectrometers measure raw voltages for each of the configured m/z values.
   	These voltages need to be converted into values that are more useful to the user.
-  	This step does these calculations for clumped CO<sub>2</sub> values.</p>
-
-	<h2>Parameters</h2>
-
-	<p>Reference gas values are normally measured both before and after a sample
-	measurement. These values are then measured together to get an estimated
-	reference gas value that approximates the time that the sample was measured. If
-	unaveraged values are enabled, then a single reference gas value either before
-	or after the sample measurement will be considered valid and used without
-	averaging if necessary.</p>
+  	This step does these calculations for both bulk CO<sub>2</sub> and clumped
+  	CO<sub>2</sub> values.</p>
 
 	<h2>Algorithm</h2>
   
     <p>
-	  The following algorithm documentation was adapted from a
-	  <a href="http://www.daeron.fr/wiki/doku.php?id=data_processing" class="media mediafile mf_1012" title="http://www.daeron.fr/wiki/doku.php?id=data_processing">Wiki</a>
-	  maintained by
-	  <a href="http://www.daeron.fr/" class="media mediafile mf_1012" title="http://www.daeron.fr/">Mathieu Daëron</a>.
-	  This step performs the following computations for each cycle in the input. It then
-	  averages the results at the acquisition level and again at the replicate level.
+      The following algorithm documentation was adapted from instructions assembled by
+	  Mathieu Daëron. This step performs the following computations for each cycle in
+	  the input. It then averages the results at the acquisition level and again at the
+	  replicate level.
     </p>
 
     <h3 class="sectionedit3" id="compute_the_isotopologue_composition_of_your_reference_gas">(1) Compute the isotopologue composition of your reference gas</h3>
@@ -309,10 +299,26 @@
       </ul>
     </div>
 
-    <h3 class="sectionedit5" id="compute_raw_δ_values_of_your_sample_gas">(3) Compute "raw" Δ values of your sample gas</h3>
+    <h3 class="sectionedit5" id="compute_raw_δ_values_of_your_sample_gas">(3) Compute "raw" δ and Δ values of your sample gas</h3>
+    
     <div class="level3">
       <p>
-        <strong>(3.a) “Scramble” your sample gas</strong>
+        <strong>(3.a) Compute δ values</strong>
+      </p>
+    
+	  <ul>
+        <li class="level1">
+          <div class="li">δ<sub>18O</sub> = (R<sub>18-Sample</sub> - R<sub>18-VSMOW</sub>) / R<sub>18-VSMOW</sub> × 1000</div>
+        </li>
+        <li class="level1">
+          <div class="li">δ<sub>13C</sub> = (R<sub>13-Sample</sub> - R<sub>13-VPDB</sub>) / R<sub>13-VPDB</sub> × 1000</div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="level3">
+      <p>
+        <strong>(3.b) “Scramble” your sample gas</strong>
       </p>
 
       <p>
@@ -456,7 +462,7 @@
       </ul>
 
       <p>
-        <strong>(3.b) Compute raw Δ values</strong>
+        <strong>(3.c) Compute raw Δ values</strong>
       </p>
       <p>
         These Δ values are called “raw” because they have not yet been corrected

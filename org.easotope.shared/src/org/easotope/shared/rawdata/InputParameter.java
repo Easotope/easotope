@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -27,6 +27,8 @@
 
 package org.easotope.shared.rawdata;
 
+import org.easotope.shared.rawdata.tables.AcquisitionParsedV2;
+
 // !!!!!!
 // Any time modifications are made to this list, you need to set the
 // variables rebuildScanFileParsed and rebuildAcquisitionsParsed to
@@ -40,7 +42,7 @@ public enum InputParameter {
 	Disabled(Boolean.class, InputParameterType.Flag, null),
 	Off_Peak(Boolean.class, InputParameterType.Flag, null),
 
-	// THERE IS ANOTHER META FIELD AT THE BOTTOM OF THE LIST. IT SHOULD
+	// THERE are OTHER META FIELDS AT THE BOTTOM OF THE LIST. THEY SHOULD
 	// BE MOVED UP NEXT TIME A REPARSING OF THE INPUT FILES IS NECESSARY.
 
 	Identifier_1(String.class, InputParameterType.Meta, null),			// Thermo specific
@@ -247,7 +249,8 @@ public enum InputParameter {
 	V49_5_Scan_Factor(Double.class, InputParameterType.Factor2, 495),
 
 	// MOVE THIS UP TO OTHER META DATA NEXT TIME A REPARSING IS NECESSARY
-	Init_Intensity(String.class, InputParameterType.Meta, null);	// Thermo specific
+	Init_Intensity(String.class, InputParameterType.Meta, null),	// Thermo specific
+	Data_Format(AcquisitionParsedV2.DataFormat.class, InputParameterType.Meta, null);
 
 	private final Class<?> clazz;
 	private final InputParameterType inputParameterType;

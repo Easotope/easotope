@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -240,6 +240,8 @@ public abstract class DatabaseUpgrade {
 		new Upgrade20180724(),
 		new Upgrade20190125(),
 		new Upgrade20200723(),
-		new Upgrade20201112()
+		new Upgrade20201112(),
+		new Upgrade20201231(),
+		new Upgrade20230220()
 	};
 }

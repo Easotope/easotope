@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -113,6 +113,7 @@ public class ScratchPadTable extends Composite {
 	private ScratchPadRowLayerStack rowLayerStack;
 	private ScratchPadCornerLayerStack cornerLayerStack;
 
+	boolean padReplicates = false;
 	private boolean canSaveTableLayout = true;
 	private String[] columnNamesInDefaultOrder;
 	private int numberOfInitialGeneralColumns;
@@ -123,9 +124,11 @@ public class ScratchPadTable extends Composite {
 
 	private Vector<ScratchPadTableListener> listeners = new Vector<ScratchPadTableListener>();
 
-	public ScratchPadTable(Composite parent, boolean dataAnalysisIsEditable) {
+	public ScratchPadTable(Composite parent, boolean dataAnalysisIsEditable, boolean padReplicates) {
 		super(parent, SWT.NONE);
 		setLayout(new FormLayout());
+		
+		this.padReplicates = padReplicates;
 
 		Composite leftComposite = new Composite(this, SWT.NONE);
 		FormData formData = new FormData();
@@ -649,7 +652,7 @@ public class ScratchPadTable extends Composite {
 		public void configureRegistry(IConfigRegistry configRegistry) {
 			configRegistry.registerConfigAttribute(
 					ExportConfigAttributes.EXPORTER,
-					new HSSFExcelExporter());
+					padReplicates ? new ScratchPadPaddedReplicateExporter() : new HSSFExcelExporter());
 
 	        configRegistry.registerConfigAttribute(
 	        		ExportConfigAttributes.EXPORT_FORMATTER,

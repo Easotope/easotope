@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 by Devon Bowen.
+ * Copyright © 2016-2023 by Devon Bowen.
  *
  * This file is part of Easotope.
  *
@@ -171,8 +171,10 @@ public class LoginInfoPlugin extends CachePlugin {
 		boolean showTimeZone = (Boolean) parameters[3];
 		boolean leadingExponent = (Boolean) parameters[4];
 		boolean forceExponent = (Boolean) parameters[5];
+		int lidi2RefRange = (Integer) parameters[6];
+		int exportPadding = (Integer) parameters[7];
 
-		UserPasswordTimeZoneUpdate userPasswordTimeZoneUpdate = new UserPasswordTimeZoneUpdate(user.getId(), password, timeZoneId, showTimeZone, leadingExponent, forceExponent, checkForUpdates);
+		UserPasswordTimeZoneUpdate userPasswordTimeZoneUpdate = new UserPasswordTimeZoneUpdate(user.getId(), password, timeZoneId, showTimeZone, leadingExponent, forceExponent, checkForUpdates, lidi2RefRange, exportPadding);
 
 		Processor processor = ProcessorManager.getInstance().getProcessor();
 		processor.process(userPasswordTimeZoneUpdate, authenticationObjects, abstractCache);

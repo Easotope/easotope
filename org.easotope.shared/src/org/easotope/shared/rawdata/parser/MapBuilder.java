@@ -153,7 +153,7 @@ public class MapBuilder {
 			return (Long) obj;
 
 		} if (obj instanceof Integer) {
-			return new Long((Integer) obj);
+			return Long.valueOf((Integer) obj);
 		}
 
 		return null;
@@ -195,10 +195,10 @@ public class MapBuilder {
 			}
 
 		} else if (obj instanceof Long) {
-			return new Double((Long) obj);
+			return Double.valueOf((Long) obj);
 			
 		} else if (obj instanceof Integer) {
-			return new Double((Integer) obj);
+			return Double.valueOf((Integer) obj);
 		}
 
 		return null;

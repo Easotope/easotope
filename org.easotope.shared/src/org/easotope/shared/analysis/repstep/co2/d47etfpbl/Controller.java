@@ -32,7 +32,6 @@ import org.easotope.shared.admin.IsotopicScale;
 import org.easotope.shared.admin.StandardParameter;
 import org.easotope.shared.analysis.repstep.RepInputDescription;
 import org.easotope.shared.analysis.repstep.RepOutputDescription;
-import org.easotope.shared.analysis.repstep.co2.d47etfpbl.Calculator;
 import org.easotope.shared.analysis.step.InputDescription;
 import org.easotope.shared.analysis.step.OutputDescription;
 

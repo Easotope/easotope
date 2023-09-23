@@ -110,7 +110,7 @@ public class MassSpecListPlugin extends CachePlugin {
 				int id = massSpecUpdated.getMassSpec().getId();
 				String name = massSpecUpdated.getMassSpec().getName();
 
-				if (!massSpecList.containsKey(id) || !massSpecList.get(id).equals(name)) {
+				if (!massSpecList.containsKey(id) || !massSpecList.get(id).getName().equals(name)) {
 					MassSpecList massSpecListCopy = new MassSpecList();
 					massSpecListCopy.putAll(massSpecList);
 

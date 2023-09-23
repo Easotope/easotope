@@ -130,21 +130,21 @@ public abstract class Pad implements Comparable<Pad> {
 					break;
 
 				case BOOLEAN_TRUE:
-					setValue(property, new Boolean(true));
+					setValue(property, Boolean.valueOf(true));
 					break;
 
 				case BOOLEAN_FALSE:
-					setValue(property, new Boolean(false));
+					setValue(property, Boolean.valueOf(false));
 					break;
 
 				case DOUBLE:
 					double doubleValue = input.readDouble();
-					setValue(property, new Double(doubleValue));
+					setValue(property, Double.valueOf(doubleValue));
 					break;
 
 				case INTEGER:
 					int intValue = input.readInt();
-					setValue(property, new Integer(intValue));
+					setValue(property, Integer.valueOf(intValue));
 					break;
 
 				case STRING:

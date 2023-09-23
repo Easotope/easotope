@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>org.easotope.framework</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+	<parent>
+		<version>1.0.0</version>
+		<groupId>org.easotope</groupId>
+		<artifactId>parent</artifactId>
+	</parent>
+
+	<repositories>
+		<repository>
+			<id>eclipse</id>
+			<url>https://download.eclipse.org/eclipse/updates/4.28</url>
+			<layout>p2</layout>
+		</repository>
+	</repositories>
+
+</project>

@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Framework
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-SymbolicName: org.easotope.framework;singleton:=true
-Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 1.0.0
 Require-Bundle: org.eclipse.osgi,
  org.eclipse.equinox.registry,
  org.eclipse.equinox.app
@@ -34,4 +34,5 @@ Export-Package: com.j256.ormlite.dao,
  org.h2
 Bundle-Activator: org.easotope.framework.dbcore.Activator
 Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: org.easotope.framework
 Eclipse-BuddyPolicy: registered

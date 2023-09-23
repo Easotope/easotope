@@ -1,4 +1,9 @@
 .DS_Store
 .metadata
+.settings
+.classpath
+.project
 bin/
+workspace/
+target/
 /tools/

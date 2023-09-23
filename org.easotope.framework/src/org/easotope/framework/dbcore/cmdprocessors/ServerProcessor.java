@@ -75,7 +75,7 @@ public class ServerProcessor extends ThreadProcessor implements ObjSocketListene
 		}
 
 		try {
-			objSocket = new ObjSocket(socket);
+			objSocket = new ObjSocket(socket, false);
 		} catch (IOException e) {
 			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.serverProcessor_ioException, host, port), e);
 		}

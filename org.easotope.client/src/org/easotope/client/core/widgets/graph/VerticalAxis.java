@@ -167,6 +167,9 @@ public class VerticalAxis {
 			gc.drawText(label, -y, labelX, true);
 
 			gc.setTransform(oldTransform);
+			
+			oldTransform.dispose();
+			newTransform.dispose();
 		}
 
 		if (graphSettings.getVerticalAxisShowScale()) {

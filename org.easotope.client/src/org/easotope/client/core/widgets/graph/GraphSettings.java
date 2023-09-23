@@ -100,6 +100,8 @@ public class GraphSettings {
 		tooltipFont.dispose();
 		horizontalAxisLabelFont.dispose();
 		horizontalAxisScaleFont.dispose();
+		verticalAxisLabelFont.dispose();
+		verticalAxisScaleFont.dispose();
 	}
 	
 	public Display getDisplay() {

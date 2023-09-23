@@ -49,8 +49,8 @@ import org.easotope.client.rawdata.batchimport.table.BatchImportTable;
 import org.easotope.framework.dbcore.DatabaseConstants;
 import org.easotope.shared.admin.cache.massspec.massspeclist.MassSpecList;
 import org.easotope.shared.analysis.cache.corrinterval.corrintervallist.CorrIntervalList;
-import org.easotope.shared.rawdata.cache.input.InputCache;
-import org.easotope.shared.rawdata.cache.input.replicate.InputCacheReplicateSaveListener;
+//import org.easotope.shared.rawdata.cache.input.InputCache;
+//import org.easotope.shared.rawdata.cache.input.replicate.InputCacheReplicateSaveListener;
 import org.easotope.shared.rawdata.cache.sourcelist.sourcelist.SourceList;
 import org.easotope.shared.rawdata.cache.sourcelist.sourcelist.SourceListItem;
 import org.eclipse.swt.SWT;
@@ -77,6 +77,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
 public class BatchImportComposite extends EditorComposite {
+	@SuppressWarnings("unused")
 	private final String WAITING_FOR_REPLICATE_SAVE = "WAITING_FOR_REPLICATE_SAVE";
 
 	private MassSpecListLoader massSpecListLoader;
@@ -89,7 +90,9 @@ public class BatchImportComposite extends EditorComposite {
 	private VButton createCorrInterval;
 	private Combo acidTemp;
 	private SortedCombo grouping;
+	@SuppressWarnings("unused")
 	private Composite warningComposite;
+	@SuppressWarnings("unused")
 	private Label warningMessage;
 	private Composite tableComposite;
 	private Composite centerComposite;
@@ -101,6 +104,7 @@ public class BatchImportComposite extends EditorComposite {
 	BatchImportComposite(ChainedPart chainedPart, Composite parent, int style) {
 		super(chainedPart, parent, style);
 
+		@SuppressWarnings("unused")
 		final Image warningImage = Icons.getWarning(parent.getDisplay());
 		final Image errorImage = Icons.getError(parent.getDisplay());
 
@@ -493,6 +497,7 @@ public class BatchImportComposite extends EditorComposite {
 		widgetStatusChanged();
 	}
 
+	@SuppressWarnings("unused")
 	public void newSourceList(SourceList sourceList) {
 		for (SourceListItem item : sourceList) {
 

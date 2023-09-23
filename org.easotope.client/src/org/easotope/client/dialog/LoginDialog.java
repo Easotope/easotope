@@ -351,6 +351,7 @@ public class LoginDialog extends Dialog implements ProcessorListener, CommandLis
 		
 		ProcessorManager.getInstance().getProcessor().removeListener(this);
 		logo.dispose();
+		easotope.dispose();
 
 		return result;
     }

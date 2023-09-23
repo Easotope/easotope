@@ -201,6 +201,7 @@ public class AssignmentComposite extends Composite implements StandardCacheStand
 		canvas.redraw();
 	}
 
+	@SuppressWarnings("unused")
 	private boolean sourceListItemsAreTheSame(SourceListItem sourceListItem1, SourceListItem sourceListItem2) {
 		if (sourceListItem1.getUserId() != sourceListItem2.getUserId()) {
 			return false;

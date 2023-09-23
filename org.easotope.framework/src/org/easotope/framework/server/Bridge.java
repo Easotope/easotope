@@ -39,7 +39,6 @@ import org.easotope.framework.commands.Command;
 import org.easotope.framework.commands.Command.Status;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
-import org.easotope.framework.core.network.DiffieHellmanDES.MissingRemotePublicKey;
 import org.easotope.framework.core.network.ObjSocket;
 import org.easotope.framework.core.network.ObjSocketException;
 import org.easotope.framework.core.network.ObjSocketListener;
@@ -91,9 +90,6 @@ public class Bridge implements CommandListener, ObjSocketListener {
 
 		} catch (IOException e) {
 			Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.bridge_ioException, objSocket.getId()), e);
-
-		} catch (MissingRemotePublicKey e) {
-			Log.getInstance().log(Level.TERMINAL, this, Messages.bridge_terminalError, e);
 		}
 	}
 

@@ -97,7 +97,7 @@ public class DidStateMachine implements StateMachine {
 			intArray[2] = Util.toByte(buffer.get(9));
 			intArray[3] = Util.toByte(buffer.get(8));
 
-			mapBuilder.put(InputParameter.Java_Date, new Long(((long) Util.toInteger(intArray)) * 1000));
+			mapBuilder.put(InputParameter.Java_Date, Long.valueOf(((long) Util.toInteger(intArray)) * 1000));
 
 		} else if ("DualInlet RawData Standard Block".equals(string) && buffer.startsWith(rawDataBlock)) {
 			measuredObjectType = MeasuredObjectType.REFERENCE_GAS;

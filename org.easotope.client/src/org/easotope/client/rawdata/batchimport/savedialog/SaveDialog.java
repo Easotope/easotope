@@ -53,13 +53,18 @@ public class SaveDialog extends Dialog implements InputCacheReplicateSaveListene
 	private Shell shell;
 
 	private Composite uploadingComposite;
+	@SuppressWarnings("unused")
 	private Composite executingComposite;
+	@SuppressWarnings("unused")
 	private Composite errorUploadingComposite;
+	@SuppressWarnings("unused")
 	private Composite errorExecutingComposite;
 
 	private int numReplicates;
 	private int currentReplicate = 1;
+	@SuppressWarnings("unused")
 	private ArrayList<ImportedFile> importedFiles;
+	@SuppressWarnings("unused")
 	private boolean allowDuplicates;
 
 	public SaveDialog(Shell shell, int style) {

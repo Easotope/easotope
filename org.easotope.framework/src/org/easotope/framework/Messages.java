@@ -45,6 +45,12 @@ public class Messages extends NLS {
 	public static String objSocket_errorReadingPublicKey;
 	public static String objSocket_noPublicKeyReceived;
 	public static String objSocket_receivedRemotePublicKey;
+	public static String objSocket_errorReadingIv1;
+	public static String objSocket_noIv1Received;
+	public static String objSocket_receivedRemoteIv1;
+	public static String objSocket_errorReadingIv2;
+	public static String objSocket_noIv2Received;
+	public static String objSocket_receivedRemoteIv2;
 	public static String objSocket_invalidKeyException;
 	public static String objSocket_invalidKeySpecException;
 	public static String objSocket_noSuchPaddingException;

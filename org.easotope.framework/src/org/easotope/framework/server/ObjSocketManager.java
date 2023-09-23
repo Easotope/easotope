@@ -41,7 +41,6 @@ import org.easotope.framework.Messages;
 import org.easotope.framework.commands.Command;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
-import org.easotope.framework.core.network.DiffieHellmanDES.MissingRemotePublicKey;
 import org.easotope.framework.core.network.ObjSocket;
 import org.easotope.framework.dbcore.cmdprocessors.Event;
 import org.easotope.framework.dbcore.cmdprocessors.EventListener;
@@ -68,7 +67,7 @@ public class ObjSocketManager implements EventListener {
 
 		try {
 			bridge = new Bridge(processor);
-			objSocket = new ObjSocket(socket);
+			objSocket = new ObjSocket(socket, true);
 
 			objSocket.addListener(bridge);
 			bridge.setObjSocket(objSocket);
@@ -89,7 +88,7 @@ public class ObjSocketManager implements EventListener {
 			Log.getInstance().log(Level.INFO, this, Messages.objSocketManager_noSuchThread);
 		}
 
-		objSocketToBridge.remove(objSockets);
+		objSocketToBridge.remove(objSocket);
 	}
 
 	@Override
@@ -119,9 +118,6 @@ public class ObjSocketManager implements EventListener {
 
 				} catch (IOException e) {
 					Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocketManager_ioException, objSocket.getId()), e);
-
-				} catch (MissingRemotePublicKey e) {
-					Log.getInstance().log(Level.TERMINAL, this, Messages.objSocketManager_terminalError, e);
 				}
 			}
 		}

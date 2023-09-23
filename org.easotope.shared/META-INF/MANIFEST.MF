@@ -1,15 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Shared
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-SymbolicName: org.easotope.shared;singleton:=true
-Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 1.0.0
 Bundle-ClassPath: .,
  lib/commons-math3-3.6.1.jar
 Require-Bundle: org.easotope.framework,
  org.eclipse.swt,
  org.eclipse.osgi
-Eclipse-RegisterBuddy: org.easotope.framework
 Export-Package: org.carbonateresearch.shared.analysis.repstep.co2.ethpbl,
  org.easotope.shared.admin,
  org.easotope.shared.admin.cache.massspec,
@@ -99,3 +98,5 @@ Export-Package: org.carbonateresearch.shared.analysis.repstep.co2.ethpbl,
  org.easotope.shared.rawdata.parser.nu.sample,
  org.easotope.shared.rawdata.parser.thermo,
  org.easotope.shared.rawdata.tables
+Automatic-Module-Name: org.easotope.shared
+Eclipse-RegisterBuddy: org.easotope.framework

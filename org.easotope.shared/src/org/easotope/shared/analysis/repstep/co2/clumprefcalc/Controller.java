@@ -32,7 +32,6 @@ import java.util.HashSet;
 import org.easotope.shared.Messages;
 import org.easotope.shared.analysis.repstep.RepInputDescription;
 import org.easotope.shared.analysis.repstep.RepOutputDescription;
-import org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator;
 import org.easotope.shared.analysis.step.InputDescription;
 import org.easotope.shared.analysis.step.OutputDescription;
 import org.easotope.shared.analysis.step.RepStepController;

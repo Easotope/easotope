@@ -25,46 +25,25 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.shared.commands;
+package org.easotope.shared.plugin.analysis.databaseupgradehandler;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-
-import org.easotope.framework.dbcore.cmdprocessors.CommandThatCanBeSentInBatchMode;
 import org.easotope.framework.dbcore.util.RawFileManager;
 
 import com.j256.ormlite.support.ConnectionSource;
 
-public class BatchUpdate extends CommandThatCanBeSentInBatchMode {
-	private static final long serialVersionUID = 1L;
-
-	@SuppressWarnings("unused")
-	private int sampleId;
-	@SuppressWarnings("unused")
-	private int standardId;
-	@SuppressWarnings("unused")
-	private int massSpecId;
-	@SuppressWarnings("unused")
-	private int acidTempId;
-	@SuppressWarnings("unused")
-	private String assumedTimeZone;
-	private ArrayList<byte[]> bytes;
-	private ArrayList<String> originalNames;
-
+public class Upgrade20230622 extends DatabaseUpgrade {
 	@Override
-	public void removeAllDataForBatchModeReturn() {
-		assumedTimeZone = null;
-		bytes.clear();
-		originalNames.clear();
+	public int appliesToVersion() {
+		return 20230622;
 	}
 
 	@Override
-	public boolean authenticate(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String, Object> authenticationObjects) throws Exception {
+	public int resultsInVersion() {
+		return 20231126;
+	}
+
+	@Override
+	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion) {
 		return true;
-	}
-
-	@Override
-	public void execute(ConnectionSource connectionSource, RawFileManager rawFileManager, Hashtable<String, Object> authenticationObjects) throws Exception {
-		
 	}
 }

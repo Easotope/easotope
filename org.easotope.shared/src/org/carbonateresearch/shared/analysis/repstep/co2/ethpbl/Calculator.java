@@ -360,7 +360,7 @@ public class Calculator extends RepStepCalculator {
 							refValue += refBackground;
 						}
 
-						pblBackgroundValues.add(new Double(x2Coeff * Math.pow(refValue,2) + x1Coeff * refValue + x0Coeff));		
+						pblBackgroundValues.add(Double.valueOf(x2Coeff * Math.pow(refValue,2) + x1Coeff * refValue + x0Coeff));		
 					}
 				
 				} else if ((Integer) scanFileReplicatePad.getValue(labelToColumnName(inputLabelAlgorithms[channel])) == 2) { // Half mass are being used.
@@ -379,7 +379,7 @@ public class Calculator extends RepStepCalculator {
 							refValue += refBackground;
 						}
 	
-						pblBackgroundValues.add(new Double(-1*factor * refValue));
+						pblBackgroundValues.add(Double.valueOf(-1*factor * refValue));
 					}
 				}				
 			}

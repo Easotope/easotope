@@ -524,7 +524,7 @@ public class AcquisitionsWidget extends EasotopeComposite {
 				}
 			});
 			tabItem.setData(TABLE, table);
-			table.setData(TABLE_NUM_COLUMNS, new Integer(columnTitles.size() + 2));
+			table.setData(TABLE_NUM_COLUMNS, Integer.valueOf(columnTitles.size() + 2));
 
 			TableColumn column = new TableColumn(table, SWT.NONE);
 			column.setWidth(60);
@@ -561,7 +561,7 @@ public class AcquisitionsWidget extends EasotopeComposite {
 				}
 
 				table.setRedraw(true);
-				table.setData(TABLE_NUM_COLUMNS, new Integer(columnTitles.size() + 2));
+				table.setData(TABLE_NUM_COLUMNS, Integer.valueOf(columnTitles.size() + 2));
 			}
 		}
 
@@ -669,7 +669,7 @@ public class AcquisitionsWidget extends EasotopeComposite {
 				}
 
 				new TableItem(table, SWT.NONE);
-				tabItem.setData(STATISTICS_LINE, new Integer(table.getItemCount()));
+				tabItem.setData(STATISTICS_LINE, Integer.valueOf(table.getItemCount()));
 				new TableItem(table, SWT.NONE);
 				new TableItem(table, SWT.NONE);
 				new TableItem(table, SWT.NONE);

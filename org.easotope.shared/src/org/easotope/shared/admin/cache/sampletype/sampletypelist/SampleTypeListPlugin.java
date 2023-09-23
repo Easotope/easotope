@@ -110,7 +110,7 @@ public class SampleTypeListPlugin extends CachePlugin {
 				int id = sampleTypeUpdated.getSampleType().getId();
 				String name = sampleTypeUpdated.getSampleType().getName();
 
-				if (!sampleTypeList.containsKey(id) || !sampleTypeList.get(id).equals(name)) {
+				if (!sampleTypeList.containsKey(id) || !sampleTypeList.get(id).getName().equals(name)) {
 					SampleTypeList sampleTypeListCopy = new SampleTypeList();
 					sampleTypeListCopy.putAll(sampleTypeList);
 

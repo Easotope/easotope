@@ -34,7 +34,6 @@ import org.easotope.shared.admin.tables.Standard;
 import org.easotope.shared.analysis.execute.RepStepCalculator;
 import org.easotope.shared.analysis.execute.dependency.DependencyManager;
 import org.easotope.shared.analysis.repstep.superclass.nonlinearity.dependencies.Dependencies;
-import org.easotope.shared.analysis.repstep.superclass.nonlinearity.VolatileKeys;
 import org.easotope.shared.analysis.tables.RepStep;
 import org.easotope.shared.core.scratchpad.ReplicatePad;
 import org.easotope.shared.math.MultiLineCommonSlopeRegression;

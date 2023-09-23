@@ -49,7 +49,6 @@ import javax.crypto.NoSuchPaddingException;
 import org.easotope.framework.Messages;
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
-import org.easotope.framework.core.network.DiffieHellmanDES.MissingRemotePublicKey;
 
 public class ObjSocket implements Runnable {
 	private static volatile int idCounter = 0;
@@ -58,14 +57,16 @@ public class ObjSocket implements Runnable {
 	private Socket socket;
 	private InputStream inputStream;
 	private OutputStream outputStream;
-	private DiffieHellmanDES diffieHellmanDES;
+	private DiffieHellmanAES diffieHellmanAES;
 	private WriteThread writeThread;
+	private boolean isListener;
 	private HashSet<ObjSocketListener> listeners;
 
-	public ObjSocket(Socket socket) throws IOException {
+	public ObjSocket(Socket socket, boolean isListener) throws IOException {
 		id = idCounter++;
 
 		this.socket = socket;
+		this.isListener = isListener;
 		inputStream = socket.getInputStream();
 		outputStream = socket.getOutputStream();
 		writeThread = new WriteThread();
@@ -114,24 +115,34 @@ public class ObjSocket implements Runnable {
 
 	private boolean initDiffieHellman() {
 		try {
-			diffieHellmanDES = new DiffieHellmanDES();
-			byte[] bytes = diffieHellmanDES.getLocalPublicKey();
+			diffieHellmanAES = new DiffieHellmanAES(isListener);
+			byte[] bytes = diffieHellmanAES.getLocalPublicKey();
 
 			outputStream.write(ByteBuffer.allocate(4).putInt(bytes.length).array());
 			outputStream.write(bytes);
 
+			bytes = diffieHellmanAES.getIv1();
+			
+			outputStream.write(ByteBuffer.allocate(4).putInt(bytes.length).array());
+			outputStream.write(bytes);
+
+			bytes = diffieHellmanAES.getIv2();
+			
+			outputStream.write(ByteBuffer.allocate(4).putInt(bytes.length).array());
+			outputStream.write(bytes);
+
 		} catch (NoSuchAlgorithmException exception) {
-			Log.getInstance().log(Level.DEBUG, this, Messages.objSocket_noSuchAlgorithmException, exception);
+			Log.getInstance().log(Level.INFO, this, Messages.objSocket_noSuchAlgorithmException, exception);
 			notifyException(Messages.objSocket_noSuchAlgorithmException, exception);
 			return false;
 
 		} catch (InvalidAlgorithmParameterException exception) {
-			Log.getInstance().log(Level.DEBUG, this, Messages.objSocket_invalidAlgorithmParameterException, exception);
+			Log.getInstance().log(Level.INFO, this, Messages.objSocket_invalidAlgorithmParameterException, exception);
 			notifyException(Messages.objSocket_invalidAlgorithmParameterException, exception);
 			return false;
 
 		} catch (IOException exception) {
-			Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_errorWritingPublicKey, id), exception);
+			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.objSocket_errorWritingPublicKey, id), exception);
 			return false;
 		}
 
@@ -143,34 +154,72 @@ public class ObjSocket implements Runnable {
 			bytes = readByteBlock();
 
 		} catch (IOException e) {
-			Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_errorReadingPublicKey, id), e);
+			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.objSocket_errorReadingPublicKey, id), e);
 			return false;
 		}
 
 		if (bytes == null) {
-			Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_noPublicKeyReceived, id));
+			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.objSocket_noPublicKeyReceived, id));
 			return false;
 		}
 
 		Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_receivedRemotePublicKey, id));
 
+		byte[] iv1 = null;
+
 		try {
-			diffieHellmanDES.setRemotePublicKey(bytes);
+			iv1 = readByteBlock();
+
+		} catch (IOException e) {
+			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.objSocket_errorReadingIv1, id), e);
+			return false;
+		}
+
+		if (iv1 == null) {
+			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.objSocket_noIv1Received, id));
+			return false;
+		}
+
+		Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_receivedRemoteIv1, id));
+
+		byte[] iv2 = null;
+
+		try {
+			iv2 = readByteBlock();
+
+		} catch (IOException e) {
+			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.objSocket_errorReadingIv2, id), e);
+			return false;
+		}
+
+		if (iv2 == null) {
+			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.objSocket_noIv2Received, id));
+			return false;
+		}
+
+		Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_receivedRemoteIv2, id));
+
+		try {
+			diffieHellmanAES.setRemotePublicKey(bytes, iv1, iv2);
 
 		} catch (InvalidKeyException exception) {
-			Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_invalidKeyException, id), exception);
+			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.objSocket_invalidKeyException, id), exception);
 			return false;
 
 		} catch (NoSuchAlgorithmException exception) {
-			Log.getInstance().log(Level.DEBUG, this, Messages.objSocket_noSuchAlgorithmException, exception);
+			Log.getInstance().log(Level.INFO, this, Messages.objSocket_noSuchAlgorithmException, exception);
 			return false;
 
 		} catch (InvalidKeySpecException exception) {
-			Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_invalidKeySpecException, id), exception);
+			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.objSocket_invalidKeySpecException, id), exception);
 			return false;
 
 		} catch (NoSuchPaddingException exception) {
-			Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_noSuchPaddingException, id), exception);
+			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.objSocket_noSuchPaddingException, id), exception);
+			return false;
+			
+		} catch (InvalidAlgorithmParameterException exception) {
+			Log.getInstance().log(Level.INFO, this, MessageFormat.format(Messages.objSocket_invalidAlgorithmParameterException, id), exception);
 			return false;
 		}
 
@@ -211,7 +260,7 @@ public class ObjSocket implements Runnable {
 		Serializable object = null;
 
 		try {
-			bytes = diffieHellmanDES.decrypt(bytes);
+			bytes = diffieHellmanAES.decrypt(bytes);
 
 			try {
 				bytes = Compression.decompress(bytes);
@@ -235,10 +284,6 @@ public class ObjSocket implements Runnable {
 
 		} catch (BadPaddingException exception) {
 			Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_badPaddingException, id), exception);
-			return null;
-
-		} catch (MissingRemotePublicKey exception) {
-			Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_missingRemotePublicKey, id), exception);
 			return null;
 		}
 
@@ -309,7 +354,7 @@ public class ObjSocket implements Runnable {
 		}
 	}
 
-	public void writeObject(Serializable object) throws IllegalBlockSizeException, BadPaddingException, IOException, MissingRemotePublicKey {
+	public void writeObject(Serializable object) throws IllegalBlockSizeException, BadPaddingException, IOException {
 		writeThread.writeObject(object);
 	}
 
@@ -321,8 +366,8 @@ public class ObjSocket implements Runnable {
 		private boolean suspended = false;
 		private ArrayList<byte[]> byteBlocks = new ArrayList<byte[]>();
 
-		void writeObject(Serializable object) throws IOException, IllegalBlockSizeException, BadPaddingException, MissingRemotePublicKey {
-			if (suspended || diffieHellmanDES == null || !diffieHellmanDES.isReady()) {
+		void writeObject(Serializable object) throws IOException, IllegalBlockSizeException, BadPaddingException {
+			if (suspended || diffieHellmanAES == null || !diffieHellmanAES.isReady()) {
 				return;
 			}
 
@@ -339,7 +384,7 @@ public class ObjSocket implements Runnable {
 			bytes = Compression.compress(bytes);
 
 			try {
-				bytes = diffieHellmanDES.encrypt(bytes);
+				bytes = diffieHellmanAES.encrypt(bytes);
 
 				synchronized (byteBlocks) {
 					byteBlocks.add(0, bytes);
@@ -352,10 +397,6 @@ public class ObjSocket implements Runnable {
 
 			} catch (BadPaddingException exception) {
 				Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_badPaddingException, id), exception);
-				throw exception;
-
-			} catch (MissingRemotePublicKey exception) {
-				Log.getInstance().log(Level.DEBUG, this, MessageFormat.format(Messages.objSocket_missingRemotePublicKey, id), exception);
 				throw exception;
 			}
 

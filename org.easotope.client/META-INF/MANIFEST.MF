@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Client
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-SymbolicName: org.easotope.client;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
@@ -21,6 +22,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.e4.ui.di,
  org.eclipse.e4.core.services,
  org.apache.commons.logging
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.osgi.service.event
+Import-Package: org.osgi.service.event,
+ javax.annotation; version="1.1.0",
+ javax.inject
+Automatic-Module-Name: org.easotope.client
 Eclipse-RegisterBuddy: org.easotope.framework

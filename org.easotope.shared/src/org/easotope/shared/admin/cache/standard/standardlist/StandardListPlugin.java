@@ -113,7 +113,7 @@ public class StandardListPlugin extends CachePlugin {
 				int id = standard.getId();
 				String name = standard.getName();
 
-				if (!standardList.containsKey(id) || !standardList.get(id).equals(name)) {
+				if (!standardList.containsKey(id) || !standardList.get(id).getName().equals(name)) {
 					StandardList standardListCopy = new StandardList();
 					standardListCopy.putAll(standardList);
 

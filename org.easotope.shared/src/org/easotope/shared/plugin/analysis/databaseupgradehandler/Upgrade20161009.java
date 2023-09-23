@@ -34,8 +34,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.io.Serializable;
 import java.util.HashMap;
-
-import javax.xml.bind.DatatypeConverter;
+import java.util.HexFormat;
 
 import org.easotope.framework.core.logging.Log;
 import org.easotope.framework.core.logging.Log.Level;
@@ -82,7 +81,7 @@ public class Upgrade20161009 extends DatabaseUpgrade {
 
 			for (String[] array : rawResults.getResults()) {
 				if (array[1] != null) {
-					byte[] oldBytes = DatatypeConverter.parseHexBinary(array[1]);
+					byte[] oldBytes = parseHexBinary(array[1]);
 					@SuppressWarnings("unchecked")
 					HashMap<Integer,NumericValue> oldHashMap = (HashMap<Integer,NumericValue>) bytesToObject(oldBytes);
 					HashMap<Integer,Object[]> newHashMap = new HashMap<Integer,Object[]>();
@@ -98,7 +97,7 @@ public class Upgrade20161009 extends DatabaseUpgrade {
 					}
 
 					byte[] newBytes = Serialization.objectToBytes(newHashMap);
-					String newString = DatatypeConverter.printHexBinary(newBytes);
+					String newString = printHexBinary(newBytes);
 
 					acidTempDao.updateRaw("UPDATE " + AcidTemp.TABLE_NAME + " SET " + AcidTemp.VALUES_FIELD_NAME + "='" + newString + "' WHERE " + AcidTemp.ID_FIELD_NAME + "=" + array[0] + ";");
 				}
@@ -115,7 +114,7 @@ public class Upgrade20161009 extends DatabaseUpgrade {
 
 			for (String[] array : rawResults.getResults()) {
 				if (array[1] != null) {
-					byte[] oldBytes = DatatypeConverter.parseHexBinary(array[1]);
+					byte[] oldBytes = parseHexBinary(array[1]);
 					@SuppressWarnings("unchecked")
 					HashMap<Integer,NumericValue> oldHashMap = (HashMap<Integer,NumericValue>) bytesToObject(oldBytes);
 					HashMap<Integer,Object[]> newHashMap = new HashMap<Integer,Object[]>();
@@ -131,7 +130,7 @@ public class Upgrade20161009 extends DatabaseUpgrade {
 					}
 
 					byte[] newBytes = Serialization.objectToBytes(newHashMap);
-					String newString = DatatypeConverter.printHexBinary(newBytes);
+					String newString = printHexBinary(newBytes);
 
 					refGasDao.updateRaw("UPDATE " + RefGas.TABLE_NAME + " SET " + RefGas.VALUES_FIELD_NAME + "='" + newString + "' WHERE " + RefGas.ID_FIELD_NAME + "=" + array[0] + ";");
 				}
@@ -148,7 +147,7 @@ public class Upgrade20161009 extends DatabaseUpgrade {
 
 			for (String[] array : rawResults.getResults()) {
 				if (array[1] != null) {
-					byte[] oldBytes = DatatypeConverter.parseHexBinary(array[1]);
+					byte[] oldBytes = parseHexBinary(array[1]);
 					@SuppressWarnings("unchecked")
 					HashMap<Integer,NumericValue> oldHashMap = (HashMap<Integer,NumericValue>) bytesToObject(oldBytes);
 					HashMap<Integer,Object[]> newHashMap = new HashMap<Integer,Object[]>();
@@ -164,7 +163,7 @@ public class Upgrade20161009 extends DatabaseUpgrade {
 					}
 
 					byte[] newBytes = Serialization.objectToBytes(newHashMap);
-					String newString = DatatypeConverter.printHexBinary(newBytes);
+					String newString = printHexBinary(newBytes);
 
 					standardDao.updateRaw("UPDATE " + Standard.TABLE_NAME + " SET " + Standard.VALUES_FIELD_NAME + "='" + newString + "' WHERE " + Standard.ID_FIELD_NAME + "=" + array[0] + ";");
 				}
@@ -180,6 +179,22 @@ public class Upgrade20161009 extends DatabaseUpgrade {
 		rebuildAnalyses = true;
 
 		return true;
+	}
+	
+	private static byte[] parseHexBinary(String string) {
+		if (string == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		return HexFormat.of().parseHex(string);
+	}
+
+	private static String printHexBinary(byte[] bytes) {
+		if (bytes == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		return HexFormat.of().formatHex(bytes);
 	}
 	
 	public static Serializable bytesToObject(byte[] bytes) throws IOException, ClassNotFoundException {

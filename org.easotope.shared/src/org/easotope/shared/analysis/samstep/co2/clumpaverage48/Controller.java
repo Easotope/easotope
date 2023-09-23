@@ -30,7 +30,6 @@ package org.easotope.shared.analysis.samstep.co2.clumpaverage48;
 import org.easotope.shared.Messages;
 import org.easotope.shared.analysis.samstep.SamInputDescription;
 import org.easotope.shared.analysis.samstep.SamOutputDescription;
-import org.easotope.shared.analysis.samstep.co2.clumpaverage48.Calculator;
 import org.easotope.shared.analysis.step.InputDescription;
 import org.easotope.shared.analysis.step.OutputDescription;
 import org.easotope.shared.analysis.step.StepController;

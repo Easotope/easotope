@@ -109,9 +109,9 @@ public class RepAnalysisCo2Clumped extends AnalysesCreator {
 				InputParameter.V46_Sample.toString(),
 				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V47_V44_REF_CALC,
 				InputParameter.V47_Sample.toString(),
-				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V47_V44_REF_CALC,
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V48_V44_REF_CALC,
 				InputParameter.V48_Sample.toString(),
-				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V47_V44_REF_CALC,
+				org.easotope.shared.analysis.repstep.co2.clumprefcalc.Calculator.OUTPUT_LABEL_V49_V44_REF_CALC,
 				InputParameter.V49_Sample.toString()
 		});
 		setStepOutputs(repStep, new String[] {

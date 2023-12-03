@@ -25,46 +25,26 @@
  * along with Easotope. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.easotope.framework.core.util;
+package org.easotope.shared.plugin.analysis.databaseupgradehandler;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
+import org.easotope.framework.dbcore.util.RawFileManager;
 
-public class TopDir {
-	public static final String TOPDIR_FILE_MARKER = "topdir.txt";
-	public static final String MACOS_TOPDIR_FILE_MARKER = "Resources";
+import com.j256.ormlite.support.ConnectionSource;
 
-	public static final String getPathToTopDir() throws URISyntaxException {
-		File dir = new File(getDeepPath());
-
-		while (dir != null && !dir.isDirectory()) {
-			dir = dir.getParentFile();
-		}
-
-		while (dir != null) {
-			for (File thisFile : dir.listFiles()) {
-				if (thisFile.getName().equals(TOPDIR_FILE_MARKER)) {
-					return dir.getPath();
-				}
-
-				if (thisFile.getName().equals(MACOS_TOPDIR_FILE_MARKER)) {
-					return thisFile.getPath();
-				}
-			}
-
-			dir = dir.getParentFile();
-		}
-
-		return null;
+public class Upgrade20231126 extends DatabaseUpgrade {
+	@Override
+	public int appliesToVersion() {
+		return 20231126;
 	}
 
-	public static final String getDeepPath() throws URISyntaxException {
-		ProtectionDomain protectionDomain = Platform.class.getProtectionDomain();
-		CodeSource codeSource = protectionDomain.getCodeSource();
-		URL url = codeSource.getLocation();
-		return url.getFile();
+	@Override
+	public int resultsInVersion() {
+		return 20231203;
+	}
+
+	@Override
+	public boolean upgrade(RawFileManager rawFileManager, ConnectionSource connectionSource, int originalServerVersion) {
+		rebuildAnalyses = true;
+		return true;
 	}
 }

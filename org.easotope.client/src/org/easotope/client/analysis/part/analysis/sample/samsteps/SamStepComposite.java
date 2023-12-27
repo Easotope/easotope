@@ -227,7 +227,10 @@ public class SamStepComposite extends ChainedComposite implements AnalysisCacheS
 			return;
 		}
 
-		setVisible(true);
+		if (!isVisible()) {
+			setVisible(true);
+			redraw();
+		}
 
 		SamStep samStep = (SamStep) analysisCompiled.getSteps()[currentSamStepPosition];
 		StepController controller = (StepController) Reflection.createObject(samStep.getClazz());

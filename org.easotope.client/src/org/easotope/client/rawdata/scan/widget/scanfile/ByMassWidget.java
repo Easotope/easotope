@@ -375,6 +375,7 @@ public class ByMassWidget extends Composite implements BackgroundSelectorListene
 
 	public void setTabItem(TabItem tabItem) {
 		this.tabItem = tabItem;
+		setErrorIcons();
 	}
 
 	public void setInitialValues(TreeSet<ScanFile> scanFiles, Integer[] channelToMZX10, HashMap<Integer,double[]> allReferenceChannelOnPeakValues) {

@@ -9,7 +9,7 @@
    <launcherArgs>
       <programArgs>-clearPersistedState
       </programArgs>
-      <vmArgs>-Dorg.easotope.version=20231203 -Dorg.easotope.oldestcompatversion=20231203 -Dorg.easotope.databasename=easotope -Dorg.easotope.prefnodename=org.easotope
+      <vmArgs>-Dorg.easotope.version=20231227 -Dorg.easotope.oldestcompatversion=20231203 -Dorg.easotope.databasename=easotope -Dorg.easotope.prefnodename=org.easotope
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>

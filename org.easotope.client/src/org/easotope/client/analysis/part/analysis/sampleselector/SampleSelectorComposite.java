@@ -113,7 +113,7 @@ public class SampleSelectorComposite extends ChainedComposite implements UserCac
 		}
 
 		treeViewer = new TreeViewer(composite, flags);
-		treeViewer.setLabelProvider(new MyLabelProvider(Display.getDefault().getSystemColor(SWT.COLOR_TITLE_FOREGROUND), Display.getDefault().getSystemColor(SWT.COLOR_TITLE_INACTIVE_FOREGROUND), ColorCache.getColor(getDisplay(), ColorCache.WHITE)));
+		treeViewer.setLabelProvider(new MyLabelProvider(ColorCache.getColor(getDisplay(), ColorCache.BLACK), ColorCache.getColor(getDisplay(), ColorCache.GREY), ColorCache.getColor(getDisplay(), ColorCache.WHITE)));
 		treeViewer.setContentProvider(new ContentProvider(this));
 		treeViewer.setUseHashlookup(true);
 		treeViewer.setComparator(new ViewerComparator());

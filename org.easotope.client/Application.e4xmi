@@ -108,17 +108,39 @@
   <handlers xmi:id="_96NToMEcEeaUxqyYfZ1GsQ" elementId="org.easotope.client.handler.10" contributionURI="bundleclass://org.easotope.client/org.easotope.client.handler.ShowSourceCode" command="_DfPpgMEdEeaUxqyYfZ1GsQ"/>
   <handlers xmi:id="_HDMmUNlkEea1zuye9PVIxg" elementId="org.easotope.client.handler.11" contributionURI="bundleclass://org.easotope.client/org.easotope.client.handler.ExplodeHandler" command="_BnbhMNlkEea1zuye9PVIxg"/>
   <bindingTables xmi:id="_UwYBnFAEEeKcQrcP49hWoA" bindingContext="_UwYBkVAEEeKcQrcP49hWoA">
-    <bindings xmi:id="_UwYBnVAEEeKcQrcP49hWoA" keySequence="M1+Q" command="_rWxIIGu6EeKjfveM34ZtBA"/>
-    <bindings xmi:id="_UwYBoFAEEeKcQrcP49hWoA" keySequence="M1+O" command="_xxEggHH5EeKIcZcPgOvz7A"/>
-    <bindings xmi:id="_UwYBo1AEEeKcQrcP49hWoA" keySequence="M1+S" command="_UwYBoVAEEeKcQrcP49hWoA"/>
-    <bindings xmi:id="_nZgksAmNEeSUNaY5OkIILQ" elementId="org.easotope.client.keybinding.revert" keySequence="M1+Z" command="_SmKTAMSsEeO6rLh-TaDWLg"/>
-    <bindings xmi:id="_HFfY0LoJEeaDjPwDMFa2oA" elementId="org.easotope.client.keybinding.0" keySequence="M1+ALT+B" command="_rvq3ILhbEeap39TQzuUalg"/>
-    <bindings xmi:id="_Z2SQ4MN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.1" keySequence="M1+ALT+C" command="_szha4GrGEeKLaeEeNj89QA"/>
-    <bindings xmi:id="_dgWu4MN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.2" keySequence="M1+ALT+I" command="_AUQAcKGdEea7k6glbK9iUg"/>
-    <bindings xmi:id="_jh1wMMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.3" keySequence="M1+ALT+R" command="_WtLqEKKJEea--pdW5aFKrA"/>
-    <bindings xmi:id="_mwCKgMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.4" keySequence="M1+ALT+S" command="_Yj57IKKJEea--pdW5aFKrA"/>
-    <bindings xmi:id="_pr5esMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.5" keySequence="M1+ALT+T" command="_bbQiwKKJEea--pdW5aFKrA"/>
-    <bindings xmi:id="_TiF3oNpvEea6BLlx0ThZ1w" elementId="org.easotope.client.keybinding.6" keySequence="M1+ALT+E" command="_BnbhMNlkEea1zuye9PVIxg"/>
+    <bindings xmi:id="_UwYBnVAEEeKcQrcP49hWoA" keySequence="M1+Q" command="_rWxIIGu6EeKjfveM34ZtBA">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_UwYBoFAEEeKcQrcP49hWoA" keySequence="M1+O" command="_xxEggHH5EeKIcZcPgOvz7A">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_UwYBo1AEEeKcQrcP49hWoA" keySequence="M1+S" command="_UwYBoVAEEeKcQrcP49hWoA">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_nZgksAmNEeSUNaY5OkIILQ" elementId="org.easotope.client.keybinding.revert" keySequence="M1+Z" command="_SmKTAMSsEeO6rLh-TaDWLg">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_HFfY0LoJEeaDjPwDMFa2oA" elementId="org.easotope.client.keybinding.0" keySequence="M1+ALT+B" command="_rvq3ILhbEeap39TQzuUalg">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_Z2SQ4MN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.1" keySequence="M1+ALT+C" command="_szha4GrGEeKLaeEeNj89QA">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_dgWu4MN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.2" keySequence="M1+ALT+I" command="_AUQAcKGdEea7k6glbK9iUg">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_jh1wMMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.3" keySequence="M1+ALT+R" command="_WtLqEKKJEea--pdW5aFKrA">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_mwCKgMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.4" keySequence="M1+ALT+S" command="_Yj57IKKJEea--pdW5aFKrA">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_pr5esMN2Eeav5_jW8TV24Q" elementId="org.easotope.client.keybinding.5" keySequence="M1+ALT+T" command="_bbQiwKKJEea--pdW5aFKrA">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_TiF3oNpvEea6BLlx0ThZ1w" elementId="org.easotope.client.keybinding.6" keySequence="M1+ALT+E" command="_BnbhMNlkEea1zuye9PVIxg">
+      <tags>type:user</tags>
+    </bindings>
   </bindingTables>
   <rootContext xmi:id="_UwYBkVAEEeKcQrcP49hWoA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_UwYBklAEEeKcQrcP49hWoA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>

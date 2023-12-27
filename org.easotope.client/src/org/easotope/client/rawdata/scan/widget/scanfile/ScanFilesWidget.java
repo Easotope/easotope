@@ -61,6 +61,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -629,6 +630,13 @@ public class ScanFilesWidget extends EasotopeComposite {
 				}
 			});
 			tabItem.setControl(byFileWidget);
+			
+			// this garbage seems to be necessary to trigger the mac to show dynamic tab names
+			tabFolder.setRedraw(false);
+			Point p = tabFolder.getSize();
+			tabFolder.setSize(100,100);
+			tabFolder.setSize(p);
+			tabFolder.setRedraw(true);
 		}
 
 		((StackLayout) getLayout()).topControl = tabFolder;

@@ -45,6 +45,7 @@ import org.easotope.shared.rawdata.Acquisition;
 import org.easotope.shared.rawdata.RawDataHelper;
 import org.easotope.shared.rawdata.tables.ReplicateV1;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
@@ -181,6 +182,13 @@ public class ResultsComposite extends EasotopeComposite implements CorrIntervalL
 				
 				folderIndex++;
 			}
+			
+			// this garbage seems to be necessary to trigger the mac to show dynamic tab names
+			folder.setRedraw(false);
+			Point p = folder.getSize();
+			folder.setSize(100,100);
+			folder.setSize(p);
+			folder.setRedraw(true);
 		}
 
 		setVisible(repAnalysisArray != null);
